@@ -1,0 +1,25 @@
+[tool.poetry]
+name = "kadishutu"
+version = "0.1.0"
+description = "A save editor for Shin Megami Tensei V: Vengeance."
+authors = ["fnrir"]
+license = "MIT"
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.8.1"
+dataclasses-json = "^0.6.7"
+pycryptodome = "^3.20.0"
+typing-extensions = "^4.12.2"
+
+[tool.poetry.scripts]
+kadishutu = "kadishutu:main"
+
+[tool.poetry.group.dev.dependencies]
+mypy = "^1.10.1"
+pylint = "^3.2.5"
+flake8 = "^7.1.0"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
