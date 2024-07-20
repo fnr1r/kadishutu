@@ -135,25 +135,7 @@ GAME_SAVE_INFO: List[DataAtOffset] = [
     # 0x4da8: NO EFFECT - probably no essence
     ## Essence (1)
     # 0x4da9: Khonsu
-    # 0x4daa: Zeus
-    # 0x4dab: Odin
-    # 0x4dac: Mitra
-    # 0x4dad: Atavaka
-    # 0x4dae: Horus
-    # 0x4daf: Thoth
-    # 0x4e16: Slime
-    # 0x4ea1: Aogami Type-D
-    # 0x4eb7: Mad Gasser?
-    # 0x4eba: Masakado
-    # 0x4ebd: Mastema
-    # 0x4ecd, 0x4ece: Eisheth
-    # 0x4ecf: Konohana Sakuya
-    # 0x4ed2: Tsukuyomi Ultimus
-    # 0x4e9c - 0x4eab: ???
-    # 0x4e9d: Demi-fiend
-    # 0x4ea2: Satan
-    # 0x4ea3: Lucifer
-    # 0x4ea4: Dagda?
+    # ...
     # 0x4ebb: Saturnus
 
     ## Relics
