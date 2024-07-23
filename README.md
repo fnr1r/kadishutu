@@ -47,8 +47,7 @@ with all DLCs more specifically). It might work with the PC version.
   - Macca, Glory, Play Time (but not time of saving, it's in a weird format)
   - Affinities, Skills, Stats, Exp, Lvl
   - (for demons) Innate Skills, IDs
-  - (some) Items (I need the item table for this game, but the pak files are
-    encrypted) (dm me if you have the encryption key)
+  - (some) Items (I need the item table for this game)
 - Manual editing after decryption, for example:
   - Skill replacement for demons
   - Name replacement (remember to replace the name in all places, or the game
