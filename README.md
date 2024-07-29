@@ -11,12 +11,12 @@ I might release an exe/app/elf version soon™.
 
 ```python
 from pathlib import Path
-from kadishutu.offsets import GameSave
+from kadishutu.game import SaveEditor
 from kadishutu.file_handling import EncryptedSave
 
 path = Path(...)
 savefile = EncryptedSave.open(path).decrypt()
-game = GameSave(savefile)
+game = SaveEditor(savefile)
 
 stats = game.player.stats
 stats.max_with_sbis()

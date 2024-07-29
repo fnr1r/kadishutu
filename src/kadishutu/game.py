@@ -67,27 +67,11 @@ class DLCEditor(BaseStructEditor):
         self.pack(value)
 
 
-#@dataclass
 class SaveEditor(BaseEditor):
     saveobj: DecryptedSave
-    # Deprecated
-    #data: Dist[str, Any]
-    #views: Dist[str, BinaryView]
 
     def __init__(self, raw: DecryptedSave):
         self.saveobj = raw
-
-    #def __init__(self, savefile: DecryptedSave, data: Dist[str, Any]):
-    #    self.savefile = savefile
-    #    self.data = data
-
-    #@classmethod
-    #def load(cls, savefile: DecryptedSave) -> Self:
-    #    data = {}
-    #    for i in GAME_SAVE_INFO:
-    #        data[i.name] = i.unpack(savefile.data[i.offset:i.end_offset])
-    #        #data[i.name] = BinaryView.auto(self, i)
-    #    return cls(savefile, data)
 
     @structproperty(
         timedelta, "<L",
