@@ -18,7 +18,7 @@ class Skill(BaseStructFieldEditor):
     @structproperty(int, FIELD_FMT)
     def id(self):
         return self.relative_field_offset(1)
-    
+
     @property
     def name(self) -> str:
         return SKILLS[self.id]
@@ -32,5 +32,5 @@ class SkillEditor(BaseStructFieldEditor):
 
     def __getitem__(self, indices: Union[int, Tuple[int, ...]]) -> Skill:
         if isinstance(indices, tuple):
-            raise NotImplemented
+            raise NotImplementedError
         return self.slot(indices)

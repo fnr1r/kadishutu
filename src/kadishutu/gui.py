@@ -5,7 +5,7 @@ from typing import Any, Callable, Optional
 from typing_extensions import Self
 
 from .file_handling import DecryptedSave
-from .offsets import SaveEditor
+from .game import SaveEditor
 
 
 # NOTE: Only valid after init

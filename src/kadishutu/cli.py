@@ -4,8 +4,8 @@ from typing import Any, List
 
 from .demons import Affinity, get_demon_name
 from .file_handling import DecryptedSave, EncryptedSave
+from .game import SaveEditor
 from .innate_skills import get_innate_skill_name
-from .offsets import SaveEditor
 from .skills import get_skill_name
 
 
