@@ -20,6 +20,8 @@ KEY = bytes([0x30, 0x31, 0x32, 0x33, 0x34, 0x35, 0x36, 0x37,
 - 0x4d8 - ????? - [First Name](#name-info)
 - 0x4f0 - 0x500 - Time of Saving (UNKNOWN FORMAT)  
   (16 bytes)
+- 0x529 - 0x52a - [DLC info](#dlc-info)  
+  (an unsigned char / u8 (1 byte))
 - 0x5d0 - 0x5d4 - Play Time (in seconds)  
   (I'm guessing it's an unsigned int / u32 (4 bytes))
 - 0x618 - 0x61a - Player [level](#level-info)?  
@@ -73,6 +75,27 @@ a("difficulty", 0x54c, "H"),
 a("stats_mystery_stuff", 0x9b8, "<l"),
 a("player_stats2", 0x9c0, "II", "LV EXP"),
 -->
+
+## DLC info
+
+It's an unsigned char / u8 (1 byte).
+
+```txt
+0x00000000
+  8  -> 1
+```
+
+- 0x01 - bit 7 - Not assigned to any DLC
+- 0x02 - bit 6 - DLC 1 - Safety DLC
+- 0x04 - bit 5 - DLC 2 - Mitama Dance of Wealth
+- 0x08 - bit 4 - DLC 3 - Mitama Dance of EXP
+- 0x10 - bit 3 - DLC 4 - Mitama Dance of Glory
+- 0x20 - bit 2 - DLC 5 - Holy Will and Profane Dissent
+- 0x40 - bit 1 - DLC 6 - Sakura Cinders of the East
+- 0x80 - bit 0 - DLC 7 - 2 Sacred Treasures Set
+
+NOTE: When launching, the game will update this value based on the DLCs
+installed, so changing it is pointless.
 
 ## Name info
 
