@@ -61,6 +61,8 @@ with all DLCs more specifically). It might work with the PC version.
 - Changing affinities is also broken
 - Anything related to SysSave
   - Difficulty might actually be in SysSave
+  - DLC usage is in SysSave (as per
+  [issue #1](https://github.com/fnr1r/kadishutu/issues/1))
 
 ## What's planned?
 
