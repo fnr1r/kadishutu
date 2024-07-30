@@ -1,5 +1,7 @@
 # GameSave
 
+Size: 449680 bytes (end at 0x6dc90)
+
 ## Decryption
 
 The decryption algorithm is stored in [encryption.py](../src/kadishutu/encryption.py).
@@ -20,7 +22,7 @@ KEY = bytes([0x30, 0x31, 0x32, 0x33, 0x34, 0x35, 0x36, 0x37,
 - 0x4d8 - ????? - [First Name](#name-info)
 - 0x4f0 - 0x500 - Time of Saving (UNKNOWN FORMAT)  
   (16 bytes)
-- 0x529 - 0x52a - [DLC info](#dlc-info)  
+- 0x529 - 0x52a - [DLC Flags](#dlc-info)  
   (an unsigned char / u8 (1 byte))
 - 0x5d0 - 0x5d4 - Play Time (in seconds)  
   (I'm guessing it's an unsigned int / u32 (4 bytes))
