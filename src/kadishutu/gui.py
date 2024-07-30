@@ -1,8 +1,8 @@
 from abc import ABC
 from pathlib import Path
-from tkinter import BooleanVar, Button, Checkbutton, Entry, Frame, IntVar, Label, Menu, StringVar, Tk, Toplevel, Variable, filedialog
+from tkinter import BooleanVar, IntVar, Menu, StringVar, Tk, Toplevel, Variable, filedialog
 from tkinter.messagebox import showerror
-from tkinter.ttk import Combobox
+from tkinter.ttk import Button, Checkbutton, Combobox, Entry, Frame, Label
 from _tkinter import TclError
 from typing import Any, Callable, Dict, List, Optional, Tuple
 
