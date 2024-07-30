@@ -8,10 +8,9 @@ from tktooltip import ToolTip
 from typing import Any, Callable, Dict, List, Optional, Tuple
 
 
-from .data.demons import DEMONS
 from .data.items import BUILTIN_ITEM_TABLE, ITEM_TABLE_OFFSET
 from .data.skills import SKILLS
-from .demons import STATS_NAMES, DemonEditor, StatsEditor
+from .demons import DEMON_MAP, STATS_NAMES, DemonEditor, StatsEditor
 from .dlc import DlcBitflags
 from .file_handling import DecryptedSave, EncryptedSave, is_save_decrypted
 from .game import SaveEditor
@@ -297,7 +296,7 @@ class DemonEditorTk(Toplevel):
         Label(general, text="ID:").grid(column=0, row=row)
         self.demon_id = IdCombox(
             general,
-            idmap=DEMONS
+            idmap=DEMON_MAP
         )
         self.demon_id.id.set(self.obj.demon_id)
         self.demon_id.grid(column=1, row=row)

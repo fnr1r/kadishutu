@@ -7,8 +7,18 @@ from .innate_skills import InnateSkillEditor
 from .skills import SkillEditor
 
 
+def demon_map() -> dict[int, str]:
+    res = {}
+    for v in DEMONS:
+        res[v["id"]] = v["name"]
+    return res
+
+
+DEMON_MAP = demon_map()
+
+
 def get_demon_name(demon: int) -> str:
-    return DEMONS[demon]
+    return DEMON_MAP[demon]
 
 
 DEMON_TABLE_OFFSET = 0xb60
