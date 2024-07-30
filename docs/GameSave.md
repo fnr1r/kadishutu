@@ -48,7 +48,7 @@ KEY = bytes([0x30, 0x31, 0x32, 0x33, 0x34, 0x35, 0x36, 0x37,
 - 0xb60 - ????? - [Demon table](#demon-info)
 - 0x3d32 - 0x3d36 - Macca  
   (an unsigned int / u32 (4 bytes))
-- 0x3d36 - 0x3d3a - Glory  
+- 0x3d4a - 0x3d4e - Glory  
   (an unsigned int / u32 (4 bytes))
 - 0x3d2e - ?????? - Summoned Demons (TODO)  
   (with indices of the demon table; from first to last)  

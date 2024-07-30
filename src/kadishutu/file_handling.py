@@ -106,7 +106,7 @@ class BaseEditor(ABC):
 
 
 @dataclass
-class MasterEditor(ABC):
+class MasterEditor(BaseEditor, ABC):
     saveobj: DecryptedSave
     offset: ClassVar[int] = 0
 

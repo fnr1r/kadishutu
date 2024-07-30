@@ -76,7 +76,7 @@ class SaveEditor(MasterEditor):
         return 0x3d32
     @structproperty(int, "<I")
     def glory(self) -> int:
-        return 0x3d36
+        return 0x3d4a
 
     @property
     def team(self) -> TeamEditor:

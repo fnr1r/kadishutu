@@ -1,5 +1,7 @@
-from pathlib import Path
 from argparse import ArgumentParser, Namespace
+from math import floor
+from pathlib import Path
+from typing import Optional
 
 from .dlc import DlcBitflags
 from .file_handling import DecryptedSave, EncryptedSave, is_save_decrypted
@@ -21,6 +23,34 @@ def dlc_remove(args: Namespace, dlc: DlcEditor):
 
 def edit_dlc(args: Namespace, game: SaveEditor):
     args.func_y(args, game.dlc)
+
+
+def edit_glory(args: Namespace, game: SaveEditor):
+    value: Optional[int] = args.value
+    if value is not None:
+        game.glory = value
+    else:
+        print("Glory:", game.glory)
+
+
+def edit_play_time(_: Namespace, game: SaveEditor):
+    from datetime import timedelta
+    time: timedelta = game.play_time
+    seconds = int(time.total_seconds())
+    hours = floor(seconds / 60 / 60)
+    seconds -= hours * 60 * 60
+    minutes = floor(seconds / 60)
+    seconds -= minutes * 60
+    game_display = f"{hours}:{minutes:02}:{seconds:02}"
+    print("Play time:", game_display, "or", game.play_time)
+
+
+def edit_macca(args: Namespace, game: SaveEditor):
+    value: Optional[int] = args.value
+    if value is not None:
+        game.macca = value
+    else:
+        print("Macca:", game.macca)
 
 
 def cmd_edit(args: Namespace):
@@ -61,5 +91,16 @@ def argparse_edit(subparsers):
     dlc_remove_p = dlc_subp.add_parser("remove")
     dlc_remove_p.set_defaults(func_y=dlc_remove)
     dlc_remove_p.add_argument("name", type=str)
+
+    glory = subparsers.add_parser("glory")
+    glory.set_defaults(func_x=edit_glory)
+    glory.add_argument("value", nargs="?", type=int)
+
+    play_time = subparsers.add_parser("play_time")
+    play_time.set_defaults(func_x=edit_play_time)
+
+    macca = subparsers.add_parser("macca")
+    macca.set_defaults(func_x=edit_macca)
+    macca.add_argument("value", nargs="?", type=int)
 
     return parser
