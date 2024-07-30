@@ -59,7 +59,7 @@ KEY = bytes([0x30, 0x31, 0x32, 0x33, 0x34, 0x35, 0x36, 0x37,
 - 0x3ece - 0x3ed0 - Magatsuhi Gauge  
   (from 0% - 100% value)  
   (an unsigned short (2 bytes))
-- 0x4c72 - ?????? - [Item Table](#item-info)
+- 0x4c72 - ?????? - [Item Table](#item-table)
 - 0x5129 - ?????? - [Essence Metadata Table](#essence-info)
 - 0x568e - ?????? - [Coordinates](#coordinate-info)
 - 0x7dc0 - 0x7de0 - Demon haunt data
@@ -198,6 +198,13 @@ A singular affinity is represented by an unsigned short / i16 (2 bytes).
 
 Here are the possible values:
 
+- 0 - Null
+- 50 - Resist
+- 100 - Neutral
+- 125 - Weak
+- 999 - Repel
+- 1000 - Drain
+
 ### Affinity block
 
 An affinity block is an array containing 7 values in the following order:
@@ -244,7 +251,9 @@ It's 22 or 24 bytes in total.
 
 ### Demon ID
 
-TODO
+The demon ID is represented by an unsigned short / i16 (2 bytes).
+
+0xffff is used to signal that the slot is free.
 
 ### Innate Skill ID
 
@@ -321,7 +330,24 @@ Table end offsets per table size:
 
 ## Item info
 
-TODO
+### Item amount
+
+The amount of an item is stored an unsigned char / u8 (1 byte).
+
+This can exceed the in-game item limit.
+
+### Item Table
+
+It's a massive array of item amounts.
+
+The table starts at 0x4c72 with consumable items and ends at 0x4d4f.
+
+Then there's relics from 0x4ed0 to 0x4f01.  
+Then there's essences from 0x4da9 to 0x4ebc.  
+Then there's key items from 0x4f02 to 0x4fca.  
+Then there's relics (again) from 0x4fca to 0x4f11.
+
+NOTE: Essences can only ever have a value of 1.
 
 ## Essence info
 

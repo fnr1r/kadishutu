@@ -142,6 +142,7 @@ RELIC_TABLE_OFFSET = 0x4eda
 
 
 BUILTIN_RELIC_TABLE = [
+    # 0x4ed0: relic?
     {"id": 0, "name": "Fortune"}, # 0x4eda
     # 0x4ee2: Anime Paperweight
     # 0x4ee3: Simple Undershirt
@@ -156,4 +157,38 @@ BUILTIN_RELIC_TABLE = [
     # id 39
     # Last
     # NOT IN USED: 53 - 80
+]
+
+KEY_ITEM_OFFSETS = [
+    {"id": 0x4f02, "name": "Golden Apple"},
+    {"id": 0x4f03, "name": "Akiha-Gongen Talisman"},
+    {"id": 0x4f04, "name": "Key of Austerity"},
+    {"id": 0x4f05, "name": "Key of Benevolence"},
+    {"id": 0x4f06, "name": "Key of Harmony"},
+    {"id": 0x4f07, "name": "Angel Feather"},
+    # 0x4f08: NOT IN USE nr 7
+    # 0x4f09: NOT IN USE nr 8
+    # 0x4f1f: NOT IN USE nr 30
+    {"id": 0x4f62, "name": "Heavenly Keystone"},
+    {"id": 0x4f63, "name": "Purified Sake"},
+    {"id": 0x4f64, "name": "Kiou Sword"},
+    {"id": 0x4f65, "name": "Oak Staff"},
+    ## Quest items???
+    {"id": 0x4f66, "name": "Jatayu Egg"},
+    {"id": 0x4f67, "name": "Mandrake Root"},
+    {"id": 0x4f68, "name": "Giant Bird's Feather"},
+    {"id": 0x4f69, "name": "Shikigami Talisman"},
+    {"id": 0x4f6a, "name": "Mothman Capture Pot"},
+    {"id": 0x4f6b, "name": "Kumbhanda's Bottle"},
+    {"id": 0x4f6c, "name": "Incubus's Letter"},
+    {"id": 0x4f6d, "name": "Frozen King Salmon"},
+    {"id": 0x4f6e, "name": "Kunitsu Keystone"},
+    {"id": 0x4f6f, "name": "Gibbon Guitar"},
+    {"id": 0x4f70, "name": "Large Model Kit"},
+    {"id": 0x4f71, "name": "TV-Game Combination"},
+    {"id": 0x4f75, "name": "Aquamarine"},
+    # 0x4f81 - 0x4f8b: Menorahs (in order)
+    {"id": 0x4fc0, "name": "Chaos Talisman"},
+    # 0x4fc1 - 0x4fc9: NOT IN USE 192 - 200
+    # End of table: 0x4fc9
 ]

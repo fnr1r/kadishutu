@@ -74,10 +74,6 @@ with all DLCs more specifically). It might work with the PC version.
 - This needs a solid rework
 - Name changing is broken (for names of different length)
 - Changing affinities is also broken
-- Anything related to SysSave
-  - Difficulty might actually be in SysSave
-  - DLC usage is in SysSave (as per
-  [issue #1](https://github.com/fnr1r/kadishutu/issues/1))
 
 ## What's planned?
 
@@ -85,6 +81,13 @@ with all DLCs more specifically). It might work with the PC version.
 - GUI
 - Allowing the user to add files that modify the demon/skill database, in
   corelation with mods
+
+## Documentation
+
+The documentation for the save files is in the docs folder:
+
+[GameSave.md](docs/GameSave.md)
+[SysSave.md](docs/SysSave.md)
 
 ## Credits
 
