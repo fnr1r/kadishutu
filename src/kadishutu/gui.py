@@ -2,7 +2,7 @@ from abc import ABC
 from pathlib import Path
 from tkinter import BooleanVar, IntVar, Menu, StringVar, Tk, Toplevel, Variable, filedialog
 from tkinter.messagebox import showerror
-from tkinter.ttk import Button, Checkbutton, Combobox, Entry, Frame, Label
+from tkinter.ttk import Button, Checkbutton, Combobox, Entry, Frame, Label, Notebook
 from _tkinter import TclError
 from typing import Any, Callable, Dict, List, Optional, Tuple
 
@@ -112,7 +112,7 @@ class MutInt(Entry, MutabilityMixin):
         return self.var.get()
 
 
-class StatEditorTk(Toplevel):
+class StatEditorTk(Frame):
     STYPES = ["Base", "Changes", "Current"]
 
     def __init__(self, *args, stats: StatsEditor, **kwargs):
@@ -143,7 +143,6 @@ class StatEditorTk(Toplevel):
         row += 1
 
         Button(self, text="Save", command=self.save).grid(column=0, row=row)
-        Button(self, text="Cancel", command=self.cancel).grid(column=1, row=row)
 
     def save(self):
         for j in STATS_NAMES:
@@ -154,10 +153,6 @@ class StatEditorTk(Toplevel):
                 if not statvalue.modified:
                     continue
                 self.obj.__getattribute__(i).__setattr__(j, statvalue.get())
-        self.destroy()
-
-    def cancel(self):
-        self.destroy()
 
 
 class MutCombobox(Combobox, MutabilityMixin):
@@ -209,7 +204,7 @@ class IdCombox(Frame):
         self.id.set(id)
 
 
-class SkillEditorTk(Toplevel):
+class SkillEditorTk(Frame):
     def __init__(self, *args, skills: SkillEditor, **kwargs):
         super().__init__(*args, **kwargs)
         self.obj = skills
@@ -228,7 +223,6 @@ class SkillEditorTk(Toplevel):
         row = i + 1
 
         Button(self, text="Save", command=self.save).grid(column=0, row=row)
-        Button(self, text="Cancel", command=self.cancel).grid(column=1, row=row)
 
     def save(self):
         for i, (skillbox, mysterybox) in enumerate(self.skilld):
@@ -237,108 +231,82 @@ class SkillEditorTk(Toplevel):
                 skill.id = skillbox.id.get()
             if mysterybox.modified:
                 skill._unknown = mysterybox.get()
-        self.destroy()
-
-    def cancel(self):
-        self.destroy()
 
 
 class PlayerEditorTk(Toplevel, SpawnerMixin):
     def __init__(self, master: "MainWindow", *args, **kwargs):
         super().__init__(master, *args, **kwargs)
         self.obj = master.save.player
+        self.tabbed = Notebook(self)
+        self.tabbed.pack()
+        general = Frame(self.tabbed)
         row = 0
-        Label(self, text="Name:").grid(column=0, row=row)
+        Label(general, text="Name:").grid(column=0, row=row)
         self.protag_name = MutEntry(
-            self,
+            general,
             value=self.obj.first_name,
             width=12
         )
         self.protag_name.grid(column=1, row=row)
         self.protag_surname = MutEntry(
-            self,
+            general,
             value=self.obj.last_name,
             width=10
         )
         self.protag_surname.grid(column=2, row=row)
         row += 1
-        Label(self, text="Macca:").grid(column=0, row=row)
+        Label(general, text="Macca:").grid(column=0, row=row)
         self.macca = MutInt(
-            self,
+            general,
             value=master.save.macca,
             width=20
         )
         self.macca.grid(column=1, row=row)
         row += 1
-        Label(self, text="Glory:").grid(column=0, row=row)
+        Label(general, text="Glory:").grid(column=0, row=row)
         self.glory = MutInt(
-            self,
+            general,
             value=master.save.glory,
             width=20
         )
         self.glory.grid(column=1, row=row)
         row += 1
-        Button(
-            self,
-            text="Edit Stats",
-            command=self.spawner(StatEditorTk, stats=self.obj.stats)
-        ).grid(column=0, row=row)
-        row += 1
-        Button(
-            self,
-            text="Edit Skills",
-            command=self.spawner(SkillEditorTk, skills=self.obj.skills)
-        ).grid(column=0, row=row)
-        row += 1
-        Button(self, text="Save", command=self.save).grid(column=0, row=row)
-        Button(self, text="Cancel", command=self.cancel).grid(column=1, row=row)
+        Button(general, text="Save", command=self.save).grid(column=0, row=row)
+        self.tabbed.add(general, text="General")
+        self.tabbed.add(StatEditorTk(self, stats=self.obj.stats), text="Stats")
+        self.tabbed.add(SkillEditorTk(self, skills=self.obj.skills), text="Skills")
 
     def save(self):
         if self.macca.modified:
             MAIN_WINDOW.save.glory = self.macca.get()
         if self.glory.modified:
             MAIN_WINDOW.save.glory = self.glory.get()
-        self.destroy()
-
-    def cancel(self):
-        self.destroy()
 
 
 class DemonEditorTk(Toplevel, SpawnerMixin):
     def __init__(self, *args, demon: DemonEditor, **kwargs):
         super().__init__(*args, **kwargs)
         self.obj = demon
+        self.tabbed = Notebook(self)
+        self.tabbed.pack()
+        general = Frame(self.tabbed)
         row = 0
-        Label(self, text="ID:").grid(column=0, row=row)
+        Label(general, text="ID:").grid(column=0, row=row)
         self.demon_id = IdCombox(
-            self,
+            general,
             idmap=DEMONS
         )
         self.demon_id.id.set(self.obj.demon_id)
-        self.demon_id.grid(column=2, row=row)
+        self.demon_id.grid(column=1, row=row)
         row += 1
-        Button(
-            self,
-            text="Edit Stats",
-            command=self.spawner(StatEditorTk, stats=self.obj.stats)
-        ).grid(column=0, row=row)
-        row += 1
-        Button(
-            self,
-            text="Edit Skills",
-            command=self.spawner(SkillEditorTk, skills=self.obj.skills)
-        ).grid(column=0, row=row)
-        row += 1
-
-        Button(self, text="Save", command=self.save).grid(column=0, row=row)
-        Button(self, text="Cancel", command=self.cancel).grid(column=1, row=row)
+        Button(general, text="Save", command=self.save).grid(column=0, row=row)
+        self.tabbed.add(general, text="General")
+        self.tabbed.add(StatEditorTk(self, stats=self.obj.stats), text="Stats")
+        self.tabbed.add(SkillEditorTk(self, skills=self.obj.skills), text="Skills")
 
     def save(self):
         if self.demon_id.id.modified:
             self.obj.demon_id = self.demon_id.id.get()
-        self.destroy()
-
-    def cancel(self):
         self.destroy()
 
 
