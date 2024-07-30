@@ -35,6 +35,10 @@ class DlcBitflags(IntFlag):
     DLC_7 = auto()
 
     @classmethod
+    def all(cls) -> Self:
+        return cls(0xff) & ~cls.UNUSED
+
+    @classmethod
     def from_str(cls, name: str) -> Self:
         return cls(2 ** DLCS_REV[name])
 

@@ -43,6 +43,10 @@ Available subcommands:
 - `run_script`
 - `update_hash`
 
+### GUI
+
+You can open the GUI by running `kadishutu gui $OPTIONALLY_A_SAVE_FILE`.
+
 #### Edit subcommand
 
 ##### DLC

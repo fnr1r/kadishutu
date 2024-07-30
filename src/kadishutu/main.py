@@ -48,12 +48,12 @@ def main():
     SUBPARSERS["encrypt"] = parser_encrypt
 
     parser_gui = subparsers.add_parser("gui")
-    parser_gui.add_argument("file", type=Path)
+    parser_gui.add_argument("file", nargs="?", type=Path)
     parser_gui.set_defaults(func=cmd_gui)
     SUBPARSERS["gui"] = parser_gui
 
     parser_help = subparsers.add_parser("help")
-    parser_help.add_argument("subcommand", type=str, nargs="?")
+    parser_help.add_argument("subcommand", nargs="?", type=str)
     parser_help.set_defaults(func=lambda x: cmd_help(parser, x))
     SUBPARSERS["help"] = parser_help
 
@@ -73,7 +73,7 @@ def main():
     parser_run_script = subparsers.add_parser("run_script")
     parser_run_script.add_argument("script", type=Path)
     parser_run_script.add_argument("file", type=Path)
-    parser_run_script.add_argument("rest_of_args", type=str, nargs="*")
+    parser_run_script.add_argument("rest_of_args", nargs="*", type=str)
     parser_run_script.set_defaults(func=cmd_run_script)
     SUBPARSERS["run_script"] = parser_run_script
 

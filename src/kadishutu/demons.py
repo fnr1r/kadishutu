@@ -20,6 +20,9 @@ META_STATS = ("<HHHHHHHH", "HP MP ST VI MA AG LU NULL")
 META_POTENTIALS = ("<hhhhhhhhhhhh", "PHYSICAL FIRE ICE ELECTRIC FORCE LIGHT DARK ALMIGHTY AILMENT SUPPORT HEALING _unknown")
 
 
+STATS_NAMES = ["HP", "MP", "Strength", "Vitality", "Magic", "Agility", "Luck"]
+
+
 class SubStatsEditor(BaseStructFieldEditor):
     FIELD_FMT = "<H"
 
