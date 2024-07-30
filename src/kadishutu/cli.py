@@ -1,3 +1,7 @@
+import importlib
+from importlib.machinery import SourceFileLoader
+import importlib.util
+from pathlib import Path
 from struct import Struct
 from types import FunctionType, MethodType
 from typing import Any, List
@@ -188,6 +192,24 @@ def cmd_inspect(args):
         print(f"Offset: 0x{this.offset:x}")
     #raise ValueError("Offset not available")
     print(this)
+
+
+def cmd_run_script(args):
+    path: Path = args.file
+    script_path: Path = args.script.absolute()
+    savefile = DecryptedSave.auto_open(path)
+    #script = importlib.import_module(str(script_path))
+    loader = SourceFileLoader("script", str(script_path))
+    spec = importlib.util.spec_from_loader("script", loader)
+    assert spec
+    script = importlib.util.module_from_spec(spec)
+    loader.exec_module(script)
+    #if not hasattr(script, "main"):
+    #    raise ValueError("The main function is not defined")
+    #assert script.main
+    #if not isinstance(script.main, FunctionType):
+    #    raise ValueError("main is not a function")
+    script.main(path, savefile, args.rest_of_args)
 
 
 def cmd_update_hash(args):

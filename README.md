@@ -11,8 +11,8 @@ I might release an exe/app/elf version soon™.
 
 ```python
 from pathlib import Path
-from kadishutu.game import SaveEditor
 from kadishutu.file_handling import EncryptedSave
+from kadishutu.game import SaveEditor
 
 path = Path(...)
 savefile = EncryptedSave.open(path).decrypt()
@@ -33,8 +33,23 @@ savefile.encrypt().save(path)
 
 ### In a terminal
 
-Currently you can only `decrypt`, `encrypt`, and `update_hash` are available.  
-There's also `inspect`, but it's kind of a jack of all trades which either runs a method, or acceses an attribute.
+Available subcommands:
+
+- `decrypt`
+- `edit`
+- `encrypt`
+- `help`
+- `inspect`
+- `run_script`
+- `update_hash`
+
+#### Edit subcommand
+
+##### DLC
+
+- clear - Clears all DLC flags
+- print - Prints what DLCs were used
+- remove - Removes a DLC flag
 
 ## What works?
 
