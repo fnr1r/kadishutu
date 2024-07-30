@@ -2,9 +2,10 @@ from datetime import timedelta
 from struct import pack_into, unpack_from
 from typing import Optional, Tuple
 
+from .dlc import DlcEditor
 from .demons import DemonEditor
 from .essences import EssenceManager
-from .file_handling import BaseEditor, BaseStructEditor, DecryptedSave, structproperty
+from .file_handling import BaseEditor, MasterEditor, structproperty
 from .items import ItemManager
 from .player import PlayerEditor
 
@@ -51,28 +52,7 @@ class TeamEditor(BaseEditor):
         return 0x3d45
 
 
-# NOTE: This is not needed for the game to load the file.
-# It just reverts the one of the differences between DLC and non-DLC save files
-# That being:
-#   0x6a07f: 0x00 -> 0x18
-#         non-DLC -> DLC
-# There were more but they were scattered all around the file.
-class DLCEditor(BaseStructEditor):
-    fmt = "<B"
-
-    def get(self) -> int:
-        return self.unpack()[0]
-
-    def set(self, value: int):
-        self.pack(value)
-
-
-class SaveEditor(BaseEditor):
-    saveobj: DecryptedSave
-
-    def __init__(self, raw: DecryptedSave):
-        self.saveobj = raw
-
+class SaveEditor(MasterEditor):
     @structproperty(
         timedelta, "<L",
         lambda u: timedelta(seconds=u),
@@ -120,5 +100,5 @@ class SaveEditor(BaseEditor):
         return DemonEditor(self.saveobj, id)
 
     @property
-    def dlc(self) -> DLCEditor:
-        return DLCEditor(self.saveobj, 0x6a07f)
+    def dlc(self) -> DlcEditor:
+        return DlcEditor(self.saveobj, 0x529)

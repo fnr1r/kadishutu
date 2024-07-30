@@ -3,7 +3,7 @@ from dataclasses import dataclass
 from hashlib import sha1
 from pathlib import Path
 from struct import Struct, calcsize, pack_into, unpack_from
-from typing import Any, Dict, Callable, Optional, Tuple, Type, TypeVar, Union
+from typing import Any, ClassVar, Dict, Callable, Optional, Tuple, Type, TypeVar, Union
 from typing_extensions import Self
 
 from .encryption import decrypt, encrypt
@@ -103,6 +103,12 @@ class BaseEditor(ABC):
         relative_offset: int
     ) -> TBaseEditor:
         return cls(self.saveobj, self.relative_offset(relative_offset))
+
+
+@dataclass
+class MasterEditor(ABC):
+    saveobj: DecryptedSave
+    offset: ClassVar[int] = 0
 
 
 class BaseStructFieldEditor(BaseEditor, ABC):

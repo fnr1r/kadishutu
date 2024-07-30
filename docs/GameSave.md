@@ -82,20 +82,20 @@ It's an unsigned char / u8 (1 byte).
 
 ```txt
 0x00000000
-  8  -> 1
+  01234567
 ```
 
-- 0x01 - bit 7 - Not assigned to any DLC
-- 0x02 - bit 6 - DLC 1 - Safety DLC
-- 0x04 - bit 5 - DLC 2 - Mitama Dance of Wealth
-- 0x08 - bit 4 - DLC 3 - Mitama Dance of EXP
-- 0x10 - bit 3 - DLC 4 - Mitama Dance of Glory
-- 0x20 - bit 2 - DLC 5 - Holy Will and Profane Dissent
-- 0x40 - bit 1 - DLC 6 - Sakura Cinders of the East
-- 0x80 - bit 0 - DLC 7 - 2 Sacred Treasures Set
+- 0x01 - bit 0 - Not assigned to any DLC
+- 0x02 - bit 1 - DLC 1 - Safety Difficulty
+- 0x04 - bit 2 - DLC 2 - Mitama Dance of Wealth
+- 0x08 - bit 3 - DLC 3 - Mitama Dance of EXP
+- 0x10 - bit 4 - DLC 4 - Mitama Dance of Glory
+- 0x20 - bit 5 - DLC 5 - Holy Will and Profane Dissent
+- 0x40 - bit 6 - DLC 6 - Sakura Cinders of the East
+- 0x80 - bit 7 - DLC 7 - 2 Sacred Treasures Set
 
-NOTE: When launching, the game will update this value based on the DLCs
-installed, so changing it is pointless.
+NOTE: This value also appears in `SysSave`, but when starting the game, it will
+be updated this value based on the DLCs installed, so changing it is pointless.
 
 ## Name info
 

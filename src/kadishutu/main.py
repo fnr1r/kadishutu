@@ -6,6 +6,7 @@ from typing import Dict
 from .cli import (
     cmd_decrypt, cmd_encrypt, cmd_inspect, cmd_print, cmd_update_hash
 )
+from .editor_cli import argparse_edit
 
 
 def cmd_gui(args):
@@ -35,6 +36,9 @@ def main():
     parser_decrypt.add_argument("destination", type=Path)
     parser_decrypt.set_defaults(func=cmd_decrypt)
     SUBPARSERS["decrypt"] = parser_decrypt
+
+    parser_edit = argparse_edit(subparsers)
+    SUBPARSERS["edit"] = parser_edit
 
     parser_encrypt = subparsers.add_parser("encrypt")
     parser_encrypt.add_argument("source", type=Path)
@@ -70,6 +74,8 @@ def main():
     parser_update_hash.add_argument("file", type=Path)
     parser_update_hash.set_defaults(func=cmd_update_hash)
     SUBPARSERS["update_hash"] = parser_update_hash
+
+    #SUBPARSERS = subparsers.choices
 
     args = parser.parse_args()
 
