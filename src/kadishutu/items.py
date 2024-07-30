@@ -35,18 +35,26 @@ class Item(SingularIntEditor):
     fmt = "<B"
 
     @property
+    def item_info(self) -> ItemInfo:
+        return [
+            i
+            for i in ITEM_TABLE.items
+            if i.offset == self.offset
+        ][0]
+
+    @property
     def name_table(self) -> Dict[int, str]:
         raise NotImplementedError
 
     @property
     def name(self) -> str:
-        return [
-            i
-            for i in ITEM_TABLE.items
-            if i.offset == self.offset
-        ][0].name
+        return self.item_info.name
 
     amount = property(lambda x: x.get(), lambda x, y: x.set(y))
+
+    @property
+    def limit(self) -> int:
+        return self.item_info.get_limit()
 
 
 class ItemManager(BaseEditor):

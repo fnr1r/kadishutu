@@ -294,6 +294,22 @@ spelling = ["pyenchant (>=3.2,<4.0)"]
 testutils = ["gitpython (>3)"]
 
 [[package]]
+name = "tkinter-tooltip"
+version = "3.1.0"
+description = "An easy and customisable ToolTip implementation for Tkinter"
+optional = false
+python-versions = ">=3.7"
+files = [
+    {file = "tkinter_tooltip-3.1.0-py3-none-any.whl", hash = "sha256:daf57bbb22a858670d4b3d5a0b906a2a791c57d678ab3b1338c60eb9ed9d7d36"},
+    {file = "tkinter_tooltip-3.1.0.tar.gz", hash = "sha256:631cb154b05a356afc8ebdf5dd066a0b030dc6a9d739e7ccb69f9c345a4c9b51"},
+]
+
+[package.extras]
+dev = ["black", "isort", "pre-commit", "pytest (>=5.4.3)", "pytest-cov (>=2.12.1)"]
+docs = ["furo (>=2024.5.6)", "myst-parser (>=3.0.1)", "sphinx (>=7.3.7)", "sphinx-argparse (>=0.4.0)", "sphinx-autodoc-typehints (>=2.1.0)", "sphinx-copybutton (>=0.5.2)", "sphinx-design (>=0.5.0)", "sphinx-sitemap (>=2.5.1)"]
+examples = ["Pillow", "sv-ttk"]
+
+[[package]]
 name = "tomli"
 version = "2.0.1"
 description = "A lil' TOML parser"
@@ -344,4 +360,4 @@ typing-extensions = ">=3.7.4"
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.8.1"
-content-hash = "e862de56834df07bbd7411d93a14bbf8192e78ac2660ff0395bace88fd6b5777"
+content-hash = "d4994e807fcd846f743bed5c57bc5cbe6796bcc5682c940f0e272af6ea0dd926"

@@ -1,18 +1,21 @@
 from abc import ABC
 from pathlib import Path
-from tkinter import BooleanVar, IntVar, Menu, StringVar, Tk, Toplevel, Variable, filedialog
+from tkinter import BooleanVar, Canvas, IntVar, Menu, StringVar, Tk, Toplevel, Variable, filedialog
 from tkinter.messagebox import showerror
-from tkinter.ttk import Button, Checkbutton, Combobox, Entry, Frame, Label, Notebook
+from tkinter.ttk import Button, Checkbutton, Combobox, Entry, Frame, Label, Notebook, Scrollbar
 from _tkinter import TclError
+from tktooltip import ToolTip
 from typing import Any, Callable, Dict, List, Optional, Tuple
 
 
 from .data.demons import DEMONS
+from .data.items import BUILTIN_ITEM_TABLE, ITEM_TABLE_OFFSET
 from .data.skills import SKILLS
 from .demons import STATS_NAMES, DemonEditor, StatsEditor
 from .dlc import DlcBitflags
 from .file_handling import DecryptedSave, EncryptedSave, is_save_decrypted
 from .game import SaveEditor
+from .items import ItemManager
 from .skills import SkillEditor
 
 
@@ -233,7 +236,7 @@ class SkillEditorTk(Frame):
                 skill._unknown = mysterybox.get()
 
 
-class PlayerEditorTk(Toplevel, SpawnerMixin):
+class PlayerEditorTk(Toplevel):
     def __init__(self, master: "MainWindow", *args, **kwargs):
         super().__init__(master, *args, **kwargs)
         self.obj = master.save.player
@@ -283,7 +286,7 @@ class PlayerEditorTk(Toplevel, SpawnerMixin):
             MAIN_WINDOW.save.glory = self.glory.get()
 
 
-class DemonEditorTk(Toplevel, SpawnerMixin):
+class DemonEditorTk(Toplevel):
     def __init__(self, *args, demon: DemonEditor, **kwargs):
         super().__init__(*args, **kwargs)
         self.obj = demon
@@ -307,7 +310,95 @@ class DemonEditorTk(Toplevel, SpawnerMixin):
     def save(self):
         if self.demon_id.id.modified:
             self.obj.demon_id = self.demon_id.id.get()
-        self.destroy()
+
+
+class VerticalScrolledFrame(Frame):
+    def __init__(self, *args, width: Optional[int] = None, height: Optional[int] = None, **kwargs):
+        super().__init__(*args, **kwargs)
+        scrollbar = Scrollbar(self, orient="vertical")
+        scrollbar.pack(fill="y", side="right", expand=False)
+        self.canvas = Canvas(
+            self, bd=0, highlightthickness=0, height=500,
+            yscrollcommand=scrollbar.set
+        )
+        self.canvas.pack(side="left", fill="both", expand=True)
+        scrollbar.config(command=self.canvas.yview)
+        self.inner = Frame(self.canvas)
+        #self.inner.bind('<Enter>', self._bound_to_mousewheel)
+        #self.inner.bind('<Leave>', self._unbound_to_mousewheel)
+        #self.inner.bind("<Configure>", self._configure_inner)
+        self.canvas.bind("<Configure>", self._configure_canvas)
+        self.inner_id = self.canvas.create_window(0, 0, window=self.inner, anchor="nw")
+        self.canvas.bind_all("<MouseWheel>", self._on_mousewheel)
+
+    #def _configure_inner(self, _):
+    #    size = (self.inner.winfo_reqwidth(), self.inner.winfo_reqheight())
+    #    self.canvas.config(scrollregion=(0, 0, size[0], size[1]))
+    #    if self.inner.winfo_reqwidth() != self.inner.winfo_width():
+    #        self.inner.config(width=self.inner.winfo_reqwidth())
+
+    def _configure_canvas(self, _):
+        #if self.inner.winfo_reqwidth() != self.canvas.winfo_reqwidth():
+        #    self.canvas.itemconfigure(self.inner_id, width=self.canvas.winfo_width())
+        self.canvas.config(scrollregion=self.canvas.bbox("all"))
+
+    #def _bound_to_mousewheel(self, event):
+    #    self.canvas.bind_all("<MouseWheel>", self._on_mousewheel)
+
+    #def _unbound_to_mousewheel(self, event):
+    #    self.canvas.unbind_all("<MouseWheel>")
+
+    def _on_mousewheel(self, event):
+        self.canvas.yview_scroll(int(-1*(event.delta/120)), "units")
+
+
+class ItemList(Frame):
+    def __init__(self, *args, items: ItemManager, itemsx: list[dict[str, Any]], **kwargs):
+        super().__init__(*args, **kwargs)
+        self.obj = items
+        self.itemd: Dict[int, MutInt] = {}
+
+        self.list = VerticalScrolledFrame(self)
+        self.list.pack()
+
+        for i in itemsx:
+            id: int = i["id"]
+            name: str = i["name"]
+            f = Frame(self.list.inner)
+            item = items.at_offset(ITEM_TABLE_OFFSET + id)
+            txt = Label(f, text=name, width=24)
+            try:
+                desc: str = i["desc"]
+            except KeyError:
+                pass
+            else:
+                ToolTip(txt, msg=desc, delay=1)
+            txt.pack(anchor="e", expand=True, fill="x", side="left")
+            Label(f, text="Limit: " + str(item.limit), width=16).pack(side="right", padx=4)
+            amount = MutInt(f, value=item.amount, width=10)
+            amount.pack(side="right")
+            self.itemd[item.offset] = amount
+            f.pack(expand=True, fill="x")
+
+        Button(self, text="Save", command=self.save).pack()
+
+    def save(self):
+        for k, v in self.itemd.items():
+            if not v.modified:
+                continue
+            item = self.obj.at_offset(k)
+            item.amount = v.get()
+
+
+class ItemEditorTk(Toplevel, SpawnerMixin):
+    def __init__(self, *args, items: ItemManager, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.obj = items
+
+        self.tabbed = Notebook(self)
+        self.tabbed.pack()
+        self.consumables = ItemList(self.tabbed, items=items, itemsx=BUILTIN_ITEM_TABLE)
+        self.tabbed.add(self.consumables, text="Consumables")
 
 
 class MenuBar(Menu):
@@ -376,12 +467,11 @@ class MainWindow(Tk, SpawnerMixin):
             text="Edit DLC",
             command=self.spawner(DlcEditorTk)
         ).grid(column=0, row=row)
-        row += 1
         Button(
             self,
             text="Edit Player",
             command=self.spawner(PlayerEditorTk)
-        ).grid(column=0, row=row)
+        ).grid(column=1, row=row)
         row += 1
         Button(
             self,
@@ -394,6 +484,12 @@ class MainWindow(Tk, SpawnerMixin):
             width=2
         )
         self.demon_number.grid(column=1, row=row)
+        row += 1
+        Button(
+            self,
+            text="Edit Items",
+            command=self.spawner(ItemEditorTk, items=self.save.items)
+        ).grid(column=0, row=row)
 
     def spawn_demon(self):
         try:
