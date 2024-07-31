@@ -1,5 +1,5 @@
 from enum import Enum, auto
-from struct import pack_into, unpack_from
+from struct import calcsize, pack_into, unpack_from
 
 from .data.demons import DEMONS
 from .file_handling import BaseIdEditor, BaseEditor, BaseStructFieldEditor, structproperty
@@ -182,7 +182,7 @@ class AffinityEditor(BaseStructFieldEditor):
 
 
 class PType(Enum):
-    Physical = auto()
+    Physical = 0
     Fire = auto()
     Ice = auto()
     Electric = auto()
@@ -203,20 +203,22 @@ def gsproperty(p: PType):
     )
 
 
-class PotentialEditor(BaseEditor):
+class PotentialEditor(BaseStructFieldEditor):
+    FIELD_FMT = "<h"
+
     def get_offset(self, t: PType) -> int:
-        return self.offset + t.value
+        return self.offset + t.value * self.SFMT_LEN
 
     def get(self, t: PType) -> int:
         return unpack_from(
-            "<h",
+            self.FIELD_FMT,
             self.data,
             self.get_offset(t)
         )[0]
 
     def set(self, t: PType, potential: int):
         pack_into(
-            "<h",
+            self.FIELD_FMT,
             self.data,
             self.get_offset(t),
             potential
