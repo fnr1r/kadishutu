@@ -10,7 +10,7 @@ from typing import Any, Callable, Dict, List, Optional, Tuple
 
 from .data.items import BUILTIN_ITEM_TABLE, ITEM_TABLE_OFFSET
 from .data.skills import SKILLS
-from .demons import DEMON_MAP, STATS_NAMES, DemonEditor, StatsEditor
+from .demons import AFFINITY_MAP, AFFINITY_NAMES, DEMON_MAP, STATS_NAMES, Affinity, AffinityEditor, DemonEditor, PType, PotentialEditor, StatsEditor
 from .dlc import DlcBitflags
 from .file_handling import DecryptedSave, EncryptedSave, is_save_decrypted
 from .game import SaveEditor
@@ -235,6 +235,56 @@ class SkillEditorTk(Frame):
                 skill._unknown = mysterybox.get()
 
 
+class AffinityEditorTk(Frame):
+    def __init__(self, *args, affinities: AffinityEditor, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.obj = affinities
+        self.affinityd: dict[str, MutCombobox] = {}
+
+        for i in AFFINITY_NAMES:
+            f = Frame(self)
+            Label(f, text=i, width=16).pack(side="left")
+            i = i.lower()
+            affinity: Affinity = affinities.__getattribute__(i)
+            affinitybox = MutCombobox(f, value=affinity.name, values=list(AFFINITY_MAP.keys()))
+            affinitybox.pack(side="left")
+            f.pack(expand=True, fill="x")
+            self.affinityd[i] = affinitybox
+
+        Button(self, text="Save", command=self.save).pack()
+
+    def save(self):
+        for k, v in self.affinityd.items():
+            if not v.modified:
+                continue
+            affinity = AFFINITY_MAP[v.get()]
+            self.obj.__setattr__(k, affinity)
+
+
+class PotentialEditorTk(Frame):
+    def __init__(self, *args, potentials: PotentialEditor, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.obj = potentials
+        self.potentiald: dict[PType, MutInt] = {}
+
+        for i in PType:
+            f = Frame(self)
+            Label(f, text=i.name).pack(side="left")
+            potential: int = potentials.__getattribute__(i.name.lower())
+            potentialbox = MutInt(f, value=potential)
+            potentialbox.pack(side="left")
+            f.pack(expand=True, fill="x")
+            self.potentiald[i] = potentialbox
+
+        Button(self, text="Save", command=self.save).pack()
+
+    def save(self):
+        for k, v in self.potentiald.items():
+            if not v.modified:
+                continue
+            self.obj.__setattr__(k.name.lower(), v.get())
+
+
 class PlayerEditorTk(Toplevel):
     def __init__(self, master: "MainWindow", *args, **kwargs):
         super().__init__(master, *args, **kwargs)
@@ -277,6 +327,8 @@ class PlayerEditorTk(Toplevel):
         self.tabbed.add(general, text="General")
         self.tabbed.add(StatEditorTk(self, stats=self.obj.stats), text="Stats")
         self.tabbed.add(SkillEditorTk(self, skills=self.obj.skills), text="Skills")
+        self.tabbed.add(AffinityEditorTk(self, affinities=self.obj.affinities), text="Affinities")
+        self.tabbed.add(PotentialEditorTk(self, potentials=self.obj.potentials), text="Potentials")
 
     def save(self):
         if self.macca.modified:
@@ -305,6 +357,8 @@ class DemonEditorTk(Toplevel):
         self.tabbed.add(general, text="General")
         self.tabbed.add(StatEditorTk(self, stats=self.obj.stats), text="Stats")
         self.tabbed.add(SkillEditorTk(self, skills=self.obj.skills), text="Skills")
+        self.tabbed.add(AffinityEditorTk(self, affinities=self.obj.affinities), text="Affinities")
+        self.tabbed.add(PotentialEditorTk(self, potentials=self.obj.potentials), text="Potentials")
 
     def save(self):
         if self.demon_id.id.modified:

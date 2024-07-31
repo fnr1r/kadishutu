@@ -31,6 +31,7 @@ META_POTENTIALS = ("<hhhhhhhhhhhh", "PHYSICAL FIRE ICE ELECTRIC FORCE LIGHT DARK
 
 
 STATS_NAMES = ["HP", "MP", "Strength", "Vitality", "Magic", "Agility", "Luck"]
+AFFINITY_NAMES = ["Physical", "Fire", "Ice", "Electric", "Force", "Light", "Dark"]
 
 
 class SubStatsEditor(BaseStructFieldEditor):
@@ -126,6 +127,16 @@ class Affinity(Enum):
     Null = 0
     Repel = 999
     Drain = 1000
+
+
+def affinity_as_map() -> dict[str, Affinity]:
+    res = {}
+    for i in Affinity:
+        res[Affinity(i).name] = Affinity(i)
+    return res
+
+
+AFFINITY_MAP = affinity_as_map()
 
 
 class AffinityEditor(BaseStructFieldEditor):
@@ -235,6 +246,7 @@ class PotentialEditor(BaseStructFieldEditor):
     ailment = gsproperty(PType.Ailment)
     support = gsproperty(PType.Support)
     healing = gsproperty(PType.Healing)
+    _unknown = gsproperty(PType._UNKNOWN)
 
 
 class DemonEditor(BaseIdEditor):
