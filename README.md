@@ -43,10 +43,6 @@ Available subcommands:
 - `run_script`
 - `update_hash`
 
-### GUI
-
-You can open the GUI by running `kadishutu gui $OPTIONALLY_A_SAVE_FILE`.
-
 #### Edit subcommand
 
 ##### DLC
@@ -55,25 +51,34 @@ You can open the GUI by running `kadishutu gui $OPTIONALLY_A_SAVE_FILE`.
 - print - Prints what DLCs were used
 - remove - Removes a DLC flag
 
+### GUI
+
+You can open the GUI by running `kadishutu gui $OPTIONALLY_A_SAVE_FILE`.
+
 ## What works?
 
 NOTE: This is tested with the Switch version of the game (`010069C01AB82000`
 with all DLCs more specifically). It might work with the PC version.
 
 - Encryption/Decryption
-- Printing select information about the (game) save file like:
-  - Player Name
-  - Macca, Glory, Play Time (but not time of saving, it's in a weird format)
-  - Affinities, Skills, Stats, Exp, Lvl
-  - (for demons) Innate Skills, IDs
+- Viewing and editing of the following values
+  - Used DLCs (this will not give you DLC-exclusive content)  
+    (it's mainly for importing a save file from a copy with DLCs)
+  - Macca, Glory
+  - Summoned demons and player placement
+  - For the player and demons
+    - Affinities, Potentials, Stats, Skills, Exp, Lvl (only for demons)
+  - Only for demons:
+    - Demon ID, Innate Skill
   - (some) Items (I need the item table for this game)
-- Manual editing after decryption, for example:
-  - Skill replacement for demons
-  - Name replacement (remember to replace the name in all places, or the game
-    will not load the save file)
+- Viewing some information (without editing):
+  - Play Time (but not time of saving, it's in a weird format)
+  - Player Name
+- Manual editing after decryption
 
 ## What doesn't?
 
+- Play time is in a weird format
 - The cli is utter garbage
 - This needs a solid rework
 - Name changing is broken (for names of different length)
@@ -83,6 +88,7 @@ with all DLCs more specifically). It might work with the PC version.
 
 - Better CLI
 - GUI
+- Changing your alignment
 - Allowing the user to add files that modify the demon/skill database, in
   corelation with mods
 

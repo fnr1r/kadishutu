@@ -88,6 +88,7 @@ It's an unsigned char / u8 (1 byte).
 ```
 
 - 0x01 - bit 0 - Not assigned to any DLC
+  (leftovers of the Japanese Voice Pack DLC)
 - 0x02 - bit 1 - DLC 1 - Safety Difficulty
 - 0x04 - bit 2 - DLC 2 - Mitama Dance of Wealth
 - 0x08 - bit 3 - DLC 3 - Mitama Dance of EXP
