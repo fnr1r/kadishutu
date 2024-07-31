@@ -2711,4 +2711,6 @@ humanity."""},
      "lore": """TODO"""},
     {"id": 403, "name": "Ichiro Dazai",
      "lore": """TODO"""},
+    {"id": 1157, "name": "Yoko Hiromine (Da'at - Minato)",
+     "lore": """TODO"""}
 ]
