@@ -12,12 +12,23 @@ class EssenceMetadata(Enum):
     Owned = 6
     # An essence can't be new and used
     Used = 16
+    Unknown22 = 22
+
+
+def essence_metadata_map() -> dict[str, EssenceMetadata]:
+    res = {}
+    for i in EssenceMetadata:
+        res[i.name] = i
+    return res
+
+
+ESSENCE_META_MAP = essence_metadata_map()
 
 
 class Essence(Item):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        assert self.offset in ESSENCE_RANGE
+        #assert self.offset in ESSENCE_RANGE
 
     @property
     def metadata_offset(self) -> int:

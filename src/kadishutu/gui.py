@@ -8,10 +8,12 @@ from tktooltip import ToolTip
 from typing import Any, Callable, Dict, List, Optional, Tuple
 
 
+from .data.essences import ESSENCE_OFFSETS
 from .data.items import BUILTIN_ITEM_TABLE, ITEM_TABLE_OFFSET
 from .data.skills import SKILLS
 from .demons import AFFINITY_MAP, AFFINITY_NAMES, DEMON_MAP, STATS_NAMES, Affinity, AffinityEditor, DemonEditor, PType, PotentialEditor, StatsEditor
 from .dlc import DlcBitflags
+from .essences import ESSENCE_META_MAP, EssenceManager, EssenceMetadata
 from .file_handling import DecryptedSave, EncryptedSave, is_save_decrypted
 from .game import SaveEditor
 from .items import ItemManager
@@ -371,7 +373,7 @@ class VerticalScrolledFrame(Frame):
         scrollbar = Scrollbar(self, orient="vertical")
         scrollbar.pack(fill="y", side="right", expand=False)
         self.canvas = Canvas(
-            self, bd=0, highlightthickness=0, height=500,
+            self, bd=0, highlightthickness=0, width=500, height=600,
             yscrollcommand=scrollbar.set
         )
         self.canvas.pack(side="left", fill="both", expand=True)
@@ -443,8 +445,50 @@ class ItemList(Frame):
             item.amount = v.get()
 
 
+class EssenceList(Frame):
+    def __init__(self, *args, essences: EssenceManager, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.obj = essences
+        self.essenced: Dict[int, Tuple[MutCheckbutton, MutCombobox]] = {}
+
+        self.list = VerticalScrolledFrame(self)
+        self.list.pack()
+
+        f = Frame(self.list.inner)
+        Label(f, text="Essence", width=19).pack(anchor="e", expand=True, fill="x", side="left")
+        Label(f, text="Ever owned?", width=20).pack(anchor="e", expand=True, fill="x", side="left")
+        Label(f, text="Meta", width=20).pack(anchor="e", expand=True, fill="x", side="left")
+        f.pack(expand=True, fill="x")
+
+        for i in ESSENCE_OFFSETS:
+            offset: int = i["offset"]
+            name: str = i["name"]
+            f = Frame(self.list.inner)
+            essence = essences.at_offset(offset)
+            txt = Label(f, text=name, width=24)
+            txt.pack(side="left")
+            ever_owned = MutCheckbutton(f, value=essence.amount > 0)
+            ever_owned.pack(side="left")
+            meta = MutCombobox(f, value=EssenceMetadata(essence.metadata).name, values=list(ESSENCE_META_MAP.keys()), width=20)
+            meta.pack(side="right")
+            #meta = MutInt(f, value=essence.metadata.value, width=20)
+            #meta.pack(side="right")
+            self.essenced[essence.offset] = (ever_owned, meta)
+            f.pack(expand=True, fill="x")
+
+        Button(self, text="Save", command=self.save).pack()
+
+    def save(self):
+        for k, (ever_owned, meta) in self.essenced.items():
+            essence = self.obj.at_offset(k)
+            if ever_owned.modified:
+                essence.amount = int(ever_owned.get())
+            if meta.modified:
+                essence.metadata = ESSENCE_META_MAP[meta.get()]
+
+
 class ItemEditorTk(Toplevel, SpawnerMixin):
-    def __init__(self, *args, items: ItemManager, **kwargs):
+    def __init__(self, *args, items: ItemManager, essences: EssenceManager, **kwargs):
         super().__init__(*args, **kwargs)
         self.obj = items
 
@@ -452,6 +496,16 @@ class ItemEditorTk(Toplevel, SpawnerMixin):
         self.tabbed.pack()
         self.consumables = ItemList(self.tabbed, items=items, itemsx=BUILTIN_ITEM_TABLE)
         self.tabbed.add(self.consumables, text="Consumables")
+        try:
+            self.essences = EssenceList(self.tabbed, essences=essences)
+        except ValueError as e:
+            showerror("Internal error",
+                "An internal error occured.\nPlease report this to the maintainer.\n{}"
+                .format(
+                    str(e),
+                ))
+        else:
+            self.tabbed.add(self.essences, text="Essences")
 
 
 class MenuBar(Menu):
@@ -541,7 +595,7 @@ class MainWindow(Tk, SpawnerMixin):
         Button(
             self,
             text="Edit Items",
-            command=self.spawner(ItemEditorTk, items=self.save.items)
+            command=self.spawner(ItemEditorTk, items=self.save.items, essences=self.save.essences)
         ).grid(column=0, row=row)
 
     def spawn_demon(self):
