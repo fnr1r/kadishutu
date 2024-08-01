@@ -60,7 +60,10 @@ def cmd_inspect(args):
         this = this.__getattribute__(txt)
         if isinstance(this, MethodType) or isinstance(this, FunctionType):
             arglist = this.__annotations__
-            arglist.pop("return")
+            try:
+                arglist.pop("return")
+            except KeyError:
+                pass
             skip = len(arglist)
             arglistd = []
             for k, v in enumerate(arglist.values()):
