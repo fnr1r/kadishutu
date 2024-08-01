@@ -1,15 +1,11 @@
 from typing import Tuple, Union
 
-from .data.skills import SKILLS
+from .data.skills import SKILL_ID_MAP
 from .file_handling import BaseStructFieldEditor, structproperty
 
 
-def get_skill_name(skill: int) -> str:
-    return SKILLS[skill]
-
-
 class Skill(BaseStructFieldEditor):
-    FIELD_FMT = "<L"
+    FIELD_FMT = "<I"
 
     @structproperty(int, FIELD_FMT)
     def _unknown(self):
@@ -21,11 +17,11 @@ class Skill(BaseStructFieldEditor):
 
     @property
     def name(self) -> str:
-        return SKILLS[self.id]
+        return SKILL_ID_MAP[self.id].name
 
 
 class SkillEditor(BaseStructFieldEditor):
-    FIELD_FMT = "<LL"
+    FIELD_FMT = "<II"
 
     def slot(self, no: int) -> Skill:
         return Skill(self.saveobj, self.relative_field_offset(no))

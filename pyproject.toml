@@ -7,8 +7,9 @@ license = "MIT"
 readme = "README.md"
 
 [tool.poetry.dependencies]
-python = "^3.8.1"
+python = "^3.9"
 dataclasses-json = "^0.6.7"
+pandas = "^2.2.2"
 pycryptodome = "^3.20.0"
 tkinter-tooltip = "^3.1.0"
 typing-extensions = "^4.12.2"
@@ -17,8 +18,8 @@ typing-extensions = "^4.12.2"
 kadishutu = "kadishutu:main"
 
 [tool.poetry.group.dev.dependencies]
-mypy = "^1.10.1"
-pylint = "^3.2.5"
+mypy = "^1.11.1"
+pylint = "^3.2.6"
 flake8 = "^7.1.0"
 
 [tool.poetry-pyinstaller-plugin.scripts]

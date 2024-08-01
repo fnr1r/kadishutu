@@ -4,7 +4,7 @@ from pathlib import Path
 from typing import Dict
 
 from .cli import (
-    cmd_decrypt, cmd_encrypt, cmd_inspect, cmd_print, cmd_run_script, cmd_update_hash
+    cmd_decrypt, cmd_encrypt, cmd_inspect, cmd_run_script, cmd_update_hash
 )
 from .editor_cli import argparse_edit
 
@@ -63,12 +63,6 @@ def main():
     parser_inspect.add_argument("--ignore-hash", type=bool)
     parser_inspect.set_defaults(func=cmd_inspect)
     SUBPARSERS["inspect"] = parser_inspect
-
-    parser_print = subparsers.add_parser("print")
-    parser_print.add_argument("file", type=Path)
-    parser_print.add_argument("--ignore-hash", type=bool)
-    parser_print.set_defaults(func=cmd_print)
-    SUBPARSERS["print"] = parser_print
 
     parser_run_script = subparsers.add_parser("run_script")
     parser_run_script.add_argument("script", type=Path)

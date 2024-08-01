@@ -1,3 +1,6 @@
+from .csvutils import make_maps_dict
+
+
 DEMONS = [
     {"id": 1, "name": "Satan",
      "lore": """A Judeo-Christian angel of darkness
@@ -2714,3 +2717,6 @@ humanity."""},
     {"id": 1157, "name": "Yoko Hiromine (Da'at - Minato)",
      "lore": """TODO"""}
 ]
+
+
+(DEMON_ID_MAP, DEMON_NAME_MAP) = make_maps_dict(DEMONS)

@@ -1,4 +1,4 @@
-from abc import ABC
+from abc import ABC, abstractmethod
 from pathlib import Path
 from tkinter import BooleanVar, Canvas, IntVar, Menu, StringVar, Tk, Toplevel, Variable, filedialog
 from tkinter.messagebox import showerror
@@ -7,24 +7,24 @@ from _tkinter import TclError
 from tktooltip import ToolTip
 from typing import Any, Callable, Dict, List, Optional, Tuple
 
-
+from .data.demons import DEMON_ID_MAP, DEMON_NAME_MAP, DEMONS
 from .data.essences import ESSENCE_OFFSETS
 from .data.items import BUILTIN_ITEM_TABLE, ITEM_TABLE_OFFSET
-from .data.skills import SKILLS
-from .demons import AFFINITY_MAP, AFFINITY_NAMES, DEMON_MAP, STATS_NAMES, Affinity, AffinityEditor, DemonEditor, PType, PotentialEditor, StatsEditor
+from .data.skills import NEW_SKILLS, SKILL_NAME_MAP
+from .demons import AFFINITY_MAP, AFFINITY_NAMES, STATS_NAMES, Affinity, AffinityEditor, DemonEditor, PType, PotentialEditor, StatsEditor
 from .dlc import DlcBitflags
 from .essences import ESSENCE_META_MAP, EssenceManager, EssenceMetadata
 from .file_handling import DecryptedSave, EncryptedSave, is_save_decrypted
 from .game import SaveEditor
 from .items import ItemManager
-from .skills import SkillEditor
+from .skills import SKILL_ID_MAP, Skill, SkillEditor
 
 
 # NOTE: Only valid after init
 MAIN_WINDOW: "MainWindow" = None  # type: ignore
 
 
-class SpawnerMixin:
+class SpawnerMixin(ABC):
     def spawner(self, subwindow: Callable[..., Any], *args, **kwargs) -> Callable[[], None]:
         "Spawns a class with self as master"
         return lambda: subwindow(self, *args, **kwargs)
@@ -176,21 +176,31 @@ class IdCombox(Frame):
 
     \\-  Niekryty Krytyk udający Brucea Lee
     """
+    @classmethod
+    @abstractmethod
+    def name_list(cls) -> List[str]: ...
 
-    def __init__(self, *args, idmap: Dict[int, str], **kwargs):
+    @classmethod
+    @abstractmethod
+    def id_to_name(cls, id: int) -> str: ...
+
+    @classmethod
+    @abstractmethod
+    def name_to_id(cls, name: str) -> int: ...
+
+    def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.idmap = idmap
         self.id = MutInt(self)
         self.id.trace_add("write", self.update_name)
         self.id.grid(column=0, row=0)
-        self.name = MutCombobox(self, values=list(idmap.values()))
+        self.name = MutCombobox(self, values=self.name_list())
         self.name.trace_add("write", self.update_id)
         self.name.grid(column=1, row=0)
 
     def update_name(self, _: str, _2: str, _3: str):
         try:
             id = self.id.get()
-            name = self.idmap[id]
+            name = self.id_to_name(id)
         except TclError:
             return
         except KeyError:
@@ -200,7 +210,7 @@ class IdCombox(Frame):
     def update_id(self, _: str, _2: str, _3: str):
         try:
             name = self.name.get()
-            id = [k for k, v in self.idmap.items() if v == name][0]
+            id = self.name_to_id(name)
         except TclError:
             return
         except IndexError:
@@ -208,16 +218,38 @@ class IdCombox(Frame):
         self.id.set(id)
 
 
-class SkillEditorTk(Frame):
-    def __init__(self, *args, skills: SkillEditor, **kwargs):
-        super().__init__(*args, **kwargs)
-        self.obj = skills
-        self.skilld: List[Tuple[IdCombox, MutInt]] = []
+class SkillCombox(IdCombox):
+    SKILL_NAMES = [
+        skill.name
+        for skill in NEW_SKILLS
+    ]
+    @classmethod
+    def name_list(cls) -> List[str]:
+        return cls.SKILL_NAMES
+    @classmethod
+    def id_to_name(cls, id: int) -> str:
+        return SKILL_ID_MAP[id].name
+    @classmethod
+    def name_to_id(cls, name: str) -> int:
+        return SKILL_NAME_MAP[name].id
 
-        for i in range(8):
+
+class SkillEditorTk(Frame):
+    def __init__(self, *args, innate_skill: Skill, skills: SkillEditor, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.innate_skill = innate_skill
+        self.obj = skills
+        self.skilld: List[Tuple[SkillCombox, MutInt]] = []
+
+        Label(self, text=f"Innate skill:").grid(column=0, row=0)
+        self.innate_skill_box = SkillCombox(self)
+        self.innate_skill_box.id.set(innate_skill.id)
+        self.innate_skill_box.grid(column=1, row=0)
+
+        for i in range(1, 8 + 1):
             Label(self, text=f"Skill {i + 1}:").grid(column=0, row=i)
             skill = skills.slot(i)
-            skillbox = IdCombox(self, idmap=SKILLS)
+            skillbox = SkillCombox(self)
             skillbox.id.set(skill.id)
             skillbox.grid(column=1, row=i)
             mysterybox = MutInt(self, value=skill._unknown)
@@ -229,6 +261,8 @@ class SkillEditorTk(Frame):
         Button(self, text="Save", command=self.save).grid(column=0, row=row)
 
     def save(self):
+        if self.innate_skill_box.id.modified:
+            self.innate_skill.id = self.innate_skill_box.id.get()
         for i, (skillbox, mysterybox) in enumerate(self.skilld):
             skill = self.obj.slot(i)
             if skillbox.id.modified:
@@ -338,7 +372,7 @@ class PlayerEditorTk(Toplevel):
         Button(general, text="Save", command=self.save).grid(column=0, row=row)
         self.tabbed.add(general, text="General")
         self.tabbed.add(StatEditorTk(self, stats=self.obj.stats), text="Stats")
-        self.tabbed.add(SkillEditorTk(self, skills=self.obj.skills), text="Skills")
+        self.tabbed.add(SkillEditorTk(self, innate_skill=self.obj.innate_skill, skills=self.obj.skills), text="Skills")
         self.tabbed.add(AffinityEditorTk(self, affinities=self.obj.affinities), text="Affinities")
         self.tabbed.add(PotentialEditorTk(self, potentials=self.obj.potentials), text="Potentials")
 
@@ -351,6 +385,22 @@ class PlayerEditorTk(Toplevel):
             self.master.save.alignment = self.alignment.get()
 
 
+class DemonIdCombox(IdCombox):
+    DEMON_NAMES = [
+        demon["name"]
+        for demon in DEMONS
+    ]
+    @classmethod
+    def name_list(cls) -> List[str]:
+        return cls.DEMON_NAMES
+    @classmethod
+    def id_to_name(cls, id: int) -> str:
+        return DEMON_ID_MAP[id]["name"]
+    @classmethod
+    def name_to_id(cls, name: str) -> int:
+        return DEMON_NAME_MAP[name]["id"]
+
+
 class DemonEditorTk(Toplevel):
     def __init__(self, *args, demon: DemonEditor, **kwargs):
         super().__init__(*args, **kwargs)
@@ -360,17 +410,14 @@ class DemonEditorTk(Toplevel):
         general = Frame(self.tabbed)
         row = 0
         Label(general, text="ID:").grid(column=0, row=row)
-        self.demon_id = IdCombox(
-            general,
-            idmap=DEMON_MAP
-        )
+        self.demon_id = DemonIdCombox(general)
         self.demon_id.id.set(self.obj.demon_id)
         self.demon_id.grid(column=1, row=row)
         row += 1
         Button(general, text="Save", command=self.save).grid(column=0, row=row)
         self.tabbed.add(general, text="General")
         self.tabbed.add(StatEditorTk(self, stats=self.obj.stats), text="Stats")
-        self.tabbed.add(SkillEditorTk(self, skills=self.obj.skills), text="Skills")
+        self.tabbed.add(SkillEditorTk(self, innate_skill=self.obj.innate_skill, skills=self.obj.skills), text="Skills")
         self.tabbed.add(AffinityEditorTk(self, affinities=self.obj.affinities), text="Affinities")
         self.tabbed.add(PotentialEditorTk(self, potentials=self.obj.potentials), text="Potentials")
 

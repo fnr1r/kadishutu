@@ -1,8 +1,8 @@
-from struct import pack_into, unpack_from
+from struct import calcsize, pack_into, unpack_from
 
 from .demons import AffinityEditor, HealableEditor, PotentialEditor, StatsEditor
 from .file_handling import BaseEditor, structproperty
-from .skills import SkillEditor
+from .skills import Skill, SkillEditor
 
 
 ENCODING = "UTF-16"
@@ -66,3 +66,6 @@ class PlayerEditor(BaseEditor):
     @property
     def potentials(self) -> PotentialEditor:
         return PotentialEditor(self.saveobj, 0xb38)
+    @property
+    def innate_skill(self) -> Skill:
+        return Skill(self.saveobj, 0xb50 - calcsize("<I"))

@@ -1,24 +1,9 @@
 from enum import Enum, auto
 from struct import calcsize, pack_into, unpack_from
 
-from .data.demons import DEMONS
+from .data.demons import DEMON_ID_MAP
 from .file_handling import BaseIdEditor, BaseEditor, BaseStructFieldEditor, structproperty
-from .innate_skills import InnateSkillEditor
-from .skills import SkillEditor
-
-
-def demon_map() -> dict[int, str]:
-    res = {}
-    for v in DEMONS:
-        res[v["id"]] = v["name"]
-    return res
-
-
-DEMON_MAP = demon_map()
-
-
-def get_demon_name(demon: int) -> str:
-    return DEMON_MAP[demon]
+from .skills import Skill, SkillEditor
 
 
 DEMON_TABLE_OFFSET = 0xb60
@@ -294,9 +279,9 @@ class DemonEditor(BaseIdEditor):
     def potentials(self) -> PotentialEditor:
         return self.delegate(PotentialEditor, 384)
     @property
-    def innate_skill(self) -> InnateSkillEditor:
-        return self.delegate(InnateSkillEditor, 408)
+    def innate_skill(self) -> Skill:
+        return self.delegate(Skill, 408 - calcsize("<I"))
 
     @property
     def name(self) -> str:
-        return get_demon_name(self.demon_id)
+        return DEMON_ID_MAP[self.id]["name"]
