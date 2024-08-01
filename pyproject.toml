@@ -25,6 +25,9 @@ flake8 = "^7.1.0"
 [tool.poetry-pyinstaller-plugin.scripts]
 kadishutu = "src/kadishutu/__main__.py"
 
+[tool.poetry-pyinstaller-plugin.include]
+"src/kadishutu/data/tables" = "kadishutu/data/tables"
+
 [build-system]
 requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
