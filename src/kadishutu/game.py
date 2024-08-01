@@ -1,4 +1,4 @@
-from datetime import timedelta
+from datetime import datetime, timedelta
 from struct import pack_into, unpack_from
 from typing import Optional, Tuple
 
@@ -53,6 +53,13 @@ class TeamEditor(BaseEditor):
 
 
 class SaveEditor(MasterEditor):
+    @structproperty(
+        datetime, "<Q",
+        lambda u: datetime.min + timedelta(microseconds=u/10),
+        lambda t: int((t - datetime.min).total_seconds() * (10 ** 7))
+    )
+    def time_of_saving(self) -> int:
+        return 0x4f4
     @property
     def dlc(self) -> DlcEditor:
         return DlcEditor(self.saveobj, 0x529)

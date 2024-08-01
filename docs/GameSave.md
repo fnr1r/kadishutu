@@ -20,8 +20,10 @@ KEY = bytes([0x30, 0x31, 0x32, 0x33, 0x34, 0x35, 0x36, 0x37,
 - 0x0 - 0x20 - SHA1 Hash of the rest of the file  
   (20 bytes)
 - 0x4d8 - 0x4e8 - [First Name](#name-info)
-- 0x4f0 - 0x500 - Time of Saving (UNKNOWN FORMAT)  
-  (16 bytes)
+- 0x4f4 - 0x4fc - [Time of Saving](#time-of-saving-info)  
+  (an unsigned long long / u64 (8 bytes))
+- 0x4fc - 0x500 - [???](#time-of-saving-info)  
+  (4 bytes)
 - 0x529 - 0x52a - [DLC Flags](#dlc-info)  
   (an unsigned char / u8 (1 byte))
 - 0x5d0 - 0x5d4 - Play Time (in seconds)  
@@ -103,6 +105,52 @@ It's an unsigned char / u8 (1 byte).
 
 NOTE: This value also appears in `SysSave`, but when starting the game, it will
 be updated this value based on the DLCs installed, so changing it is pointless.
+
+## Time of saving info
+
+The datetime is at 0x4f4 (an unsigned long long / u64 (8 bytes)).
+
+An excerpt from Unreal Engine 4's source code, since
+[it's not available to everyone](https://www.youtube.com/watch?v=NCvnLFF7IYM).
+
+```cxx
+/**
+ * Implements a date and time.
+ *
+ * Values of this type represent dates and times between Midnight 00:00:00, January 1, 0001 and
+ * Midnight 23:59:59.9999999, December 31, 9999 in the Gregorian calendar. Internally, the time
+ * values are stored in ticks of 0.1 microseconds (= 100 nanoseconds) since January 1, 0001.
+ *
+ * To retrieve the current local date and time, use the FDateTime.Now() method. To retrieve the
+ * current UTC time, use the FDateTime.UtcNow() method instead.
+ *
+ * This class also provides methods to convert dates and times from and to string representations,
+ * calculate the number of days in a given month and year, check for leap years and determine the
+ * time of day, day of week and month of year of a given date and time.
+ *
+ * The companion struct FTimespan is provided for enabling date and time based arithmetic, such as
+ * calculating the difference between two dates or adding a certain amount of time to a given date.
+ *
+ * Ranges of dates and times can be represented by the FDateRange class.
+ *
+ * @see FDateRange
+ * @see FTimespan
+ */
+struct FDateTime
+{
+  // Truncated
+private:
+
+  /** Holds the ticks in 100 nanoseconds resolution since January 1, 0001 A.D. */
+  int64 Ticks;
+};
+```
+
+[File URL](https://github.com/EpicGames/UnrealEngine/blob/4.27.2-release/Engine/Source/Runtime/Core/Public/Misc/DateTime.h)
+
+File path: `/Engine/Source/Runtime/Core/Public/Misc/DateTime.h`
+
+0x4fc is some 4 byte value that affects the time.
 
 ## Name info
 
