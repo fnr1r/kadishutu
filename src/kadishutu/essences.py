@@ -6,13 +6,13 @@ from .items import Item
 
 
 class EssenceMetadata(Enum):
-    NotOwned = 0
-    New = 2
-    # ??? = 4
-    Owned = 6
+    NotOwned = 0b00000000
+    New = 0b00000010
+    Owned2 = 0b00000100
+    Owned = 0b00000110
     # An essence can't be new and used
-    Used = 16
-    Unknown22 = 22
+    Used = 0b00010000
+    Used2 = 0b00010110
 
 
 def essence_metadata_map() -> dict[str, EssenceMetadata]:
@@ -44,15 +44,15 @@ class Essence(Item):
     def metadata(self):
         return self.data[self.metadata_offset]
     @metadata.setter
-    def metadata(self, value: EssenceMetadata):
-        self.data[self.metadata_offset] = value.value
+    def metadata(self, value: int):
+        self.data[self.metadata_offset] = value
 
-    def give(self):
-        if not self.owned:
-            self.owned = True
-            self.metadata = EssenceMetadata.New
-        else:
-            self.metadata = EssenceMetadata.Owned
+    #def give(self):
+    #    if not self.owned:
+    #        self.owned = True
+    #        self.metadata = EssenceMetadata.New
+    #    else:
+    #        self.metadata = EssenceMetadata.Owned
 
 
 class EssenceManager(BaseEditor):

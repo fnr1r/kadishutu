@@ -449,7 +449,7 @@ class EssenceList(Frame):
     def __init__(self, *args, essences: EssenceManager, **kwargs):
         super().__init__(*args, **kwargs)
         self.obj = essences
-        self.essenced: Dict[int, Tuple[MutCheckbutton, MutCombobox]] = {}
+        self.essenced: Dict[int, Tuple[MutCheckbutton, MutInt]] = {}
 
         self.list = VerticalScrolledFrame(self)
         self.list.pack()
@@ -469,7 +469,12 @@ class EssenceList(Frame):
             txt.pack(side="left")
             ever_owned = MutCheckbutton(f, value=essence.amount > 0)
             ever_owned.pack(side="left")
-            meta = MutCombobox(f, value=EssenceMetadata(essence.metadata).name, values=list(ESSENCE_META_MAP.keys()), width=20)
+            #try:
+            #    value = EssenceMetadata(essence.metadata).name
+            #except:
+            #    value = ""
+            #meta = MutCombobox(f, value=value, values=list(ESSENCE_META_MAP.keys()), width=20)
+            meta = MutInt(f, value=essence.metadata, width=20)
             meta.pack(side="right")
             #meta = MutInt(f, value=essence.metadata.value, width=20)
             #meta.pack(side="right")
@@ -484,7 +489,8 @@ class EssenceList(Frame):
             if ever_owned.modified:
                 essence.amount = int(ever_owned.get())
             if meta.modified:
-                essence.metadata = ESSENCE_META_MAP[meta.get()]
+                #essence.metadata = ESSENCE_META_MAP[meta.get()]
+                essence.metadata = meta.get()
 
 
 class ItemEditorTk(Toplevel, SpawnerMixin):
