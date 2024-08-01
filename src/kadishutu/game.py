@@ -53,6 +53,10 @@ class TeamEditor(BaseEditor):
 
 
 class SaveEditor(MasterEditor):
+    @property
+    def dlc(self) -> DlcEditor:
+        return DlcEditor(self.saveobj, 0x529)
+
     @structproperty(
         timedelta, "<L",
         lambda u: timedelta(seconds=u),
@@ -63,6 +67,12 @@ class SaveEditor(MasterEditor):
     @property
     def player(self) -> PlayerEditor:
         return PlayerEditor(self.saveobj, 0)
+
+    def demon(self, id: int) -> DemonEditor:
+        if id > 23:
+            raise RuntimeWarning(f"Demon {id} data might be invalid")
+        return DemonEditor(self.saveobj, id)
+
     #MACCA = Struct("<I")
     #@property
     #def macca(self) -> int:
@@ -94,11 +104,6 @@ class SaveEditor(MasterEditor):
     def essences(self) -> EssenceManager:
         return EssenceManager(self.saveobj, 0x4da9)
 
-    def demon(self, id: int) -> DemonEditor:
-        if id > 23:
-            raise RuntimeWarning(f"Demon {id} data might be invalid")
-        return DemonEditor(self.saveobj, id)
-
-    @property
-    def dlc(self) -> DlcEditor:
-        return DlcEditor(self.saveobj, 0x529)
+    @structproperty(int, "<B")
+    def alignment(self) -> int:
+        return 0x69cf7

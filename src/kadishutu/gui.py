@@ -288,6 +288,8 @@ class PotentialEditorTk(Frame):
 
 
 class PlayerEditorTk(Toplevel):
+    master: "MainWindow"
+
     def __init__(self, master: "MainWindow", *args, **kwargs):
         super().__init__(master, *args, **kwargs)
         self.obj = master.save.player
@@ -325,6 +327,14 @@ class PlayerEditorTk(Toplevel):
         )
         self.glory.grid(column=1, row=row)
         row += 1
+        Label(general, text="Alignment:").grid(column=0, row=row)
+        self.alignment = MutInt(
+            general,
+            value=master.save.alignment,
+            width=20
+        )
+        self.alignment.grid(column=1, row=row)
+        row += 1
         Button(general, text="Save", command=self.save).grid(column=0, row=row)
         self.tabbed.add(general, text="General")
         self.tabbed.add(StatEditorTk(self, stats=self.obj.stats), text="Stats")
@@ -334,9 +344,11 @@ class PlayerEditorTk(Toplevel):
 
     def save(self):
         if self.macca.modified:
-            MAIN_WINDOW.save.glory = self.macca.get()
+            self.master.save.glory = self.macca.get()
         if self.glory.modified:
-            MAIN_WINDOW.save.glory = self.glory.get()
+            self.master.save.glory = self.glory.get()
+        if self.alignment.modified:
+            self.master.save.alignment = self.alignment.get()
 
 
 class DemonEditorTk(Toplevel):
