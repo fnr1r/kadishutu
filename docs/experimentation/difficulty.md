@@ -1,0 +1,16 @@
+# Difficulty data
+
+Hard to Normal:
+
+- 0x4f0 - c359 0000 -> 70e9 0000
+- 0x56a6 - 0x56a8: 0xdb91 -> 0xd991
+- 0x56aa - 0x56ac: 0xc277 -> 0xc477
+- 0x69a9c - 0x69a9e: 0x82a2 -> 0x8aa2
+
+Normal to Casual:
+
+- 0x4f0 - 70e9 0000 -> ecab 0000
+
+Casual to Normal:
+
+- 0x4f0 - ecab 0000 -> 31b3 0000

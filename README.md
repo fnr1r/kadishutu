@@ -84,8 +84,11 @@ with all DLCs more specifically). It might work with the PC version.
 
 - Encryption/Decryption
 - Viewing and editing of the following values
+  - Player Names
+  - Time of saving (it's a bit weird, but it works)
   - Used DLCs (this will not give you DLC-exclusive content)  
     (it's mainly for importing a save file from a copy with DLCs)
+  - Play Time
   - Macca, Glory
   - Summoned demons and player placement
   - For the player and demons
@@ -94,24 +97,18 @@ with all DLCs more specifically). It might work with the PC version.
     - Demon ID, Innate Skill
   - (some) Items (I need the item table for this game)
   - Essences (kinda) (it's experimental)
-- Viewing some information (without editing):
-  - Play Time (but not time of saving, it's in a weird format)
-  - Player Name
 - Manual editing after decryption
 
 ## What doesn't?
 
-- Play time is in a weird format
 - The cli is utter garbage
 - This needs a solid rework
-- Name changing is broken (for names of different length)
-- Changing affinities is also broken
+- Changing affinities is a bit weird
 
 ## What's planned?
 
 - Better CLI
 - GUI
-- Changing your alignment
 - Allowing the user to add files that modify the demon/skill database, in
   corelation with mods
 

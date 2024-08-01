@@ -19,7 +19,7 @@ KEY = bytes([0x30, 0x31, 0x32, 0x33, 0x34, 0x35, 0x36, 0x37,
 
 - 0x0 - 0x20 - SHA1 Hash of the rest of the file  
   (20 bytes)
-- 0x4d8 - 0x4e8 - [First Name](#name-info)
+- 0x4d8 - 0x4e8 - [Save name](#name-info)
 - 0x4f4 - 0x4fc - [Time of Saving](#time-of-saving-info)  
   (an unsigned long long / u64 (8 bytes))
 - 0x4fc - 0x500 - [???](#time-of-saving-info)  
@@ -31,16 +31,16 @@ KEY = bytes([0x30, 0x31, 0x32, 0x33, 0x34, 0x35, 0x36, 0x37,
 - 0x618 - 0x61a - Player [level](#level-info)?  
   (maybe... not really... maybe it's a gui thing)  
   (an unsigned short / u16 (2 bytes))
-- 0x9d0 - 0x9e0 - [First Name... again](#name-info)
+- 0x9d0 - 0x9e0 - [First name](#name-info)
 - 0x988 - 0x9b8 - Player [stats block](#stat-block)  
   (48 bytes)
 - 0x9bc - 0x9c0 - Player [healable stats](#healable-stats)  
   (4 bytes)
 - 0x9c8 - 0x9c9 - Player [level](#level-info)  
   (an unsigned short / u16 (2 bytes))
-- 0x9e8 - 0x9f8 - [Last Name](#name-info)
-- 0x9fc - 0xa0c - [First Name](#name-info)
-- 0xa10 - 0xa32 - [Combined first and last name](#name-info)
+- 0x9e8 - 0x9f8 - [Last name](#name-info)
+- 0x9fc - 0xa0c - [First name again](#name-info)
+- 0xa10 - 0xa38 - [Combined name](#name-info)
 - 0xa38 - 0xa78 - Player [skills](#skill-block)  
   (64 bytes)
 - 0xa98 - 0xaa8 - Player [affinities](#affinity-block)  
@@ -82,6 +82,49 @@ a("difficulty", 0x54c, "H"),
 a("stats_mystery_stuff", 0x9b8, "<l"),
 a("player_stats2", 0x9c0, "II", "LV EXP"),
 -->
+
+## Note about save screen data
+
+Save screen data is loaded once when starting the game, which (reasonably)
+assumes the files won't be modified while it's running.
+
+When loading a modified save file and saving over it, the save screen data is
+synced with what's in the file.
+
+This includes (but is not limited to):
+
+- [Save screen name](#name-info)
+- [Time of saving](#time-of-saving-info)
+- [DLC info](#dlc-info)
+- Play time
+- Summoned demons and protagonist placement
+
+This is also why the workaround from
+[issue #1](https://github.com/fnr1r/kadishutu/issues/1#issuecomment-2255997834)
+worked.
+
+## Name info
+
+The max name length is 8 UTF-16 chars (16 bytes).
+
+The game does let you get away with a longer name if you don't overwrite
+other important data.
+
+- 0x4d8 - First name (Save screen)  
+  (std 8 UTF-16 chars (16 bytes))  
+  (max 12 UTF-16 chars (24 bytes))
+- 0x9d0 - First name (Menus, Dialogue)  
+  (std 8 UTF-16 chars (16 bytes))  
+  (max 12 UTF-16 chars (24 bytes))
+- 0x9e8 - Last name (Dialogue)  
+  (std 8 UTF-16 chars (16 bytes))  
+  (max 10 UTF-16 chars (24 bytes))
+- 0x9fc - First name (Also dialogue)  
+  (std 8 UTF-16 chars (16 bytes))  
+  (max 10 UTF-16 chars (24 bytes))
+- 0xa10 - First and last name (Stat screen)  
+  (std 17 UTF-16 chars (34 bytes))  
+  (max 20 UTF-16 chars (40 bytes))
 
 ## DLC info
 
@@ -151,23 +194,6 @@ private:
 File path: `/Engine/Source/Runtime/Core/Public/Misc/DateTime.h`
 
 0x4fc is some 4 byte value that affects the time.
-
-## Name info
-
-WARNING: Name editing is currently broken. If you don't preserve the length of
-the name, it will break in unexpected ways.
-
-The max name length is 8 UTF-16 chars (16 bytes).
-
-NOTE: It might not actually be UTF-16, because the Persona series and some
-previous games use the JIS encoding.
-
-The first name appears in 3 places in the file.
-The last name - only once.
-
-Then there's also a combined copy of both, separated by a space.
-
-This is a massive TODO.
 
 ## Stats info
 
