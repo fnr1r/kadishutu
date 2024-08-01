@@ -2207,7 +2207,7 @@ yearns for the love of a human man.
 She drains the life of her lovers in
 return for granting them artistic
 inspiration."""},
-    {"id": 310, "name": "OngyoKi",
+    {"id": 310, "name": "Ongyo-Ki",
      "lore": """One of the four oni controlled by
 Fujiwara no Chikata, who ruled Iga
 and Ise during the Heian Period.
@@ -2218,14 +2218,14 @@ its enemies. Oni have been said to act
 as liaisons between humans and gods,
 and the Fudoki holds many records of
 such exchanges in this region."""},
-    {"id": 311, "name": "ShikiOuji",
+    {"id": 311, "name": "Shiki-Ouji",
      "lore": """A powerful creature often summoned
 by Japanese sorcerers called
 onmyoji.
 They are used both to hurt and to
 heal, but their true nature is said
 to be very violent."""},
-    {"id": 312, "name": "SuiKi",
+    {"id": 312, "name": "Sui-Ki",
      "lore": """One of the four oni controlled by
 Fujiwara no Chikata, it can cause
 floods with the swing of its arms.
@@ -2233,13 +2233,13 @@ In the Taiheiki, a brave courtier
 named Ki no Tomo-o expelled
 the oni by sending them an elegantly
 phrased threat in poetic form."""},
-    {"id": 313, "name": "FuuKI",
+    {"id": 313, "name": "Fuu-Ki",
      "lore": """One of the four oni controlled by
 Fujiwara no Chikata, it sends
 hurricanes to blow away its enemies.
 Some say that Fuu-Ki is the original
 ninja."""},
-    {"id": 314, "name": "KinKI",
+    {"id": 314, "name": "Kin-Ki",
      "lore": """One of the four oni controlled by
 Fujiwara no Chikata, its body is so
 hard that no weapons can penetrate
@@ -2561,7 +2561,7 @@ die in this cruel game remain in this
 world as Fiends, bound by regret as
 well as the thirst for the cheers and
 excitement."""},
-    {"id": 365, "name": "Tao",
+    {"id": 365, "name": "Tao (Goddess/Ueno)",
      "lore": """Once cherished as the Saint of
 Bethel, Tao Isonokami was forced
 to watch helplessly as a close friend
