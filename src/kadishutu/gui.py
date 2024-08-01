@@ -331,20 +331,6 @@ class PlayerEditorTk(Toplevel):
         self.tabbed.pack()
         general = Frame(self.tabbed)
         row = 0
-        Label(general, text="Name:").grid(column=0, row=row)
-        self.protag_name = MutEntry(
-            general,
-            value=self.obj.first_name,
-            width=12
-        )
-        self.protag_name.grid(column=1, row=row)
-        self.protag_surname = MutEntry(
-            general,
-            value=self.obj.last_name,
-            width=10
-        )
-        self.protag_surname.grid(column=2, row=row)
-        row += 1
         Label(general, text="Macca:").grid(column=0, row=row)
         self.macca = MutInt(
             general,
