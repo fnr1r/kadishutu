@@ -19,7 +19,7 @@ KEY = bytes([0x30, 0x31, 0x32, 0x33, 0x34, 0x35, 0x36, 0x37,
 
 - 0x0 - 0x20 - SHA1 Hash of the rest of the file  
   (20 bytes)
-- 0x4d8 - ????? - [First Name](#name-info)
+- 0x4d8 - 0x4e8 - [First Name](#name-info)
 - 0x4f0 - 0x500 - Time of Saving (UNKNOWN FORMAT)  
   (16 bytes)
 - 0x529 - 0x52a - [DLC Flags](#dlc-info)  
@@ -28,45 +28,48 @@ KEY = bytes([0x30, 0x31, 0x32, 0x33, 0x34, 0x35, 0x36, 0x37,
   (I'm guessing it's an unsigned int / u32 (4 bytes))
 - 0x618 - 0x61a - Player [level](#level-info)?  
   (maybe... not really... maybe it's a gui thing)  
-  (2 byte)
-- 0x9d0 - ????? - [First Name... again](#name-info)
+  (an unsigned short / u16 (2 bytes))
+- 0x9d0 - 0x9e0 - [First Name... again](#name-info)
 - 0x988 - 0x9b8 - Player [stats block](#stat-block)  
   (48 bytes)
 - 0x9bc - 0x9c0 - Player [healable stats](#healable-stats)  
   (4 bytes)
 - 0x9c8 - 0x9c9 - Player [level](#level-info)  
-  (2 byte)
-- 0x9e8 - ????? - [Last Name](#name-info)
-- 0x9fc - ????? - [First Name](#name-info)
-- 0xa10 - [Combined first and last name](#name-info)
+  (an unsigned short / u16 (2 bytes))
+- 0x9e8 - 0x9f8 - [Last Name](#name-info)
+- 0x9fc - 0xa0c - [First Name](#name-info)
+- 0xa10 - 0xa32 - [Combined first and last name](#name-info)
 - 0xa38 - 0xa78 - Player [skills](#skill-block)  
   (64 bytes)
 - 0xa98 - 0xaa8 - Player [affinities](#affinity-block)  
   (16 bytes)
 - 0xb38 - 0xb50 - Player [potentials](#potential-block)  
   (24 bytes)
-- 0xb60 - ????? - [Demon table](#demon-info)
+- 0xb50 - 0xb52 - Player [innate skill](#innate-skill-id)  
+  (an unsigned short / u16 (2 bytes))
+- 0xb60 - 0x3d10 - [Demon table](#demon-info)
 - 0x3d32 - 0x3d36 - Macca  
   (an unsigned int / u32 (4 bytes))
 - 0x3d4a - 0x3d4e - Glory  
   (an unsigned int / u32 (4 bytes))
-- 0x3d2e - ?????? - Summoned Demons (TODO)  
+- 0x3d2e - 0x3d31 - Summoned Demons (TODO)  
   (with indices of the demon table; from first to last)  
   (3 unsigned chars / u8s (3 bytes))
-- 0x3d45 - ?????? - Player placement  
+- 0x3d45 - 0x3d46 - Player placement  
   (which slot the player is in, from 0 to 2; other values break it)  
   (an unsigned char / u8 (1 byte))
 - 0x3ece - 0x3ed0 - Magatsuhi Gauge  
   (from 0% - 100% value)  
   (an unsigned short (2 bytes))
-- 0x4c72 - ?????? - [Item Table](#item-table)
-- 0x5129 - ?????? - [Essence Metadata Table](#essence-info)
-- 0x568e - ?????? - [Coordinates](#coordinate-info)
+- 0x4c72 - 0x4f11 - [Item Table](#item-table)
+- 0x5129 - 0x523c - [Essence Metadata Table](#essence-info)
+- 0x568e - 0x56a2 - [Coordinates](#coordinate-info)
 - 0x7dc0 - 0x7de0 - Demon haunt data
 - 0x1375e - ??????? - [Tracking](#tracking-info)
 - 0x69a90 - ??????? - Settings????
 - 0x69a91 - ??????? - Mitama Settings????  
   (an unsigned char / u8 (1 byte))
+- 0x69cf7 - 0x69cf8 - [Alignment (Vengeance)](#canon-of-vengeance)
 - 0x6a07f - ??????? - DLC Flags
   (0 when no dlc, 0x18 when all dlcs)
   (an unsigned char / u8 (1 byte))
@@ -147,6 +150,10 @@ Stat blocks contain:
 - Stat changes (this includes changes from using Balms/Incenses, talking at the demon haunt (except for Aogami/Tsukuyomi))
 - Current stats (stats that are actually used for calculations/displaying)
 
+NOTE: For demons, if the current stats are different from the sum of initial
+stats and changes, then at some point the game will reset them. This does not
+apply for the player (for some reason).
+
 It's 48 bytes in total.
 
 ### Healable Stats
@@ -220,6 +227,9 @@ An affinity block is an array containing 7 values in the following order:
 - Dark
 - (there might be an 8th value as padding)
 
+NOTE: If an affinity-changing skill is added via save editing, the affinities
+are only updated when starting a battle.
+
 It's 14 or 16 bytes in total.
 
 ## Potential info
@@ -273,31 +283,32 @@ Each demon entry is 0x1a8 (424 decimal) in size.
 
 Here's the structure:
 
-- 0x0 - 0x30 - [Stats block](#stat-block)
-- 0x44 - 0x48 - Friendship
-  (changes every time the demon is given the lower-grade gift)
+- 0x0 - 0x30 - [Stats block](#stat-block)  
+  (48 bytes)
+- 0x44 - 0x48 - Friendship  
+  (changes every time the demon is given the lower-grade gift)  
   (an unsigned int / u32 (4 bytes))
-- 0x48 - 0x4a - maybe_is_summoned
+- 0x48 - 0x4a - maybe_is_summoned  
   (an unsigned short / u16 (2 bytes))
-- 0x4a - 0x4c - dh_talks
-  (something related to the demon haunt)
+- 0x4a - 0x4c - dh_talks  
+  (something related to the demon haunt)  
   (an unsigned short / u16 (2 bytes))
 - 0x64 - 0x68 - [Healable stats](#healable-stats)  
-  (4 bytes)
-- 0x68 - 0x70 - Experience
+  (an unsigned int / u32 (4 bytes))
+- 0x68 - 0x70 - Experience  
   (an unsigned long long / u64 (8 bytes))
 - 0x70 - 0x72 - [Level](#level-info)  
-  (2 bytes)
+  (an unsigned short / u16 (2 bytes))
 - 0x72 - 0x74 - [Demon ID](#demon-id)  
-  (2 bytes)
+  (an unsigned short / u16 (2 bytes))
 - 0x78 - 0xb8 - [Skills](#skill-block)  
   (64 bytes)
 - 0xd8 - 0xe8 - [Affinities](#affinity-block)  
   (16 bytes)
 - 0x180 - 0x198 - [Potentials](#potential-block)  
   (24 bytes)
-- 0x198 - 0x200 - Innate skill  
-  (2 bytes)
+- 0x198 - 0x200 - [Innate skill](#innate-skill-id)  
+  (an unsigned short / u16 (2 bytes))
 
 <!--
 add_dat("x_magic_number", 64, "<l")
@@ -398,3 +409,21 @@ The game track the following actions:
 The following things are not tracked:
 
 - Using Balms and Incenses
+
+## Alignment info
+
+### Canon of Vengeance
+
+Alignment is stored in 0x69cf7 (an unsigned char / u8 (1 byte)).
+
+It ranges from 0x00 (law) to 0xff (chaos).
+
+0x65 is law (data from my own save file), but 0x7e is chaos (from
+experimentation, I picked a value around the middle).
+
+NOTE: I don't know what's the highest legal value and tipping point.
+
+(i. e. I don't know if 0xff is achievable in regular gameplay)
+
+My knowledge on this so far is limited.
+([sauce](experimentation/vengeance-alignment.md))

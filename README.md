@@ -2,10 +2,56 @@
 
 A save editor for Shin Megami Tensei V: Vengeance.
 
-## Usage
+## Installation
 
 I recommend installing this with pipx.
-I might release an exe/app/elf version soon™.
+
+```shell
+pipx install git+https://github.com/fnr1r/kadishutu.git
+```
+
+Regular pip might also work, but it also might not due to
+[PEP 668](https://peps.python.org/pep-0668/). It's also more of a hastle.
+Pipx is built for installing Python apps and handles updates better.
+
+In other words, if you want to update, run:
+
+```shell
+pipx upgrade kadishutu
+```
+
+[Here's](https://pipx.pypa.io/latest/) more info on pipx.
+
+[Binaries](https://github.com/fnr1r/kadishutu/releases) are also available,
+but because they're built with pyinstaller, they might get flagged by your
+antivirus.
+
+## Usage
+
+### GUI
+
+You can open the GUI by running `kadishutu gui $OPTIONALLY_A_SAVE_FILE` in a
+terminal.
+
+### In a terminal
+
+Available subcommands:
+
+- `decrypt`
+- `edit`
+- `encrypt`
+- `help`
+- `inspect`
+- `run_script`
+- `update_hash`
+
+#### Edit subcommand
+
+##### DLC
+
+- clear - Clears all DLC flags
+- print - Prints what DLCs were used
+- remove - Removes a DLC flag
 
 ### As a library
 
@@ -31,30 +77,6 @@ savefile.hash_update()
 savefile.encrypt().save(path)
 ```
 
-### In a terminal
-
-Available subcommands:
-
-- `decrypt`
-- `edit`
-- `encrypt`
-- `help`
-- `inspect`
-- `run_script`
-- `update_hash`
-
-#### Edit subcommand
-
-##### DLC
-
-- clear - Clears all DLC flags
-- print - Prints what DLCs were used
-- remove - Removes a DLC flag
-
-### GUI
-
-You can open the GUI by running `kadishutu gui $OPTIONALLY_A_SAVE_FILE`.
-
 ## What works?
 
 NOTE: This is tested with the Switch version of the game (`010069C01AB82000`
@@ -71,6 +93,7 @@ with all DLCs more specifically). It might work with the PC version.
   - Only for demons:
     - Demon ID, Innate Skill
   - (some) Items (I need the item table for this game)
+  - Essences (kinda) (it's experimental)
 - Viewing some information (without editing):
   - Play Time (but not time of saving, it's in a weird format)
   - Player Name
@@ -111,3 +134,7 @@ And some save editors for the OG version:
 - this save editor
   (<https://github.com/Amuyea-gbatemp/Shin-Megami-Tensei-V-Save-Editor>)
   for info on how other types of data are stored
+
+## External links
+
+This project is also on [GameBanana](https://gamebanana.com/tools/17599).
