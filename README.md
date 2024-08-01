@@ -137,4 +137,4 @@ And some save editors for the OG version:
 
 ## External links
 
-This project is also on [GameBanana](https://gamebanana.com/tools/17599).
+[![This project is also on GameBanana.]("https://gamebanana.com/tools/embeddables/17599?type=large")](https://gamebanana.com/tools/17599)
