@@ -501,3 +501,10 @@ NOTE: I don't know what's the highest legal value and tipping point.
 
 My knowledge on this so far is limited.
 ([sauce](experimentation/vengeance-alignment.md))
+
+#### Update note
+
+[This](https://cheatroom.blog.fc2.com/blog-entry-155.html) post suggests
+that this value (along with a few next to it) are bitflags.
+
+[Here's a copy.](cheatroom_blog_post_translation.md)
