@@ -284,4 +284,4 @@ class DemonEditor(BaseIdEditor):
 
     @property
     def name(self) -> str:
-        return DEMON_ID_MAP[self.id]["name"]
+        return DEMON_ID_MAP[self.demon_id]["name"]
