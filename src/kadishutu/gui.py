@@ -289,17 +289,18 @@ class SkillEditorTk(Frame):
         self.innate_skill_box.id.set(innate_skill.id)
         self.innate_skill_box.grid(column=1, row=0)
 
-        for i in range(1, 8 + 1):
-            Label(self, text=f"Skill {i + 1}:").grid(column=0, row=i)
+        for i in range(0, 8):
+            row = i + 1
+            Label(self, text=f"Skill {i + 1}:").grid(column=0, row=row)
             skill = skills.slot(i)
             skillbox = SkillCombox(self)
             skillbox.id.set(skill.id)
-            skillbox.grid(column=1, row=i)
+            skillbox.grid(column=1, row=row)
             mysterybox = MutInt(self, value=skill._unknown)
-            mysterybox.grid(column=2, row=i)
+            mysterybox.grid(column=2, row=row)
             self.skilld.append((skillbox, mysterybox))
 
-        row = i + 1
+        row += 1
 
         Button(self, text="Save", command=self.save).grid(column=0, row=row)
 
