@@ -17,6 +17,7 @@ from .essences import ESSENCE_META_MAP, EssenceManager, EssenceMetadata
 from .file_handling import DecryptedSave, EncryptedSave, is_save_decrypted
 from .game import SaveEditor
 from .items import ItemManager
+from .player import NameManager
 from .skills import SKILL_ID_MAP, Skill, SkillEditor
 
 
@@ -62,6 +63,59 @@ class MutCheckbutton(Checkbutton, MutabilityMixin):
         return self.var.get()
 
 
+class MutEntry(Entry, MutabilityMixin):
+    def __init__(self, *args, value: Optional[str] = None, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.var = StringVar(self, value)
+        self.config(textvariable=self.var)
+        MutabilityMixin.__init__(self)
+
+    def get(self) -> str:
+        return self.var.get()
+
+
+class NameEditorTk(Frame):
+    NAMES = [
+        "save_name", "first_name", "last_name", "first_name_again",
+        "combined_name"
+    ]
+    UF_NAMES = [
+        "Save name", "First name", "Last name", "First name again",
+        "Combined name"
+    ]
+
+    def __init__(self, *args, names: NameManager, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.obj = names
+        self.named: dict[str, MutEntry] = {}
+
+        f = Frame(self)
+        Label(f, text="Extend name length", width=20).pack(side="left")
+        self.limit_switch = MutCheckbutton(f, command=self._limit)
+        self.limit_switch.pack(side="left")
+        f.pack(expand=True, fill="x")
+
+        for name, uf_name in zip(self.NAMES, self.UF_NAMES):
+            f = Frame(self)
+            Label(f, text=uf_name + ": ", width=16).pack(side="left")
+            value: str = names.__getattribute__(name).get()
+            namebox = MutEntry(f, value=value)
+            namebox.pack(side="left")
+            f.pack(expand=True, fill="x")
+            self.named[name] = namebox
+
+        Button(self, text="Save", command=self.save).pack()
+
+    def _limit(self):
+        self.obj.over_limit = self.limit_switch.get()
+
+    def save(self):
+        for k, v in self.named.items():
+            if not v.modified:
+                continue
+            self.obj.__getattribute__(k).set(v.get())
+
+
 class DlcEditorTk(Toplevel):
     dlcmap: Dict[int, MutCheckbutton]
 
@@ -92,17 +146,6 @@ class DlcEditorTk(Toplevel):
 
     def cancel(self):
         self.destroy()
-
-
-class MutEntry(Entry, MutabilityMixin):
-    def __init__(self, *args, value: Optional[str] = None, **kwargs):
-        super().__init__(*args, **kwargs)
-        self.var = StringVar(self, value)
-        self.config(textvariable=self.var)
-        MutabilityMixin.__init__(self)
-
-    def get(self) -> str:
-        return self.var.get()
 
 
 class MutInt(Entry, MutabilityMixin):
@@ -357,6 +400,7 @@ class PlayerEditorTk(Toplevel):
         row += 1
         Button(general, text="Save", command=self.save).grid(column=0, row=row)
         self.tabbed.add(general, text="General")
+        self.tabbed.add(NameEditorTk(self, names=self.obj.names), text="Names")
         self.tabbed.add(StatEditorTk(self, stats=self.obj.stats), text="Stats")
         self.tabbed.add(SkillEditorTk(self, innate_skill=self.obj.innate_skill, skills=self.obj.skills), text="Skills")
         self.tabbed.add(AffinityEditorTk(self, affinities=self.obj.affinities), text="Affinities")
