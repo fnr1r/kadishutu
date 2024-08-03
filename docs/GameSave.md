@@ -64,10 +64,19 @@ KEY = bytes([0x30, 0x31, 0x32, 0x33, 0x34, 0x35, 0x36, 0x37,
   (an unsigned char / u8 (1 byte))
 - 0x3ece - 0x3ed0 - Magatsuhi Gauge  
   (from 0% - 100% value)  
-  (an unsigned short (2 bytes))
+  (an unsigned short / u16 (2 bytes))
 - 0x4c72 - 0x4f11 - [Item Table](#item-table)
 - 0x5129 - 0x523c - [Essence Metadata Table](#essence-info)
-- 0x568e - 0x56a2 - [Coordinates](#coordinate-info)
+- 0x567e - 0x5680 - [Map ID 1](#map-ids)  
+  (an unsigned short / u16 (2 bytes))
+- 0x5680 - 0x5682 - [Map ID 2](#map-ids)  
+  (an unsigned int / u32 (4 bytes))
+- 0x568e - 0x56a2 - [Coordinates](#coordinate-info)  
+  (3 floats / f32 (12 bytes))
+- 0x56a6 - 0x56ae - [Rotation](#coordinate-info)  
+  (2 floats / f32 (8 bytes))
+- 0x68c5 - 0x68c6 - [Last used layline fount ID](#layline-fount-info)  
+  (an unsigned char / u8 (1 byte))
 - 0x7dc0 - 0x7de0 - Demon haunt data
 - 0x1375e - ??????? - [Tracking](#tracking-info)
 - 0x69a90 - ??????? - Settings????
@@ -462,22 +471,29 @@ Here are possible values for each field:
 - 16 - Used  
   (after fusion)
 
-## Coordinate info
+## Location info
 
-0x568e stores the current map.
+### Map IDs
 
-- 0x0f - Tree of Knowledge
-- 0x10 - The Empyrean
+0x567e and 0x5680 store the current map info.
 
-Coordinates are stored in 0x568e.
+### Coordinate info
 
 Positional coordinates are stored as a float / f32 (4 bytes).  
-Rotational coordinates are stored as an unsigned int / u32 (4 bytes).
 
 <!--
 TODO: Figure this shit out
 (It's too close for comfort, oh)
 -->
+
+### Layline fount info
+
+ID of the last used layline.
+
+Recommended for tests: 0x31 - Tokyo Diet Building  
+(loads the fastest)
+
+WARNING: IF THE LAST LAYLINE FOUNT IS INVAILD, YOU GET THROWN TO THE TITLE SCREEN.
 
 ## Tracking info
 

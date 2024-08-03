@@ -1,0 +1,266 @@
+[
+    {
+        "id": "0xb",
+        "name": "Da'at: Minato - Tamachi",
+        "map_upper": "0x0000003d",
+        "map_lower": "0x0000",
+        "coordinates": "f75144c54fc26647109c8844",
+        "rotation": "89f67fbfc0368b3c"
+    },    
+    {
+        "id": "0xc",
+        "name": "Da'at: Minato - Mita",
+        "map_upper": "0x0000003d",
+        "map_lower": "0x0000",
+        "coordinates": "4e6dd946af61a0468f64ff43",
+        "rotation": "1e2459bf1498073f"
+    },
+    {
+        "id": "0xd",
+        "name": "Da'at: Minato - Shiba",
+        "map_upper": "0x0000003d",
+        "map_lower": "0x0000",
+        "coordinates": "a0a78247439a8bc52c4f2d44",
+        "rotation": "f2c3ebbe5f3e633f"
+    },
+    {
+        "id": "0xe",
+        "name": "Da'at: Minato - Hamamatsucho",
+        "map_upper": "0x0000003d",
+        "map_lower": "0x0000",
+        "coordinates": "62265c476f4562c7fd936a45",
+        "rotation": "5aea7fbfe08bd23c"
+    },
+    {
+        "id": "0xf",
+        "name": "Da'at: Minato - Tokyo Tower",
+        "map_upper": "0x0000003d",
+        "map_lower": "0x0000",
+        "coordinates": "88002d46f69950c77bfd6746",
+        "rotation": "edf17fbf40c9a93c"
+    },
+    {
+        "id": "0x10",
+        "name": "Da'at: Minato - Kamiyacho",
+        "map_upper": "0x0000003d",
+        "map_lower": "0x0000",
+        "coordinates": "ffcb9e46c425ddc76a71d545",
+        "rotation": "31897fbff085763d"
+    },
+    {
+        "id": "0x11",
+        "name": "Da'at: Minato - Onarimon",
+        "map_upper": "0x0000003d",
+        "map_lower": "0x0000",
+        "coordinates": "625e1547f7b1a0c7c0139a46",
+        "rotation": "defd7fbfc017043c"
+    },
+    {
+        "id": "0x12",
+        "name": "Da'at: Minato - Nagatacho",
+        "map_upper": "0x0000003d",
+        "map_lower": "0x0000",
+        "coordinates": "98d606c7a051fdc77ce19e45",
+        "rotation": "000000000000803f"
+    },
+    {
+        "id": "0x13",
+        "name": "Da'at: Minato - Odaiba",
+        "map_upper": "0x0000003d",
+        "map_lower": "0x0000",
+        "coordinates": "25b5d6475d5f164676df3845",
+        "rotation": "e1965cbe53fd793f"
+    },
+    {
+        "id": "0x14",
+        "name": "Da'at: Shinagawa - Tennozu Isle",
+        "map_upper": "0x0000003e",
+        "map_lower": "0x0000",
+        "coordinates": "6f4242476af8ad459dc89645",
+        "rotation": "6214e73d7e5d7e3f"
+    },
+    {
+        "id": "0x15",
+        "name": "Da'at: Shinagawa - Tennozu",
+        "map_upper": "0x0000003e",
+        "map_lower": "0x0000",
+        "coordinates": "1b0bf8462129bc4620992543",
+        "rotation": "faad743f2892963e"
+    },
+    {
+        "id": "0x16",
+        "name": "Da'at: Shinagawa - Shinagawa Pier",
+        "map_upper": "0x0000003e",
+        "map_lower": "0x0000",
+        "coordinates": "5e1296477a087346a0fa8843",
+        "rotation": "4a171f3d8cce7f3f"
+    },
+    {
+        "id": "0x17",
+        "name": "Da'at: Shinagawa - Container Yard",
+        "map_upper": "0x0000003e",
+        "map_lower": "0x0000",
+        "coordinates": "efedaa47935b904570372945",
+        "rotation": "6727d0bcd7ea7f3f"
+    },
+    {
+        "id": "0x18",
+        "name": "Da'at: Shinagawa - Konan 3rd Block",
+        "map_upper": "0x0000003e",
+        "map_lower": "0x0000",
+        "coordinates": "37ce534736e72dc728cfd844",
+        "rotation": "4bbc1dbed1f17c3f"
+    },
+    {
+        "id": "0x19",
+        "name": "Da'at: Shinagawa - Mitatebashi",
+        "map_upper": "0x0000003e",
+        "map_lower": "0x0000",
+        "coordinates": "5b3cba468c8503c7281abd43",
+        "rotation": "f004353ff604353f"
+    },
+    {
+        "id": "0x1a",
+        "name": "Da'at: Shinagawa - Konan 2nd Block",
+        "map_upper": "0x0000003e",
+        "map_lower": "0x0000",
+        "coordinates": "435622c60b3b09c71177a445",
+        "rotation": "a4407ebf98e2ee3d"
+    },
+    {
+        "id": "0x1c",
+        "name": "Da'at: Shinagawa - Fairy Village",
+        "map_upper": "0x0000003e",
+        "map_lower": "0x0000",
+        "coordinates": "4c0375c77e7d1e47f0a15244",
+        "rotation": "0053343f38b6353f"
+    },
+    {
+        "id": "0x1d",
+        "name": "Da'at: Shinagawa - North Shinagawa",
+        "map_upper": "0x0000003e",
+        "map_lower": "0x0000",
+        "coordinates": "ba20dd44d50742471272a843",
+        "rotation": "eabf7ebf302aca3d"
+    },
+    {
+        "id": "0x1b",
+        "name": "Da'at: Shinagawa - Shinagawa Station",
+        "map_upper": "0x0000003e",
+        "map_lower": "0x0000",
+        "coordinates": "41e6edc61ca723c767f61546",
+        "rotation": "c9f727bfe830413f"
+    },    
+    {
+        "id": "0x31",
+        "name": "Tokyo Diet Building",
+        "map_upper": "0x0000001e",
+        "map_lower": "0x0000",
+        "coordinates": "8eb0993fc186d443207592c8",
+        "rotation": "086835bfa8a1343f"
+    },
+    {
+        "id": "0x32",
+        "name": "Tokyo - Medical Research Lab",
+        "map_upper": "0x00000055",
+        "map_lower": "0x0000",
+        "coordinates": "5462c0435c06a243f0ff5b42",
+        "rotation": "f05f70bfd222b03e"
+    },
+    {
+        "id": "0x45",
+        "name": "Da'at: Shinjuku - Shinjuku Gyoen",
+        "map_upper": "0x00000040",
+        "map_lower": "0x0000",
+        "coordinates": "230ce8471f0866479c9777c5",
+        "rotation": "000000000000803f"
+    },
+    {
+        "id": "0x49",
+        "name": "Da'at: Shinjuku - Jingu Naien",
+        "map_upper": "0x00000040",
+        "map_lower": "0x0000",
+        "coordinates": "25de6e4611e6ef476dd811c5",
+        "rotation": "6afe7fbf00d5e33b"
+    },
+    {
+        "id": "0x4a",
+        "name": "Da'at: Shinjuku - Yoyogi",
+        "map_upper": "0x00000040",
+        "map_lower": "0x0000",
+        "coordinates": "f3ed9244d51c9c473cf50145",
+        "rotation": "ab7e5c3fc211023f"
+    },
+    {
+        "id": "0x46",
+        "name": "Da'at: Shinjuku - Shinjuku 1st Block",
+        "map_upper": "0x00000040",
+        "map_lower": "0x0000",
+        "coordinates": "6f32fb47691bddc6cc389e46",
+        "rotation": "d22c7fbfc846a43d"
+    },
+    {
+        "id": "0x47",
+        "name": "Da'at: Shinjuku - Shinjuku 3rd Block",
+        "map_upper": "0x00000040",
+        "map_lower": "0x0000",
+        "coordinates": "c2630b4731af86c61f81b243",
+        "rotation": "65f708bf3047583f"
+    },
+    {
+        "id": "0x48",
+        "name": "Da'at: Shinjuku - Kabukicho",
+        "map_upper": "0x00000040",
+        "map_lower": "0x0000",
+        "coordinates": "a57662c56a9040c74b460345",
+        "rotation": "50833cbfaa332d3f"
+    },
+    {
+        "id": "0x4b",
+        "name": "Da'at: Shinjuku - West Shinjuku 1st Block",
+        "map_upper": "0x00000040",
+        "map_lower": "0x0000",
+        "coordinates": "dd48fec6e4b06d4663d0dd45",
+        "rotation": "f404353ff204353f"
+    },
+    {
+        "id": "0x50",
+        "name": "Da'at: Shinjuku - West Shinjuku 2nd Block",
+        "map_upper": "0x00000040",
+        "map_lower": "0x0000",
+        "coordinates": "1efc48c707ed15c725a0e045",
+        "rotation": "166ef03dd23a7e3f"
+    },
+    {
+        "id": "0x4c",
+        "name": "Da'at: Shinjuku - Government Building 1",
+        "map_upper": "0x00000040",
+        "map_lower": "0x0000",
+        "coordinates": "cfaf8cc7194b54c5e8d33c46",
+        "rotation": "428f34bf587a353f"
+    },
+    {
+        "id": "0x3c",
+        "name": "Shakan - 1st Stratum Foyer",
+        "map_upper": "0x00000026",
+        "map_lower": "0x0000",
+        "coordinates": "6e3213c62fb9fa4420002042",
+        "rotation": "ffff7fbf0000c034"
+    },    
+    {
+        "id": "0x4e",
+        "name": "Da'at: Minato - Bethel Egypt Approach",
+        "map_upper": "0x0000003d",
+        "map_lower": "0x0000",
+        "coordinates": "2ddf0748f04fa046887c1a45",
+        "rotation": "cc73dabe6887673f"
+    },
+    {
+        "id": "0x4f",
+        "name": "Tokyo - Dorm Room",
+        "map_upper": "0x00000073",
+        "map_lower": "0x0000",
+        "coordinates": "265d1bc391cb84c100002042",
+        "rotation": "2b7b7e3f08c3de3d"
+    }
+]

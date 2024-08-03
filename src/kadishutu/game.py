@@ -1,5 +1,6 @@
+from dataclasses import dataclass
 from datetime import datetime, timedelta
-from struct import pack_into, unpack_from
+from struct import Struct, pack_into, unpack_from
 from typing import Optional, Tuple
 
 from .alignment import AlignmentManager
@@ -51,6 +52,69 @@ class TeamEditor(BaseEditor):
     @structproperty(int, "<B")
     def player_placement(self) -> int:
         return 0x3d45
+
+
+@dataclass
+class Vector3:
+    x: int
+    z: int
+    y: int
+
+    def to_tuple(self) -> Tuple[int, int, int]:
+        return (self.x, self.z, self.y)
+
+
+class PositionEditor(BaseEditor):
+    CORD_OFFSET = 0x568e
+    CORD_STRUCT = Struct("<fff")
+    ROT_OFFSET = 0x56a6
+    ROT_STRUCT = Struct("<ff")
+
+    @structproperty(int, "<I")
+    def current_map_upper(self) -> int:
+        return 0x567e
+
+    @structproperty(int, "<H")
+    def current_map_lower(self) -> int:
+        return 0x5680
+
+    @property
+    def raw_coordinates(self) -> bytes:
+        return bytes(self.data[self.CORD_OFFSET:self.CORD_OFFSET + self.CORD_STRUCT.size])
+
+    @raw_coordinates.setter
+    def raw_coordinates(self, value: bytes):
+        for i, b in enumerate(value):
+            self.data[self.CORD_OFFSET + i] = b
+
+    @property
+    def coordinates(self) -> Vector3:
+        return Vector3(*self.CORD_STRUCT.unpack(self.raw_coordinates))
+
+    @coordinates.setter
+    def coordinates(self, value: Vector3):
+        self.raw_coordinates = self.CORD_STRUCT.pack(*value.to_tuple())
+
+    @property
+    def raw_rotation(self) -> bytes:
+        return bytes(self.data[self.ROT_OFFSET:self.ROT_OFFSET + self.ROT_STRUCT.size])
+
+    @raw_rotation.setter
+    def raw_rotation(self, value: bytes):
+        for i, b in enumerate(value):
+            self.data[self.ROT_OFFSET + i] = b
+
+    @property
+    def rotation(self) -> Tuple[int, int]:
+        return self.ROT_STRUCT.unpack(self.raw_rotation)
+
+    @rotation.setter
+    def rotation(self, pitch: int, yaw: int):
+        self.raw_rotation = self.ROT_STRUCT.pack(pitch, yaw)
+
+    @structproperty(int, "<B")
+    def last_layline_fount(self) -> int:
+        return 0x68c5
 
 
 class SaveEditor(MasterEditor):
@@ -111,6 +175,10 @@ class SaveEditor(MasterEditor):
     @property
     def essences(self) -> EssenceManager:
         return EssenceManager(self.saveobj, 0x4da9)
+
+    @property
+    def position(self) -> PositionEditor:
+        return PositionEditor(self.saveobj, 0)
 
     @property
     def alignment(self) -> AlignmentManager:
