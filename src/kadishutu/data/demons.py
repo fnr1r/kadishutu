@@ -2577,8 +2577,22 @@ she appears to have retained her
 memories. However, she has cast off
 her former personality, and no longer
 acts as she did as a human."""},
-    {"id": 366, "name": "Yoko",
-     "lore": """TODO"""},
+    {"id": 366, "name": "Yoko (Goddess/The Empyrean)",
+     "lore": """Awoke as a goddess when the Tokyo
+Conception took place, but was sealed
+in Shakan by the Creator, who did
+not want to give up His throne.
+
+Yoko Hiromine, whose power was
+unsealed by Lilith of the Qadištu,
+was restored to her goddess form.
+Those who have awakened as
+goddesses often struggle to retain
+mortal perspective and values. Yoko,
+however, remains relatively human in
+her perspective due to her time in a
+normal human state while her powers
+were sealed."""},
     {"id": 370, "name": "Shujinkou Nahobino",
      "lore": """TODO"""},
     {"id": 381, "name": "Hare of Inaba",
@@ -2706,16 +2720,36 @@ by the devil to create an evil world
 of arrogance and vanity. From this
 world, Eisheth appears to terrorize
 humanity."""},
-    {"id": 400, "name": "Yoko Hiromine",
+    {"id": 400, "name": "Yoko Hiromine (Broken?)",
      "lore": """TODO"""},
-    {"id": 401, "name": "Tao Isonokami",
+    {"id": 401, "name": "Tao Isonokami (Broken?)",
      "lore": """TODO"""},
-    {"id": 402, "name": "Yuzuru Atsuta",
+    {"id": 402, "name": "Yuzuru Atsuta (Broken?)",
      "lore": """TODO"""},
-    {"id": 403, "name": "Ichiro Dazai",
+    {"id": 403, "name": "Ichiro Dazai (Broken?)",
      "lore": """TODO"""},
+    {"id": 1150, "name": "Yuzuru Atsuta (Da'at)",
+     "lore": """TODO"""},
+    {"id": 1151, "name": "Ichiro Dazai (Da'at)",
+     "lore": """TODO"""},
+    {"id": 1152, "name": "Tao Isonokami (Da'at - Shinagawa)",
+     "lore": """TODO"""},
+    {"id": 1153, "name": "Yuzuru Atsuta 2 (Da'at)",
+     "lore": """TODO"""},
+    {"id": 1154, "name": "Tao Isonokami (Da'at - Shinjuku)",
+     "lore": """TODO"""},
+    {"id": 1155, "name": "Tao (Dummy 3)",
+     "lore": """NOT USED:DEVIL_ID_1155_TAO3"""},
+    {"id": 1156, "name": "Tao (Dummy 4)",
+     "lore": """NOT USED:DEVIL_ID_1156_TAO4"""},
     {"id": 1157, "name": "Yoko Hiromine (Da'at - Minato)",
-     "lore": """TODO"""}
+     "lore": """TODO"""},
+    {"id": 1158, "name": "Yoko Hiromine (Da'at - Shinagawa)",
+     "lore": """TODO"""},
+    {"id": 1159, "name": "Yoko Hiromine (Da'at - Shinjuku)",
+     "lore": """TODO"""},
+    {"id": 1160, "name": "Yoko (Dummy 4)",
+     "lore": """NOT USED:DEVIL_ID_1160_YOKO4"""}
 ]
 
 
