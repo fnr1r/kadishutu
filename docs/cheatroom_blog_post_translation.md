@@ -211,4 +211,11 @@ Assuming it's a u64 starting at 0x69cf5.
   - bit 7 - [L] [The Empyrean] [???]  
     That's not allowed. (?)
 
-Bit 10 and 11 might be Canon of Creation's flags.
+While you can be neutral, the game will still force you to choose between law
+and chaos. During the confrontation with Yoko in The Empyrean, the game gives
+you a choice between:
+
+- [CHAOS] I'm glad you're okay.
+- [ LAW ] I won't let you.
+
+Your algnment affects Maria's form for as expected.

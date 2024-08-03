@@ -57,6 +57,8 @@ KEY = bytes([0x30, 0x31, 0x32, 0x33, 0x34, 0x35, 0x36, 0x37,
 - 0x3d2e - 0x3d31 - Summoned Demons (TODO)  
   (with indices of the demon table; from first to last)  
   (3 unsigned chars / u8s (3 bytes))
+- 0x3d31 - 0x3d32 - Max Demon Stock  
+  (an unsigned char / u8 (1 byte))
 - 0x3d45 - 0x3d46 - Player placement  
   (which slot the player is in, from 0 to 2; other values break it)  
   (an unsigned char / u8 (1 byte))
@@ -125,6 +127,8 @@ other important data.
 - 0xa10 - First and last name (Stat screen)  
   (std 17 UTF-16 chars (34 bytes))  
   (max 20 UTF-16 chars (40 bytes))
+
+NOTE: Name at 0x4d8 gets overwritten by 0x9d0 every time you save.
 
 ## DLC info
 
@@ -460,9 +464,14 @@ Here are possible values for each field:
 
 ## Coordinate info
 
+0x568e stores the current map.
+
+- 0x0f - Tree of Knowledge
+- 0x10 - The Empyrean
+
 Coordinates are stored in 0x568e.
 
-Positional coordinates are stored as a signed int / i32 (4 bytes).  
+Positional coordinates are stored as a float / f32 (4 bytes).  
 Rotational coordinates are stored as an unsigned int / u32 (4 bytes).
 
 <!--
