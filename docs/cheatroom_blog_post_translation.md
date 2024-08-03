@@ -99,8 +99,8 @@ I looked into the flags for the choices related to attribute changes in the Godd
 +02: L [After the Battle with Khonsu] I don't believe it
 +04: C [After the Battle with Mara] I understand
 +08: L [After the Battle with Mara] I don't know
-+10: L [Reclaim the Golden Chair] Defeat Anansi
-+20: C [Free the Golden Chair] Defeat Onyankopon
++10: L [Reclaim the Golden Stool] Defeat Anansi
++20: C [Free the Golden Stool] Defeat Onyankopon
 +40: Defeat L [Pure White Hunter] Kudrak
 +80: Defeat C [Black Vampire] Krusnik
 69CFC
@@ -185,9 +185,9 @@ Assuming it's a u64 starting at 0x69cf5.
     [After the Battle with Mara] I understand
   - bit 3 - [L] [Da'at - Shinjuku] [Devotion to Order]  
     [After the Battle with Mara] I don't know
-  - bit 4 - [L] [Da'at - Shinjuku] [Reclaim the Golden Chair]  
+  - bit 4 - [L] [Da'at - Shinjuku] [Reclaim the Golden Stool]  
     Defeat Anansi
-  - bit 5 - [C] [Da'at - Shinjuku] [Free the Golden Chair]  
+  - bit 5 - [C] [Da'at - Shinjuku] [Free the Golden Stool]  
     Defeat Onyankopon
   - bit 6 - [L] [Da'at - Shinjuku] [The Hunter in White]  
     Defeat Kudrak

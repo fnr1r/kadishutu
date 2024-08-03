@@ -40,7 +40,7 @@ class DlcBitflags(IntFlag):
 
     @classmethod
     def from_str(cls, name: str) -> Self:
-        return cls(2 ** DLCS_REV[name])
+        return cls(1 << DLCS_REV[name])
 
     def get_flags(self) -> List[str]:
         return [DLCS[int(log(i.value, 2))] for i in self]

@@ -2,6 +2,7 @@ from datetime import datetime, timedelta
 from struct import pack_into, unpack_from
 from typing import Optional, Tuple
 
+from .alignment import AlignmentManager
 from .dlc import DlcEditor
 from .demons import DemonEditor
 from .essences import EssenceManager
@@ -111,6 +112,6 @@ class SaveEditor(MasterEditor):
     def essences(self) -> EssenceManager:
         return EssenceManager(self.saveobj, 0x4da9)
 
-    @structproperty(int, "<B")
-    def alignment(self) -> int:
-        return 0x69cf7
+    @property
+    def alignment(self) -> AlignmentManager:
+        return AlignmentManager(self.saveobj, 0)

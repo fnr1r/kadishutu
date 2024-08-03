@@ -1,0 +1,380 @@
+[
+    {
+        "offset": "0x69cf5",
+        "bits": [
+            {
+                "bit": 2,
+                "alignment": "law",
+                "place": "The Empyrean",
+                "side_quest": null,
+                "text": [
+                    "Choose the law choice (?)"
+                ]
+            },
+            {
+                "bit": 3,
+                "alignment": "chaos",
+                "place": "The Empyrean",
+                "side_quest": null,
+                "text": [
+                    "Choose the chaos choice (?)"
+                ]
+            }
+        ]
+    },
+    {
+        "offset": "0x69cf6",
+        "bits": [
+            {
+                "bit": 2,
+                "alignment": "law",
+                "place": "Jouin High School",
+                "side_quest": null,
+                "text": [
+                    "Chose to save Sahori"
+                ]
+            },
+            {
+                "bit": 3,
+                "alignment": "chaos",
+                "place": "Jouin High School",
+                "side_quest": null,
+                "text": [
+                    "Chose to defeat Lahmu"
+                ]
+            }
+        ]
+    },
+    {
+        "offset": "0x69cf7",
+        "bits": [
+            {
+                "bit": 0,
+                "alignment": "chaos",
+                "place": "Da'at - Minato",
+                "side_quest": "The Water Nymph",
+                "text": [
+                    "Defeat Apsaras"
+                ]
+            },
+            {
+                "bit": 1,
+                "alignment": "law",
+                "place": "Da'at - Minato",
+                "side_quest": "The Spirit of Love",
+                "text": [
+                    "Defeat Leanan Sidhe"
+                ]
+            },
+            {
+                "bit": 2,
+                "alignment": "law",
+                "place": "Da'at - Minato",
+                "side_quest": null,
+                "text": [
+                    "[When talking to angels in front of the diet building]",
+                    "Explain the situation"
+                ]
+            },
+            {
+                "bit": 3,
+                "alignment": "chaos",
+                "place": "Da'at - Minato",
+                "side_quest": null,
+                "text": [
+                    "[When talking to angels in front of the diet building]",
+                    "Force your way through"
+                ]
+            },
+            {
+                "bit": 4,
+                "alignment": "chaos",
+                "place": "Da'at - Shinagawa",
+                "side_quest": "A Wish for a Fish",
+                "text": [
+                    "Strike the enemy and take it"
+                ]
+            },
+            {
+                "bit": 5,
+                "alignment": "law",
+                "place": "Da'at - Shinagawa",
+                "side_quest": "A Wish for a Fish",
+                "text": [
+                    "Spare King Frost"
+                ]
+            },
+            {
+                "bit": 6,
+                "alignment": "chaos",
+                "place": "Da'at - Shinagawa",
+                "side_quest": "Those Seeking Sanctuary",
+                "text": [
+                    "Defeat the Principalities"
+                ]
+            },
+            {
+                "bit": 7,
+                "alignment": "law",
+                "place": "Da'at - Shinagawa",
+                "side_quest": "Holding the Line",
+                "text": [
+                    "Defeat the Lilim"
+                ]
+            }
+        ]
+    },
+    {
+        "offset": "0x69cf8",
+        "bits": [
+            {
+                "bit": 0,
+                "alignment": "chaos",
+                "place": "Da'at - Shinagawa",
+                "side_quest": "A Goddess Stolen",
+                "text": [
+                    "Take Idun's apple"
+                ]
+            },
+            {
+                "bit": 1,
+                "alignment": "law",
+                "place": "Da'at - Shinagawa",
+                "side_quest": "A Goddess Stolen",
+                "text": [
+                    "Refuse to take Idun's apple"
+                ]
+            },
+            {
+                "bit": 4,
+                "alignment": "chaos",
+                "place": "Da'at - Shinagawa",
+                "side_quest": "one of the demeter quests",
+                "text": [
+                    "Sacrifice is inevitable"
+                ]
+            },
+            {
+                "bit": 5,
+                "alignment": "law",
+                "place": "Da'at - Shinagawa",
+                "side_quest": "one of the demeter quests",
+                "text": [
+                    "It's better to have no sacrifices"
+                ]
+            }
+        ]
+    },
+    {
+        "offset": "0x69cf9",
+        "bits": [
+            {
+                "bit": 3,
+                "alignment": "chaos",
+                "place": "Da'at - Taito",
+                "side_quest": "The Raid on Tokyo",
+                "text": [
+                    "Defeat Futsunushi"
+                ]
+            },
+            {
+                "bit": 4,
+                "alignment": "law",
+                "place": "Da'at - Taito",
+                "side_quest": "In Defense of Tokyo",
+                "text": [
+                    "Defeat Adramelech"
+                ]
+            }
+        ]
+    },
+    {
+        "offset": "0x69cfa",
+        "bits": [
+            {
+                "bit": 6,
+                "alignment": "?",
+                "place": "Da'at - Shinagawa",
+                "side_quest": null,
+                "text": [
+                    "[After the match against Yuzuru Atsuta]",
+                    "I think the future is bright"
+                ]
+            },
+            {
+                "bit": 7,
+                "alignment": "?",
+                "place": "Da'at - Shinagawa",
+                "side_quest": null,
+                "text": [
+                    "[After the match against Yuzuru Atsuta]",
+                    "I can't believe in the future"
+                ]
+            }
+        ]
+    },
+    {
+        "offset": "0x69cfb",
+        "bits": [
+            {
+                "bit": 0,
+                "alignment": "chaos",
+                "place": "Da'at - Minato",
+                "side_quest": null,
+                "text": [
+                    "[After the Battle with Khonsu]",
+                    "I think it's believable"
+                ]
+            },
+            {
+                "bit": 1,
+                "alignment": "law",
+                "place": "Da'at - Minato",
+                "side_quest": null,
+                "text": [
+                    "[After the Battle with Khonsu]",
+                    "I don't believe it"
+                ]
+            },
+            {
+                "bit": 2,
+                "alignment": "chaos",
+                "place": "Da'at - Shinjuku",
+                "side_quest": "Devotion to Order",
+                "text": [
+                    "[After the Battle with Mara]",
+                    "I understand"
+                ]
+            },
+            {
+                "bit": 3,
+                "alignment": "law",
+                "place": "Da'at - Shinjuku",
+                "side_quest": "Devotion to Order",
+                "text": [
+                    "[After the Battle with Mara]",
+                    "I don't know"
+                ]
+            },
+            {
+                "bit": 4,
+                "alignment": "law",
+                "place": "Da'at - Shinjuku",
+                "side_quest": "Reclaim the Golden Stool",
+                "text": [
+                    "Defeat Anansi"
+                ]
+            },
+            {
+                "bit": 5,
+                "alignment": "chaos",
+                "place": "Da'at - Shinjuku",
+                "side_quest": "Free the Golden Stool",
+                "text": [
+                    "Defeat Onyankopon"
+                ]
+            },
+            {
+                "bit": 6,
+                "alignment": "law",
+                "place": "Da'at - Shinjuku",
+                "side_quest": "The Hunter in White",
+                "text": [
+                    "Defeat Kudrak"
+                ]
+            },
+            {
+                "bit": 7,
+                "alignment": "chaos",
+                "place": "Da'at - Shinjuku",
+                "side_quest": "The Vampire in Black",
+                "text": [
+                    "Defeat Krusnik"
+                ]
+            }
+        ]
+    },
+    {
+        "offset": "0x69cfc",
+        "bits": [
+            {
+                "bit": 0,
+                "alignment": "chaos",
+                "place": "Da'at - Taito",
+                "side_quest": "Goddesses of Fate",
+                "text": [
+                    "[After defeating Norn]",
+                    "Things that bind you"
+                ]
+            },
+            {
+                "bit": 1,
+                "alignment": "law",
+                "place": "Da'at - Taito",
+                "side_quest": "Goddesses of Fate",
+                "text": [
+                    "[After defeating Norn]",
+                    "What guides me"
+                ]
+            },
+            {
+                "bit": 2,
+                "alignment": "?",
+                "place": "Da'at - Taito",
+                "side_quest": null,
+                "text": [
+                    "[Before the Battle with Beelzebub]",
+                    "For Creation"
+                ]
+            },
+            {
+                "bit": 3,
+                "alignment": "?",
+                "place": "Da'at - Taito",
+                "side_quest": null,
+                "text": [
+                    "[Before the battle with Beelzebub]",
+                    "To stop Tiamat"
+                ]
+            },
+            {
+                "bit": 4,
+                "alignment": "law",
+                "place": "Da'at - Taito",
+                "side_quest": null,
+                "text": [
+                    "[Before the battle with Zeus and Odin]",
+                    "Because he saw hope for the future of humanity"
+                ]
+            },
+            {
+                "bit": 5,
+                "alignment": "chaos",
+                "place": "Da'at - Taito",
+                "side_quest": null,
+                "text": [
+                    "[Before the battle with Zeus and Odin]",
+                    "Despair over the past of other people"
+                ]
+            },
+            {
+                "bit": 6,
+                "alignment": "chaos",
+                "place": "The Empyrean",
+                "side_quest": null,
+                "text": [
+                    "I believed it would come (?)"
+                ]
+            },
+            {
+                "bit": 7,
+                "alignment": "law",
+                "place": "The Empyrean",
+                "side_quest": null,
+                "text": [
+                    "That's not allowed. (?)"
+                ]
+            }
+        ]
+    }
+]

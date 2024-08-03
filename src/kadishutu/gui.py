@@ -7,6 +7,8 @@ from _tkinter import TclError
 from tktooltip import ToolTip
 from typing import Any, Callable, Dict, List, Optional, Tuple
 
+from .alignment import AlignmentEditor, AlignmentManager
+from .data.alignment import ALIGNMENT_OFFSET_MAP, AlignmentByte
 from .data.demons import DEMON_ID_MAP, DEMON_NAME_MAP, DEMONS
 from .data.essences import ESSENCE_OFFSETS
 from .data.items import BUILTIN_ITEM_TABLE, ITEM_TABLE_OFFSET
@@ -391,14 +393,6 @@ class PlayerEditorTk(Toplevel):
         )
         self.glory.grid(column=1, row=row)
         row += 1
-        Label(general, text="Alignment:").grid(column=0, row=row)
-        self.alignment = MutInt(
-            general,
-            value=master.save.alignment,
-            width=20
-        )
-        self.alignment.grid(column=1, row=row)
-        row += 1
         Button(general, text="Save", command=self.save).grid(column=0, row=row)
         self.tabbed.add(general, text="General")
         self.tabbed.add(NameEditorTk(self, names=self.obj.names), text="Names")
@@ -412,8 +406,6 @@ class PlayerEditorTk(Toplevel):
             self.master.save.glory = self.macca.get()
         if self.glory.modified:
             self.master.save.glory = self.glory.get()
-        if self.alignment.modified:
-            self.master.save.alignment = self.alignment.get()
 
 
 class DemonIdCombox(IdCombox):
@@ -604,6 +596,49 @@ class ItemEditorTk(Toplevel, SpawnerMixin):
             self.tabbed.add(self.essences, text="Essences")
 
 
+class AlignmentFlagEditorTk(Frame):
+    def __init__(self, *args, alignment: AlignmentEditor, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.obj = alignment
+        self.flagd: Dict[int, MutCheckbutton] = {}
+        
+        for bit in self.schema.bits:
+            f = Frame(self)
+            Label(f, text=f"Alignment: {bit.alignment}", width=16).pack(side="left")
+            Label(f, text=f"Place: {bit.place}", width=20).pack(side="left")
+            if bit.side_quest:
+                Label(f, text=f"Quest: {bit.side_quest}").pack(side="left")
+            f.pack(expand=True, fill="x")
+            f = Frame(self)
+            Label(f, text="\n".join(bit.text)).pack(side="left")
+            MutCheckbutton(f, value=alignment[bit.bit]).pack(side="left", padx=8)
+            f.pack(expand=True, fill="x")
+
+        Button(self, text="Save", command=self.save).pack()
+
+    def save(self):
+        for bit, checkbutton in self.flagd.items():
+            if not checkbutton.modified:
+                continue
+            self.obj.set_flag(bit, checkbutton.get())
+
+    @property
+    def schema(self) -> AlignmentByte:
+        assert self.obj.schema
+        return self.obj.schema
+
+
+class AlignmentEditorTk(Toplevel):
+    def __init__(self, *args, alignment: AlignmentManager, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.obj = alignment
+        self.tabbed = Notebook(self)
+        self.tabbed.pack()
+        for offset in ALIGNMENT_OFFSET_MAP:
+            ooo = AlignmentFlagEditorTk(self.tabbed, alignment=alignment[offset])
+            self.tabbed.add(ooo, text=f"0x{offset:5x}")
+
+
 class MenuBar(Menu):
     def __init__(self, master: "MainWindow", *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -693,6 +728,11 @@ class MainWindow(Tk, SpawnerMixin):
             text="Edit Items",
             command=self.spawner(ItemEditorTk, items=self.save.items, essences=self.save.essences)
         ).grid(column=0, row=row)
+        Button(
+            self,
+            text="Edit Alignment",
+            command=self.spawner(AlignmentEditorTk, alignment=self.save.alignment)
+        ).grid(column=1, row=row)
 
     def spawn_demon(self):
         try:
