@@ -16,7 +16,10 @@ META_POTENTIALS = ("<hhhhhhhhhhhh", "PHYSICAL FIRE ICE ELECTRIC FORCE LIGHT DARK
 
 
 STATS_NAMES = ["HP", "MP", "Strength", "Vitality", "Magic", "Agility", "Luck"]
-AFFINITY_NAMES = ["Physical", "Fire", "Ice", "Electric", "Force", "Light", "Dark"]
+AFFINITY_NAMES = [
+    "Physical", "Fire", "Ice", "Electric", "Force", "Light", "Dark",
+    "Poison", "Confusion", "Charm", "Sleep", "Seal", "Mirage"
+]
 
 
 class SubStatsEditor(BaseStructFieldEditor):
@@ -124,57 +127,55 @@ def affinity_as_map() -> dict[str, Affinity]:
 AFFINITY_MAP = affinity_as_map()
 
 
+def affinityprop(fmt):
+    return structproperty(
+        Affinity, fmt,
+        lambda u: Affinity(u),
+        lambda t: t.value,
+    )    
+
+
 class AffinityEditor(BaseStructFieldEditor):
     FIELD_FMT = "<H"
-    @structproperty(
-        Affinity, FIELD_FMT,
-        lambda u: Affinity(u),
-        lambda t: t.value,
-    )
+    @affinityprop(FIELD_FMT)
     def physical(self) -> int:
         return self.relative_field_offset(0)
-    @structproperty(
-        Affinity, FIELD_FMT,
-        lambda u: Affinity(u),
-        lambda t: t.value,
-    )
+    @affinityprop(FIELD_FMT)
     def fire(self) -> int:
         return self.relative_field_offset(1)
-    @structproperty(
-        Affinity, FIELD_FMT,
-        lambda u: Affinity(u),
-        lambda t: t.value,
-    )
+    @affinityprop(FIELD_FMT)
     def ice(self) -> int:
         return self.relative_field_offset(2)
-    @structproperty(
-        Affinity, FIELD_FMT,
-        lambda u: Affinity(u),
-        lambda t: t.value,
-    )
+    @affinityprop(FIELD_FMT)
     def electric(self) -> int:
         return self.relative_field_offset(3)
-    @structproperty(
-        Affinity, FIELD_FMT,
-        lambda u: Affinity(u),
-        lambda t: t.value,
-    )
+    @affinityprop(FIELD_FMT)
     def force(self) -> int:
         return self.relative_field_offset(4)
-    @structproperty(
-        Affinity, FIELD_FMT,
-        lambda u: Affinity(u),
-        lambda t: t.value,
-    )
+    @affinityprop(FIELD_FMT)
     def light(self) -> int:
         return self.relative_field_offset(5)
-    @structproperty(
-        Affinity, FIELD_FMT,
-        lambda u: Affinity(u),
-        lambda t: t.value,
-    )
+    @affinityprop(FIELD_FMT)
     def dark(self) -> int:
         return self.relative_field_offset(6)
+    @affinityprop(FIELD_FMT)
+    def poison(self) -> int:
+        return self.relative_field_offset(8)
+    @affinityprop(FIELD_FMT)
+    def confusion(self) -> int:
+        return self.relative_field_offset(10)
+    @affinityprop(FIELD_FMT)
+    def charm(self) -> int:
+        return self.relative_field_offset(11)
+    @affinityprop(FIELD_FMT)
+    def sleep(self) -> int:
+        return self.relative_field_offset(12)
+    @affinityprop(FIELD_FMT)
+    def seal(self) -> int:
+        return self.relative_field_offset(13)
+    @affinityprop(FIELD_FMT)
+    def mirage(self) -> int:
+        return self.relative_field_offset(20)
 
 
 class PType(Enum):
@@ -248,12 +249,15 @@ class DemonEditor(BaseIdEditor):
     @structproperty(int, "<L")
     def friendship(self) -> int:
         return self.relative_offset(68)
-    @structproperty(int, "<H") # , lambda u: bool(u), lambda t: int(t)
-    def is_summoned(self):
-        return self.relative_offset(72)
+    #@structproperty(int, "<H") # , lambda u: bool(u), lambda t: int(t)
+    #def is_summoned(self):
+    #    return self.relative_offset(72)
     @structproperty(int, "<H")
     def dh_talks(self):
         return self.relative_offset(74)
+    @structproperty(int, "<I")
+    def is_summoned(self):
+        return self.relative_offset(88)
     @property
     def healable(self) -> HealableEditor:
         return self.delegate(HealableEditor, 100)
