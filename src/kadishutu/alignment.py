@@ -10,7 +10,7 @@ class AlignmentEditor(BaseEditor):
         super().__init__(*args, **kwargs)
         try:
             self.schema = ALIGNMENT_OFFSET_MAP[self.offset]
-        except IndexError:
+        except KeyError:
             self.schema = None
 
     @staticmethod
