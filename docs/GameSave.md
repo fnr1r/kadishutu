@@ -17,13 +17,20 @@ KEY = bytes([0x30, 0x31, 0x32, 0x33, 0x34, 0x35, 0x36, 0x37,
 
 ## Structure
 
-- 0x0 - 0x20 - SHA1 Hash of the rest of the file  
+- 0x0 - 0x14 - SHA1 Hash of the rest of the file  
   (20 bytes)
+- 0x28 - 0x2c - [Difficulty?](#difficulty-values)
+  (an unsigned int / u32 (4 bytes))
 - 0x4d8 - 0x4e8 - [Save name](#name-info)
+- 0x4f0 - 0x4f4 - [???](#time-of-saving-info)  
+  (4 bytes)
 - 0x4f4 - 0x4fc - [Time of Saving](#time-of-saving-info)  
   (an unsigned long long / u64 (8 bytes))
-- 0x4fc - 0x500 - [???](#time-of-saving-info)  
-  (4 bytes)
+- 0x4fc - 0x4fd - [Difficulty?](#difficulty-values)
+- 0x504 - 0x524 - [Demon Icons Block](#demon-icons-block)  
+  (32 bytes)
+- 0x524 - 0x528 - [Save location](#save-location)  
+  (an unsigned int / u32 (4 bytes))
 - 0x529 - 0x52a - [DLC Flags](#dlc-info)  
   (an unsigned char / u8 (1 byte))
 - 0x5d0 - 0x5d4 - Play Time (in seconds)  
@@ -79,6 +86,7 @@ KEY = bytes([0x30, 0x31, 0x32, 0x33, 0x34, 0x35, 0x36, 0x37,
   (an unsigned char / u8 (1 byte))
 - 0x7dc0 - 0x7de0 - Demon haunt data
 - 0x1375e - ??????? - [Tracking](#tracking-info)
+- 0x18282 - 0x2db42 - [Demon Compendium](#demon-compendium)
 - 0x69a90 - ??????? - Settings????
 - 0x69a91 - ??????? - Mitama Settings????  
   (an unsigned char / u8 (1 byte))
@@ -113,6 +121,27 @@ This includes (but is not limited to):
 This is also why the workaround from
 [issue #1](https://github.com/fnr1r/kadishutu/issues/1#issuecomment-2255997834)
 worked.
+
+## Difficulty values
+
+For some reason, there are two values that dictate difficulty.
+
+Data for 0x20:
+
+- Godborn save from Bai Gaming: 1371 c242
+- Hard: ac4b 2f81
+- Normal: 0000 0000
+- Casual: 1600 0000
+- Safety: 1600 0000
+
+Data for 0x4fc (the real difficulty???):
+
+- Godborn save from Bai Gaming: 82????
+- Hard: 03
+- Normal: 02
+- Casual: 01
+- Safety: 00
+- (assuming 04 would be godborn)
 
 ## Name info
 
@@ -207,6 +236,24 @@ private:
 File path: `/Engine/Source/Runtime/Core/Public/Misc/DateTime.h`
 
 0x4fc is some 4 byte value that affects the time.
+
+## Demon icons block
+
+### Demon icon item
+
+- Demon ID (an unsigned int / u32)  
+  u32::MAX_INT if none  
+  0x0172 if OG Nahobino
+- Demon Level (an unsigned int / u32)  
+  0 if none
+
+### Demon icon list
+
+4 demon icon items.
+
+## Save location
+
+(an unsigned int / u32 (4 bytes))
 
 ## Stats info
 
@@ -380,6 +427,8 @@ Here's the structure:
 - 0x4a - 0x4c - dh_talks  
   (something related to the demon haunt)  
   (an unsigned short / u16 (2 bytes))
+- 0x58 - 0x5c - is_summoned  
+  (an unsigned int / u32 (4 bytes))
 - 0x64 - 0x68 - [Healable stats](#healable-stats)  
   (an unsigned int / u32 (4 bytes))
 - 0x68 - 0x70 - Experience  
@@ -394,8 +443,8 @@ Here's the structure:
   (16 bytes)
 - 0x180 - 0x198 - [Potentials](#potential-block)  
   (24 bytes)
-- 0x198 - 0x200 - [Innate skill](#innate-skill-id)  
-  (an unsigned short / u16 (2 bytes))
+- 0x198 - 0x19c - [Innate skill](#innate-skill-id)  
+  (an unsigned int / u32 (4 bytes))
 
 <!--
 add_dat("x_magic_number", 64, "<l")
@@ -509,27 +558,22 @@ The following things are not tracked:
 
 - Using Balms and Incenses
 
+## Demon Compendium
+
+Array indexed by the demon ID.
+
+Each entry has a size of 0xe0 consists of:
+
+- 0x0 - Stat block (registers stat changes)
+- 0x30 - Skill block (registers only skill IDs)
+
+Assuming Eisheth (ID 394) is the last registerable demon, the table ends at
+0xdb42.
+
 ## Alignment info
 
 ### Canon of Vengeance
 
-Alignment is stored in 0x69cf7 (an unsigned char / u8 (1 byte)).
-
-It ranges from 0x00 (law) to 0xff (chaos).
-
-0x65 is law (data from my own save file), but 0x7e is chaos (from
-experimentation, I picked a value around the middle).
-
-NOTE: I don't know what's the highest legal value and tipping point.
-
-(i. e. I don't know if 0xff is achievable in regular gameplay)
-
-My knowledge on this so far is limited.
-([sauce](experimentation/vengeance-alignment.md))
-
-#### Update note
-
-[This](https://cheatroom.blog.fc2.com/blog-entry-155.html) post suggests
-that this value (along with a few next to it) are bitflags.
+Data about alignment values is in a different doc (for now).
 
 [Here's a copy.](cheatroom_blog_post_translation.md)
