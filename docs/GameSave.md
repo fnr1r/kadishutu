@@ -564,8 +564,12 @@ Array indexed by the demon ID.
 
 Each entry has a size of 0xe0 consists of:
 
-- 0x0 - Stat block (registers stat changes)
-- 0x30 - Skill block (registers only skill IDs)
+- 0x0 - 0x10 - [Stat block](#stat-value-set)
+  (registers stat changes)  
+  (16 bytes)
+- 0x30 - 0x50 - Skill block
+  (registers only skill IDs)  
+  (32 bytes?)
 
 Assuming Eisheth (ID 394) is the last registerable demon, the table ends at
 0xdb42.
