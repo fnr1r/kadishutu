@@ -168,6 +168,14 @@
         "rotation": "f05f70bfd222b03e"
     },
     {
+        "id": "0x3b",
+        "name": "Empyrean - Throne Room",
+        "map_upper": "0x0000005e",
+        "map_lower": "0x0000",
+        "coordinates": "c29cb74377afb345dd0e0cc4",
+        "rotation": "7efe7f3f8077de3b"
+    },    
+    {
         "id": "0x45",
         "name": "Da'at: Shinjuku - Shinjuku Gyoen",
         "map_upper": "0x00000040",
@@ -262,5 +270,13 @@
         "map_lower": "0x0000",
         "coordinates": "265d1bc391cb84c100002042",
         "rotation": "2b7b7e3f08c3de3d"
-    }
+    },
+    {
+        "id": "0x51",
+        "name": "Serpent's Grave - Altar",
+        "map_upper": "0x000000cb",
+        "map_lower": "0x0000",
+        "coordinates": "a7ffa94372e3cb44a0d57fc2",
+        "rotation": "000000000000803f"
+    }    
 ]
