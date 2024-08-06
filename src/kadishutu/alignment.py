@@ -1,9 +1,9 @@
 from typing import Optional, Union
 
 from .data.alignment import ALIGNMENT_OFFSET_MAP, AlignmentByte
-from .file_handling import BaseEditor
+from .file_handling import BaseDynamicEditor, BaseStaticEditor
 
-class AlignmentEditor(BaseEditor):
+class AlignmentEditor(BaseDynamicEditor):
     schema: Optional[AlignmentByte]
 
     def __init__(self, *args, **kwargs):
@@ -62,9 +62,11 @@ class AlignmentEditor(BaseEditor):
             raise NotImplementedError
 
 
-class AlignmentManager(BaseEditor):
+class AlignmentManager(BaseStaticEditor):
+    offset = 0
+
     def at_offset(self, offset: int) -> AlignmentEditor:
-        return AlignmentEditor(self.saveobj, offset)
+        return self.dispatch(AlignmentEditor, offset)
 
     def __getitem__(self, offset: int) -> AlignmentEditor:
         return self.at_offset(offset)

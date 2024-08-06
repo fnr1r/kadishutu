@@ -1,9 +1,9 @@
-from abc import ABC, abstractmethod
+from abc import ABC
 from dataclasses import dataclass
 from hashlib import sha1
 from pathlib import Path
-from struct import Struct, calcsize, pack_into, unpack_from
-from typing import Any, ClassVar, Dict, Callable, Optional, Tuple, Type, TypeVar, Union
+from struct import Struct, pack_into, unpack_from
+from typing import Any, ClassVar, Callable, Optional, Type, TypeVar, Union
 from typing_extensions import Self
 
 from .encryption import decrypt, encrypt
@@ -74,121 +74,152 @@ class DecryptedSave(RawSave):
         this.save(path)
 
 
-@dataclass
-class BaseManager(ABC):
-    saveobj: DecryptedSave
-
-
 TBaseEditor = TypeVar("TBaseEditor", bound="BaseEditor")
 
 
 @dataclass
-class BaseEditor(ABC):
-    saveobj: DecryptedSave
-    offset: int
+class BaseMasterEditor(ABC):
+    save_data: DecryptedSave
 
     @property
     def data(self) -> bytearray:
-        return self.saveobj.data
+        return self.save_data.data
     @data.setter
     def data(self, data: bytearray):
-        self.saveobj.data = data
+        self.save_data.data = data
 
-    def relative_offset(self, relative_offset: int):
-        return self.offset + relative_offset
-
-    def delegate(
+    def dispatch(
         self,
-        cls: Callable[[DecryptedSave, int], TBaseEditor],
-        relative_offset: int
+        cls: Callable[..., TBaseEditor],
+        *args,
+        **kwargs
     ) -> TBaseEditor:
-        return cls(self.saveobj, self.relative_offset(relative_offset))
+        return cls(self, *args, **kwargs)
 
 
 @dataclass
-class MasterEditor(BaseEditor, ABC):
-    saveobj: DecryptedSave
-    offset: ClassVar[int] = 0
-
-
-class BaseStructFieldEditor(BaseEditor, ABC):
-    FIELD_FMT: str = NotImplemented
+class BaseEditor(ABC):
+    master: BaseMasterEditor
 
     @property
-    def SFMT_LEN(self) -> int:
-        return calcsize(self.FIELD_FMT)
+    def data(self) -> bytearray:
+        return self.master.data
+    @data.setter
+    def data(self, data: bytearray):
+        self.master.data = data
 
-    def relative_field_offset(self, no: int) -> int:
-        return self.relative_offset(self.SFMT_LEN * no)
+    def dispatch(
+        self,
+        cls: Callable[..., "TBaseEditor"],
+        *args,
+        **kwargs
+    ) -> "TBaseEditor":
+        return cls(self.master, *args, **kwargs)
 
 
-class BaseStructEditor(BaseEditor, ABC):
-    saveobj: DecryptedSave
+TBaseDynamicEditor = TypeVar("TBaseDynamicEditor", bound="BaseDynamicEditor")
+
+
+class BaseOffsetEditor(BaseEditor, ABC):
+    master: BaseMasterEditor
     offset: int
-    fmt: str = NotImplemented
 
-    @property
-    def struct(self) -> Struct:
-        return Struct(self.fmt)
+    def relative_as_absolute_offset(self, relative_offset: int):
+        return self.offset + relative_offset
 
-    @property
-    def size(self) -> int:
-        return self.struct.size
-
-    @property
-    def raw(self) -> bytes:
-        return self.data[self.offset:self.offset+self.size]
-
-    def unpack(self) -> Tuple[Any, ...]:
-        return self.struct.unpack_from(self.data, self.offset)
-
-    def pack(self, *v: Any):
-        self.struct.pack_into(self.data, self.offset, *v)
+    def relative_dispatch(
+        self,
+        cls: Type[TBaseDynamicEditor],
+        relative_offset: int,
+        *args,
+        **kwargs
+    ) -> TBaseDynamicEditor:
+        return self.dispatch(
+            cls,
+            self.relative_as_absolute_offset(relative_offset),
+            *args,
+            **kwargs
+        )
 
 
-class SingularIntEditor(BaseStructEditor, ABC):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        struct = self.struct
-        empty = bytes([0] * struct.size)
-        assert len(struct.unpack(empty)) == 1
-
-    def get(self) -> int:
-        return self.unpack()[0]
-
-    def set(self, value: int):
-        self.pack(value)
-
-    @property
-    @abstractmethod
-    def name_table(self) -> Dict[int, str]:
-        pass
-
-    @property
-    def name(self) -> str:
-        return self.name_table[self.get()]
-
-
-class BaseIdEditor(BaseEditor, ABC):
-    _id: int
+class BaseStaticEditor(BaseOffsetEditor, ABC):
+    offset: ClassVar[int] = NotImplemented
 
     @classmethod
-    @abstractmethod
-    def id_to_offset(cls, id: int) -> int:
-        pass
+    def __init_subclass__(cls):
+        if issubclass(cls, ABC):
+            return
+        if getattr(cls, "offset") == NotImplemented:
+            raise NotImplementedError(
+                f"Class {cls} lacks required offset class attribute"
+            )
 
-    def __init__(self, saveobj: DecryptedSave, id: int):
-        super().__init__(saveobj, self.id_to_offset(id))
-        self._id = id
+
+@dataclass
+class BaseDynamicEditor(BaseOffsetEditor, ABC):
+    offset: int
+
+
+class BaseStructEditor(BaseOffsetEditor, ABC):
+    struct: Union[str, bytes] = NotImplemented
+
+    @classmethod
+    def __init_subclass__(cls):
+        if issubclass(cls, ABC):
+            return
+        if getattr(cls, "struct") == NotImplemented:
+            raise NotImplementedError(
+                f"Class {cls} lacks required offset class attribute"
+            )
 
     @property
-    def id(self) -> int:
-        return self._id
+    def struct_obj(self) -> Struct:
+        return Struct(self.struct)
+    
+    def struct_unpack(self, relative_offset: int) -> Any:
+        return self.struct_obj.unpack_from(
+            self.data,
+            self.relative_as_absolute_offset(relative_offset)
+        )
 
-    @id.setter
-    def id(self, value: int):
-        self.offset = self.id_to_offset(value)
-        self.id = value
+    def struct_pack(self, relative_offset: int, *args) -> Any:
+        self.struct_obj.pack_into(
+            self.data,
+            self.relative_as_absolute_offset(relative_offset),
+            *args
+        )
+
+
+class BaseStructAsFieldEditor(BaseStructEditor, ABC):
+    def field_as_relative_offset(self, field_offset: int) -> int:
+        return self.struct_obj.size * field_offset
+
+    def field_as_absolute_offset(self, field_offset: int):
+        return self.offset + self.field_as_relative_offset(field_offset)
+
+    def field_dispatch(
+        self,
+        cls: Type[TBaseDynamicEditor],
+        field_offset: int,
+        *args,
+        **kwargs
+    ) -> TBaseDynamicEditor:
+        return self.relative_dispatch(
+            cls,
+            self.field_as_relative_offset(field_offset),
+            *args,
+            **kwargs
+        )
+
+
+class BaseStructAsSingularValueEditor(BaseStructEditor, ABC):
+    @property
+    def value(self) -> Any:
+        return self.struct_unpack(0)[0]
+    
+    @value.setter
+    def value(self, v: Any):
+        self.struct_pack(0, v)
 
 
 T = TypeVar("T")

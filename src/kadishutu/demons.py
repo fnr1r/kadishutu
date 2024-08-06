@@ -2,7 +2,7 @@ from enum import Enum, auto
 from struct import calcsize, pack_into, unpack_from
 
 from .data.demons import DEMON_ID_MAP
-from .file_handling import BaseIdEditor, BaseEditor, BaseStructFieldEditor, structproperty
+from .file_handling import BaseDynamicEditor, BaseStructAsFieldEditor, structproperty
 from .skills import Skill, SkillEditor
 
 
@@ -22,53 +22,55 @@ AFFINITY_NAMES = [
 ]
 
 
-class SubStatsEditor(BaseStructFieldEditor):
-    FIELD_FMT = "<H"
+class SubStatsEditor(BaseDynamicEditor, BaseStructAsFieldEditor):
+    struct = "<H"
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        assert not unpack_from(self.FIELD_FMT, self.data, self.relative_field_offset(7))[0],\
+        assert not self.struct_obj.unpack_from(self.data, self.field_as_absolute_offset(7))[0],\
             "Supposed NULL is not a null????"
 
-    @structproperty(int, FIELD_FMT)
+    @structproperty(int, struct)
     def hp(self):
-        return self.relative_field_offset(0)
+        return self.field_as_absolute_offset(0)
 
-    @structproperty(int, FIELD_FMT)
+    @structproperty(int, struct)
     def mp(self):
-        return self.relative_field_offset(1)
+        return self.field_as_absolute_offset(1)
 
-    @structproperty(int, FIELD_FMT)
+    @structproperty(int, struct)
     def strength(self):
-        return self.relative_field_offset(2)
+        return self.field_as_absolute_offset(2)
 
-    @structproperty(int, FIELD_FMT)
+    @structproperty(int, struct)
     def vitality(self):
-        return self.relative_field_offset(3)
+        return self.field_as_absolute_offset(3)
 
-    @structproperty(int, FIELD_FMT)
+    @structproperty(int, struct)
     def magic(self):
-        return self.relative_field_offset(4)
+        return self.field_as_absolute_offset(4)
 
-    @structproperty(int, FIELD_FMT)
+    @structproperty(int, struct)
     def agility(self):
-        return self.relative_field_offset(5)
+        return self.field_as_absolute_offset(5)
 
-    @structproperty(int, FIELD_FMT)
+    @structproperty(int, struct)
     def luck(self):
-        return self.relative_field_offset(6)
+        return self.field_as_absolute_offset(6)
 
 
-class StatsEditor(BaseEditor):
+class StatsEditor(BaseDynamicEditor, BaseStructAsFieldEditor):
+    struct = "<HHHHHHHH"
+
     @property
     def base(self) -> SubStatsEditor:
-        return self.delegate(SubStatsEditor, 0)
+        return self.field_dispatch(SubStatsEditor, 0)
     @property
     def changes(self) -> SubStatsEditor:
-        return self.delegate(SubStatsEditor, STAT_TABLE_SIZE * 1)
+        return self.field_dispatch(SubStatsEditor, 1)
     @property
     def current(self) -> SubStatsEditor:
-        return self.delegate(SubStatsEditor, STAT_TABLE_SIZE * 2)
+        return self.field_dispatch(SubStatsEditor, 2)
     def max_with_sbis(self):
         target = 999
         changes = self.changes
@@ -90,14 +92,15 @@ class StatsEditor(BaseEditor):
 #        self.pack(id)
 
 
-class HealableEditor(BaseStructFieldEditor):
-    FIELD_FMT = "<H"
-    @structproperty(int, FIELD_FMT)
+class HealableEditor(BaseDynamicEditor, BaseStructAsFieldEditor):
+    struct = "<H"
+
+    @structproperty(int, struct)
     def hp(self) -> int:
-        return self.relative_field_offset(0)
-    @structproperty(int, FIELD_FMT)
+        return self.field_as_absolute_offset(0)
+    @structproperty(int, struct)
     def mp(self) -> int:
-        return self.relative_field_offset(1)
+        return self.field_as_absolute_offset(1)
 
 
 #class DemonIdEditor(SingularIntEditor):
@@ -135,47 +138,48 @@ def affinityprop(fmt):
     )    
 
 
-class AffinityEditor(BaseStructFieldEditor):
-    FIELD_FMT = "<H"
-    @affinityprop(FIELD_FMT)
+class AffinityEditor(BaseDynamicEditor, BaseStructAsFieldEditor):
+    struct = "<H"
+
+    @affinityprop(struct)
     def physical(self) -> int:
-        return self.relative_field_offset(0)
-    @affinityprop(FIELD_FMT)
+        return self.field_as_absolute_offset(0)
+    @affinityprop(struct)
     def fire(self) -> int:
-        return self.relative_field_offset(1)
-    @affinityprop(FIELD_FMT)
+        return self.field_as_absolute_offset(1)
+    @affinityprop(struct)
     def ice(self) -> int:
-        return self.relative_field_offset(2)
-    @affinityprop(FIELD_FMT)
+        return self.field_as_absolute_offset(2)
+    @affinityprop(struct)
     def electric(self) -> int:
-        return self.relative_field_offset(3)
-    @affinityprop(FIELD_FMT)
+        return self.field_as_absolute_offset(3)
+    @affinityprop(struct)
     def force(self) -> int:
-        return self.relative_field_offset(4)
-    @affinityprop(FIELD_FMT)
+        return self.field_as_absolute_offset(4)
+    @affinityprop(struct)
     def light(self) -> int:
-        return self.relative_field_offset(5)
-    @affinityprop(FIELD_FMT)
+        return self.field_as_absolute_offset(5)
+    @affinityprop(struct)
     def dark(self) -> int:
-        return self.relative_field_offset(6)
-    @affinityprop(FIELD_FMT)
+        return self.field_as_absolute_offset(6)
+    @affinityprop(struct)
     def poison(self) -> int:
-        return self.relative_field_offset(8)
-    @affinityprop(FIELD_FMT)
+        return self.field_as_absolute_offset(8)
+    @affinityprop(struct)
     def confusion(self) -> int:
-        return self.relative_field_offset(10)
-    @affinityprop(FIELD_FMT)
+        return self.field_as_absolute_offset(10)
+    @affinityprop(struct)
     def charm(self) -> int:
-        return self.relative_field_offset(11)
-    @affinityprop(FIELD_FMT)
+        return self.field_as_absolute_offset(11)
+    @affinityprop(struct)
     def sleep(self) -> int:
-        return self.relative_field_offset(12)
-    @affinityprop(FIELD_FMT)
+        return self.field_as_absolute_offset(12)
+    @affinityprop(struct)
     def seal(self) -> int:
-        return self.relative_field_offset(13)
-    @affinityprop(FIELD_FMT)
+        return self.field_as_absolute_offset(13)
+    @affinityprop(struct)
     def mirage(self) -> int:
-        return self.relative_field_offset(20)
+        return self.field_as_absolute_offset(20)
 
 
 class PType(Enum):
@@ -200,24 +204,22 @@ def gsproperty(p: PType):
     )
 
 
-class PotentialEditor(BaseStructFieldEditor):
-    FIELD_FMT = "<h"
+class PotentialEditor(BaseDynamicEditor, BaseStructAsFieldEditor):
+    struct = "<h"
 
-    def get_offset(self, t: PType) -> int:
-        return self.offset + t.value * self.SFMT_LEN
+    def get_absolute_offset(self, t: PType) -> int:
+        return self.offset + self.struct_obj.size * t.value
 
     def get(self, t: PType) -> int:
-        return unpack_from(
-            self.FIELD_FMT,
+        return self.struct_obj.unpack_from(
             self.data,
-            self.get_offset(t)
+            self.get_absolute_offset(t)
         )[0]
 
     def set(self, t: PType, potential: int):
-        pack_into(
-            self.FIELD_FMT,
+        self.struct_obj.pack_into(
             self.data,
-            self.get_offset(t),
+            self.get_absolute_offset(t),
             potential
         )
 
@@ -235,56 +237,56 @@ class PotentialEditor(BaseStructFieldEditor):
     _unknown = gsproperty(PType._UNKNOWN)
 
 
-class DemonEditor(BaseIdEditor):
+class DemonEditor(BaseDynamicEditor):
     @classmethod
     def id_to_offset(cls, id: int) -> int:
         return DEMON_TABLE_OFFSET + DEMON_ENTRY_SIZE * id
 
     @property
     def stats(self) -> StatsEditor:
-        return self.delegate(StatsEditor, 0)
+        return self.relative_dispatch(StatsEditor, 0)
     #@property
     #def friendship(self) -> FriendshipEditor:
     #    return self.at_offset(FriendshipEditor, 68)
     @structproperty(int, "<L")
     def friendship(self) -> int:
-        return self.relative_offset(68)
+        return self.relative_as_absolute_offset(68)
     #@structproperty(int, "<H") # , lambda u: bool(u), lambda t: int(t)
     #def is_summoned(self):
     #    return self.relative_offset(72)
     @structproperty(int, "<H")
     def dh_talks(self):
-        return self.relative_offset(74)
+        return self.relative_as_absolute_offset(74)
     @structproperty(int, "<I")
     def is_summoned(self):
-        return self.relative_offset(88)
+        return self.relative_as_absolute_offset(88)
     @property
     def healable(self) -> HealableEditor:
-        return self.delegate(HealableEditor, 100)
+        return self.relative_dispatch(HealableEditor, 100)
     @structproperty(int, "<Q")
     def exp(self) -> int:
-        return self.relative_offset(104)
+        return self.relative_as_absolute_offset(104)
     @structproperty(int, "<B")
     def level(self):
-        return self.relative_offset(112)
+        return self.relative_as_absolute_offset(112)
     #@property
     #def demon_id(self) -> DemonIdEditor:
     #    return self.at_offset(DemonIdEditor, 114)
     @structproperty(int, "<H")
     def demon_id(self):
-        return self.relative_offset(114)
+        return self.relative_as_absolute_offset(114)
     @property
     def skills(self) -> SkillEditor:
-        return self.delegate(SkillEditor, 120)
+        return self.relative_dispatch(SkillEditor, 120)
     @property
     def affinities(self) -> AffinityEditor:
-        return self.delegate(AffinityEditor, 216)
+        return self.relative_dispatch(AffinityEditor, 216)
     @property
     def potentials(self) -> PotentialEditor:
-        return self.delegate(PotentialEditor, 384)
+        return self.relative_dispatch(PotentialEditor, 384)
     @property
     def innate_skill(self) -> Skill:
-        return self.delegate(Skill, 408 - calcsize("<I"))
+        return self.relative_dispatch(Skill, 408 - calcsize("<I"))
 
     @property
     def name(self) -> str:

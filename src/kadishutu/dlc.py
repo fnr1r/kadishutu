@@ -3,7 +3,7 @@ from math import log
 from typing import Dict, List
 from typing_extensions import Self
 
-from .file_handling import BaseStructEditor
+from .file_handling import BaseStaticEditor, BaseStructAsSingularValueEditor, BaseStructEditor
 
 
 DLCS = {
@@ -46,14 +46,15 @@ class DlcBitflags(IntFlag):
         return [DLCS[int(log(i.value, 2))] for i in self]
 
 
-class DlcEditor(BaseStructEditor):
-    fmt = "<B"
+class DlcEditor(BaseStaticEditor, BaseStructAsSingularValueEditor):
+    offset = 0x529
+    struct = "<B"
 
     def get(self) -> DlcBitflags:
-        return DlcBitflags(self.unpack()[0])
+        return DlcBitflags(self.value)
 
     def set(self, value: DlcBitflags):
-        self.pack(value.value)
+        self.value = value.value
 
     flags = property(lambda x: x.get(), lambda x, y: x.set(y))
 

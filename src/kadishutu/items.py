@@ -3,7 +3,7 @@ from dataclasses_json import DataClassJsonMixin
 from typing import Dict, List, Optional
 
 from .data.items import BUILTIN_ITEM_TABLE, ITEM_TABLE_OFFSET
-from .file_handling import BaseEditor, SingularIntEditor
+from .file_handling import BaseDynamicEditor, BaseStaticEditor, BaseStructAsSingularValueEditor
 
 
 @dataclass
@@ -31,8 +31,8 @@ class ItemTable(DataClassJsonMixin):
 ITEM_TABLE = ItemTable.from_dict({"items": BUILTIN_ITEM_TABLE})
 
 
-class Item(SingularIntEditor):
-    fmt = "<B"
+class Item(BaseDynamicEditor, BaseStructAsSingularValueEditor):
+    struct = "<B"
 
     @property
     def item_info(self) -> ItemInfo:
@@ -50,18 +50,21 @@ class Item(SingularIntEditor):
     def name(self) -> str:
         return self.item_info.name
 
-    amount = property(lambda x: x.get(), lambda x, y: x.set(y))
+    amount = property(lambda x: x.value, lambda x, y: x.struct_pack(0, y))
 
     @property
     def limit(self) -> int:
         return self.item_info.get_limit()
 
 
-class ItemManager(BaseEditor):
+class ItemManager(BaseStaticEditor):
+    offset = 0x4c72
+
     def at_offset(self, offset: int) -> Item:
-        return Item(self.saveobj, offset)
+        return self.dispatch(Item, offset)
+
     def from_name(self, name: str) -> Item:
-        return Item(self.saveobj, [
+        return self.at_offset([
             i
             for i in ITEM_TABLE.items
             if i.name == name

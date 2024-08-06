@@ -1,7 +1,7 @@
 from struct import calcsize, unpack_from
 
 from .demons import AffinityEditor, HealableEditor, PotentialEditor, StatsEditor
-from .file_handling import BaseEditor, BaseStructEditor, structproperty
+from .file_handling import BaseDynamicEditor, BaseStaticEditor, BaseStructEditor, structproperty
 from .skills import Skill, SkillEditor
 
 
@@ -9,12 +9,12 @@ ENCODING = "UTF-16LE"
 NAME_LENGTH = 8
 
 
-class NameEdit(BaseStructEditor):
+class NameEdit(BaseDynamicEditor, BaseStructEditor):
     length: int
     ikwid: bool
 
-    def __init__(self, saveobj, offset, length: int):
-        super().__init__(saveobj, offset)
+    def __init__(self, master, offset, length: int):
+        super().__init__(master, offset)
         self.length = length
         self.fmt = f"<{self.blength}s"
         self.ikwid = False
@@ -41,7 +41,8 @@ class NameEdit(BaseStructEditor):
         self.raw_set(res)
 
 
-class NameManager(BaseEditor):
+class NameManager(BaseStaticEditor):
+    offset = 0
     over_limit = False
 
     @property
@@ -49,59 +50,61 @@ class NameManager(BaseEditor):
         length = NAME_LENGTH
         if self.over_limit:
             length = 12
-        return NameEdit(self.saveobj, 0x4d8, length)
+        return self.dispatch(NameEdit, 0x4d8, length)
 
     @property
     def first_name(self) -> NameEdit:
         length = NAME_LENGTH
         if self.over_limit:
             length = 12
-        return NameEdit(self.saveobj, 0x9d0, length)
+        return self.dispatch(NameEdit, 0x9d0, length)
 
     @property
     def last_name(self) -> NameEdit:
         length = NAME_LENGTH
         if self.over_limit:
             length = 10
-        return NameEdit(self.saveobj, 0x9e8, length)
+        return self.dispatch(NameEdit, 0x9e8, length)
 
     @property
     def first_name_again(self) -> NameEdit:
         length = NAME_LENGTH
         if self.over_limit:
             length = 10
-        return NameEdit(self.saveobj, 0x9fc, length)
+        return self.dispatch(NameEdit, 0x9fc, length)
 
     @property
     def combined_name(self) -> NameEdit:
         length = NAME_LENGTH * 2 + 1
         if self.over_limit:
             length = 20
-        return NameEdit(self.saveobj, 0xa10, length)
+        return self.dispatch(NameEdit, 0xa10, length)
 
 
-class PlayerEditor(BaseEditor):
+class PlayerEditor(BaseStaticEditor):
+    offset = 0
+
     @property
     def names(self) -> NameManager:
-        return NameManager(self.saveobj, 0)
+        return self.dispatch(NameManager)
     @property
     def stats(self) -> StatsEditor:
-        return StatsEditor(self.saveobj, 0x988)
+        return self.dispatch(StatsEditor, 0x988)
     @property
     def healable(self) -> HealableEditor:
-        return HealableEditor(self.saveobj, 0x9bc)
+        return self.dispatch(HealableEditor, 0x9bc)
     @structproperty(int, "<B")
     def level(self) -> int:
         return 0x9c8
     @property
     def skills(self) -> SkillEditor:
-        return SkillEditor(self.saveobj, 0xa38)
+        return self.dispatch(SkillEditor, 0xa38)
     @property
     def affinities(self) -> AffinityEditor:
-        return AffinityEditor(self.saveobj, 0xa98)
+        return self.dispatch(AffinityEditor, 0xa98)
     @property
     def potentials(self) -> PotentialEditor:
-        return PotentialEditor(self.saveobj, 0xb38)
+        return self.dispatch(PotentialEditor, 0xb38)
     @property
     def innate_skill(self) -> Skill:
-        return Skill(self.saveobj, 0xb50 - calcsize("<I"))
+        return self.dispatch(Skill, 0xb50 - calcsize("<I"))

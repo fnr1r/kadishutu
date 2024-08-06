@@ -7,7 +7,7 @@ from .alignment import AlignmentManager
 from .dlc import DlcEditor
 from .demons import DemonEditor
 from .essences import EssenceManager
-from .file_handling import BaseEditor, MasterEditor, structproperty
+from .file_handling import BaseMasterEditor, BaseStaticEditor, structproperty
 from .items import ItemManager
 from .player import PlayerEditor
 
@@ -19,7 +19,7 @@ SUMMONED_DEMONS_OFFSET = 0x3d2e
 TEAM_TUPLE = Tuple[Optional[int], Optional[int], Optional[int]]
 
 
-class TeamEditor(BaseEditor):
+class TeamEditor(BaseStaticEditor):
     NO_DEMON = 0xff
     @property
     def summoned_demons(self) -> TEAM_TUPLE:
@@ -30,7 +30,8 @@ class TeamEditor(BaseEditor):
         return tuple(demons)
     @summoned_demons.setter
     def summoned_demons(self, demons: TEAM_TUPLE):
-        save = SaveEditor(self.saveobj)
+        save = self.master
+        assert isinstance(save, SaveEditor)
         # Unset is_summoned flag
         old_demon_list = list(self.summoned_demons)
         print(old_demon_list)
@@ -64,7 +65,8 @@ class Vector3:
         return (self.x, self.z, self.y)
 
 
-class PositionEditor(BaseEditor):
+class PositionEditor(BaseStaticEditor):
+    offset = 0
     CORD_OFFSET = 0x568e
     CORD_STRUCT = Struct("<fff")
     ROT_OFFSET = 0x56a6
@@ -117,7 +119,7 @@ class PositionEditor(BaseEditor):
         return 0x68c5
 
 
-class SaveEditor(MasterEditor):
+class SaveEditor(BaseMasterEditor):
     @structproperty(
         datetime, "<Q",
         lambda u: datetime.min + timedelta(microseconds=u/10),
@@ -127,7 +129,7 @@ class SaveEditor(MasterEditor):
         return 0x4f4
     @property
     def dlc(self) -> DlcEditor:
-        return DlcEditor(self.saveobj, 0x529)
+        return self.dispatch(DlcEditor)
 
     @structproperty(
         timedelta, "<L",
@@ -138,12 +140,13 @@ class SaveEditor(MasterEditor):
         return 0x5d0
     @property
     def player(self) -> PlayerEditor:
-        return PlayerEditor(self.saveobj, 0)
+        return self.dispatch(PlayerEditor)
 
     def demon(self, id: int) -> DemonEditor:
         if id > 23:
             raise RuntimeWarning(f"Demon {id} data might be invalid")
-        return DemonEditor(self.saveobj, id)
+        offset = DemonEditor.id_to_offset(id)
+        return self.dispatch(DemonEditor, offset)
 
     #MACCA = Struct("<I")
     #@property
@@ -162,7 +165,7 @@ class SaveEditor(MasterEditor):
 
     @property
     def team(self) -> TeamEditor:
-        return TeamEditor(self.saveobj, 0)
+        return self.dispatch(TeamEditor)
 
     @structproperty(int, "<H")
     def magatsuhi_gauge(self) -> int:
@@ -170,16 +173,16 @@ class SaveEditor(MasterEditor):
 
     @property
     def items(self) -> ItemManager:
-        return ItemManager(self.saveobj, 0x4c72)
+        return self.dispatch(ItemManager)
 
     @property
     def essences(self) -> EssenceManager:
-        return EssenceManager(self.saveobj, 0x4da9)
+        return self.dispatch(EssenceManager)
 
     @property
     def position(self) -> PositionEditor:
-        return PositionEditor(self.saveobj, 0)
+        return self.dispatch(PositionEditor)
 
     @property
     def alignment(self) -> AlignmentManager:
-        return AlignmentManager(self.saveobj, 0)
+        return self.dispatch(AlignmentManager)

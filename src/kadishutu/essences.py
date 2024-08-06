@@ -1,7 +1,7 @@
 from enum import Enum
 
 from .data.essences import ESSENCE_OFFSETS, ESSENCE_RANGE
-from .file_handling import BaseEditor
+from .file_handling import BaseEditor, BaseStaticEditor
 from .items import Item
 
 
@@ -55,11 +55,14 @@ class Essence(Item):
     #        self.metadata = EssenceMetadata.Owned
 
 
-class EssenceManager(BaseEditor):
+class EssenceManager(BaseStaticEditor):
+    offset = 0x4da9
+
     def at_offset(self, offset: int) -> Essence:
-        return Essence(self.saveobj, offset)
+        return self.dispatch(Essence, offset)
+
     def from_name(self, name: str) -> Essence:
-        return Essence(self.saveobj, [
+        return self.at_offset([
             i
             for i in ESSENCE_OFFSETS
             if i["name"] == name
