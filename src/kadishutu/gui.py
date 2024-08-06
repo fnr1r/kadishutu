@@ -611,8 +611,10 @@ class AlignmentFlagEditorTk(Frame):
             f.pack(expand=True, fill="x")
             f = Frame(self)
             Label(f, text="\n".join(bit.text)).pack(side="left")
-            MutCheckbutton(f, value=alignment[bit.bit]).pack(side="left", padx=8)
+            button = MutCheckbutton(f, value=alignment[bit.bit])
+            button.pack(side="left", padx=8)
             f.pack(expand=True, fill="x")
+            self.flagd[bit.bit] = button
 
         Button(self, text="Save", command=self.save).pack()
 
