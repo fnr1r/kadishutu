@@ -2,7 +2,7 @@ from abc import ABC, abstractmethod
 from enum import Enum, auto
 from pathlib import Path
 import sys
-from typing import Callable, List, Optional
+from typing import Callable, Dict, List, Optional
 from PySide6 import QtWidgets
 import PySide6
 import PySide6.QtCore
@@ -13,6 +13,7 @@ from PySide6.QtGui import QCloseEvent
 #)
 from PySide6.QtWidgets import *
 
+from .demons import STATS_NAMES, HealableEditor, StatsEditor
 from .file_handling import DecryptedSave
 from .game import SaveEditor
 
@@ -25,6 +26,13 @@ class QModifiedMixin:
 
     def setModified(self, modified: bool):
         self._modified = modified
+
+
+class QU16(QSpinBox, QModifiedMixin):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.setMaximum(2 ** 15 -1)
+        self.valueChanged.connect(lambda _: self.setModified(True))
 
 
 class QU32(QSpinBox, QModifiedMixin):
@@ -46,11 +54,12 @@ class EditorMixin:
     def mixin(self):
         parent = self.game_save_editor
         self.save = parent.save
-        self.stack_add = parent.inner_add
-        self.stack_remove = parent.inner_back
+        self.stack_add = parent.stack_add
+        self.stack_remove = parent.stack_remove
 
     @property
     def game_save_editor(self) -> "GameSaveEditor":
+        assert hasattr(self, "parentWidget")
         widget = self.parentWidget()
         for _ in range(4):
             if isinstance(widget, GameSaveEditor):
@@ -75,10 +84,10 @@ class GScrollArea(EditorMixin, QScrollArea):
     pass
 
 
-class SavableWidget:
+class AppliableWidget:
     @abstractmethod
-    def save_changes(self):
-        ...
+    def apply_changes(self):
+        raise NotImplementedError
 
 
 def hboxed(parent: QWidget, *args: QWidget):
@@ -92,31 +101,90 @@ def hboxed(parent: QWidget, *args: QWidget):
     return w
 
 
+class StatEditorScreen(GWidget, AppliableWidget):
+    STAT_TYPES = ["Base", "Changes", "Current", "Healable"]
+
+    def __init__(self, stats: StatsEditor, healable: HealableEditor, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.stats = stats
+        self.healable = healable
+        self.labels = []
+        self.widgets: Dict[str, Dict[str, QU16]] = {}
+        self.l = QGridLayout()
+        self.setLayout(self.l)
+        for i in range(0, 4):
+            text = self.STAT_TYPES[i]
+            l = QLabel(text, self)
+            self.l.addWidget(l, 0, i + 1)
+            self.labels.append(l)
+            self.widgets[text.lower()] = {}
+        for i, stat in enumerate(STATS_NAMES, 1):
+            l = QLabel(stat, self)
+            self.labels.append(l)
+            self.l.addWidget(l, i, 0)
+            stat = stat.lower()
+            for j in range(1, 4):
+                widget = QU16(self)
+                ty = self.STAT_TYPES[j - 1].lower()
+                val = self.stats.__getattribute__(ty).__getattribute__(stat)
+                widget.setValue(val)
+                self.widgets[ty][stat] = widget
+                self.l.addWidget(widget, i, j)
+        for i, stat in enumerate(["hp", "mp"], 1):
+            widget = QU16(self)
+            val = self.healable.__getattribute__(stat)
+            widget.setValue(val)
+            self.widgets["healable"][stat] = widget
+            self.l.addWidget(widget, i, 4)
+
+    def apply_widget(self, ty: str, stat: str, widget: QU16):
+        if not widget.getModified():
+            return
+        if ty == "healable":
+            self.healable.__setattr__(stat, widget.value())
+        else:
+            self.stats.__getattribute__(ty).__setattr__(stat, widget.value())
+        widget.setModified(False)
+
+    def apply_changes(self):
+        for ty, v in self.widgets.items():
+            for stat, widget in v.items():
+                self.apply_widget(ty, stat, widget)
+
+
 class DemonSelectorScreen(GWidget):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.l = QGridLayout()
         self.setLayout(self.l)
-        #self.outer = QScrollArea(self)
-        #self.outer.setWidget(self)
         self.demons = []
         for demon_number in range(24):
             demon = self.save.demon(demon_number)
+            sel = QPushButton(self)
             if demon.demon_id == 0xffff:
                 demon_txt = "None"
+                sel.setEnabled(False)
             else:
                 try:
                     demon_txt = demon.name
                 except:
                     demon_txt = f"Unknown ({demon.demon_id})"
-            sel = QPushButton(f"Demon {demon_number}: {demon_txt}", self)
-            row = int(demon_number / 4)
-            column = demon_number % 4
+            sel.setText(f"Demon {demon_number}: {demon_txt}")
+            sel.clicked.connect(self.demon_stats(demon_number))
+            COLUMNS = 4
+            row = demon_number // COLUMNS
+            column = demon_number % COLUMNS
             self.l.addWidget(sel, row, column)
             self.demons.append(sel)
 
+    def demon_stats(self, demon_number: int):
+        demon = self.save.demon(demon_number)
+        return lambda: self.stack_add(
+            StatEditorScreen(demon.stats, demon.healable, self)
+        )
 
-class GameMainScreen(GWidget, SavableWidget):
+
+class GameMainScreen(GWidget, AppliableWidget):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.setLayout(QVBoxLayout())
@@ -134,7 +202,7 @@ class GameMainScreen(GWidget, SavableWidget):
         widget = DemonSelectorScreen(self)
         self.stack_add(widget)
 
-    def save_changes(self):
+    def apply_changes(self):
         if self.macca.getModified():
             self.save.macca = self.macca.value()
             self.macca.setModified(False)
@@ -142,54 +210,71 @@ class GameMainScreen(GWidget, SavableWidget):
 
 class GameSaveEditor(QMainWindow):
     path: Path
+    raw_save: DecryptedSave
     save: SaveEditor
     modified: bool
     widget_stack: List[QWidget]
 
-    def __init__(self, path: Path, save: SaveEditor, close_callback, *args, **kwargs):
+    def __init__(
+        self,
+        path: Path,
+        raw_save: DecryptedSave,
+        close_callback,
+        *args,
+        **kwargs
+    ):
         super().__init__(*args, **kwargs)
         self.path = path
-        self.save = save
+        self.raw_save = raw_save
+        self.save = SaveEditor(raw_save)
         self.close_callback = close_callback
         self.modified = False
         self.widget_stack = []
         #self.resize(1280, 720)
         self.file_menu = QMenu("File", self)
-        self.file_menu.addAction("Save")
-        self.file_menu.addAction("Save as")
+        self.save_button = self.file_menu.addAction("Save")
+        self.save_button.triggered.connect(self.on_save)
+        self.save_as_button = self.file_menu.addAction("Save as")
+        self.save_as_button.triggered.connect(self.on_save_as)
         self.menuBar().addMenu(self.file_menu)
         self.menu_separator = self.menuBar().addSeparator()
-        self.save_button = self.menuBar().addAction("Apply")
-        self.save_button.triggered.connect(self.on_save)
+        self.apply_button = self.menuBar().addAction("Apply")
+        self.apply_button.triggered.connect(self.on_apply)
         self.back_button = self.menuBar().addAction("Back")
-        self.back_button.triggered.connect(self.inner_back)
+        self.back_button.triggered.connect(self.stack_remove)
         self.inner = QStackedWidget(self)
         self.setCentralWidget(self.inner)
-        self.inner_add(GameMainScreen(self.inner))
+        self.stack_add(GameMainScreen(self.inner))
         self.back_button.setEnabled(False)
 
     def on_save(self):
+        self.raw_save.encrypt().save(self.path)
+
+    def on_save_as(self):
+        pass
+
+    def on_apply(self):
         widget = self.widget_stack[-1]
-        if not isinstance(widget, SavableWidget):
+        if not isinstance(widget, AppliableWidget):
             raise NotImplementedError
         self.modified = True
-        widget.save_changes()
+        widget.apply_changes()
 
-    def refresh_save_action(self, widget: QWidget):
-        if isinstance(widget, SavableWidget):
-            self.save_button.setEnabled(True)
+    def refresh_apply_action(self, widget: QWidget):
+        if isinstance(widget, AppliableWidget):
+            self.apply_button.setEnabled(True)
         else:
-            self.save_button.setEnabled(False)
+            self.apply_button.setEnabled(False)
 
-    def inner_add(self, widget: QWidget):
+    def stack_add(self, widget: QWidget):
         widget.setParent(self.inner)
         self.widget_stack.append(widget)
         self.inner.addWidget(widget)
         self.inner.setCurrentWidget(widget)
         self.back_button.setEnabled(True)
-        self.refresh_save_action(widget)
+        self.refresh_apply_action(widget)
 
-    def inner_back(self):
+    def stack_remove(self):
         if len(self.widget_stack) < 2:
             raise ValueError("Refusing to go back with widget stack at 1")
         widget = self.widget_stack.pop()
@@ -197,13 +282,13 @@ class GameSaveEditor(QMainWindow):
         #self.inner.setCurrentWidget(self.widget_stack[-1])
         if len(self.widget_stack) < 2:
             self.back_button.setEnabled(False)
-        self.refresh_save_action(self.widget_stack[-1])
+        self.refresh_apply_action(self.widget_stack[-1])
 
-    @property
-    def game_main_screen(self) -> GameMainScreen:
-        widget = self.widget_stack[0]
-        assert isinstance(widget, GameMainScreen)
-        return widget
+    #@property
+    #def game_main_screen(self) -> GameMainScreen:
+    #    widget = self.widget_stack[0]
+    #    assert isinstance(widget, GameMainScreen)
+    #    return widget
 
     def closeEvent(self, event: QCloseEvent) -> None:
         if self.modified:
@@ -315,8 +400,7 @@ class FileSelectorMenu(QWidget):
                 QMessageBox.StandardButton.Ok
             )
             return
-        save = SaveEditor(self.raw)
-        editor = GameSaveEditor(self.file_path.path, save, self.editors_cleanup, self)
+        editor = GameSaveEditor(self.file_path.path, self.raw, self.editors_cleanup, self)
         editor.show()
         self.editors.append(editor)
 
@@ -349,6 +433,8 @@ class MainWindow(QMainWindow):
         if not path:
             return
         self.file_selector.file_path.path = path
+        self.show()
+        self.file_selector.file_edit.click()
 
 
 def gui_main(args):
