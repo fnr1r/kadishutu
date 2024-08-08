@@ -1,14 +1,9 @@
 from abc import abstractmethod
 from enum import Enum, auto
-import os
 from pathlib import Path
 import sys
-from typing import Dict, List, Optional, Tuple
-from PIL import Image as ModImage
-from PIL.Image import Image
-from PIL.ImageQt import ImageQt
-from PySide6.QtCore import QSize
-from PySide6.QtGui import QCloseEvent, QIcon, QPixmap
+from typing import Dict, List, Optional
+from PySide6.QtGui import QCloseEvent
 #from PySide6.QtWidgets import (
 #    QApplication, QComboBox, QFileDialog, QHBoxLayout, QLabel, QLineEdit,
 #    QMainWindow, QPushButton, QVBoxLayout, QWidget
@@ -21,11 +16,16 @@ from .game import SaveEditor
 from .gui_icons import ICON_LOADER
 
 
+# RuntimeWarning: libshiboken: Overflow: Value 7378697629483820646 exceeds
+# limits of type  [signed] "i" (4bytes).
+SHIBOKEN_MAX = 2 ** 31 - 1
+
+
 MAIN_WINDOW: "MainWindow"
 
 
 class QModifiedMixin:
-    _modified: bool
+    _modified: bool = False
 
     def getModified(self) -> bool:
         return self._modified
@@ -34,17 +34,24 @@ class QModifiedMixin:
         self._modified = modified
 
 
+class QU8(QSpinBox, QModifiedMixin):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.setMaximum(2 ** 8 -1)
+        self.valueChanged.connect(lambda _: self.setModified(True))
+
+
 class QU16(QSpinBox, QModifiedMixin):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.setMaximum(2 ** 15 -1)
+        self.setMaximum(2 ** 16 -1)
         self.valueChanged.connect(lambda _: self.setModified(True))
 
 
 class QU32(QSpinBox, QModifiedMixin):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.setMaximum(2 ** 31 -1)
+        self.setMaximum(SHIBOKEN_MAX)
         self.valueChanged.connect(lambda _: self.setModified(True))
 
 
@@ -150,6 +157,10 @@ class StatEditorScreen(GWidget, AppliableWidget):
                 self.apply_widget(ty, stat, widget)
 
 
+class DemonEditorScreen(StatEditorScreen):
+    pass
+
+
 class DemonSelectorScreen(GWidget):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -185,7 +196,7 @@ class DemonSelectorScreen(GWidget):
     def demon_stats(self, demon_number: int):
         demon = self.save.demon(demon_number)
         return lambda: self.stack_add(
-            StatEditorScreen(demon.stats, demon.healable, self)
+            DemonEditorScreen(demon.stats, demon.healable, self)
         )
 
 
@@ -332,17 +343,17 @@ class FileSelectorMenu(QWidget):
         self.raw = DecryptedSave.auto_open(path)
         self.file_open.setEnabled(True)
         raw = self.raw
-        if len(raw.data) == 4832:
+        if len(raw.data) == 0x12e0:
             self.ty = SaveType.SysSave
-        else:
-            assert len(raw.data) == 449680
-            self.ty = SaveType.GameSave
-        self.file_type.setCurrentText(self.ty.name)
-        if self.ty == SaveType.SysSave:
             self.file_preview.empty()
-            return
-        save = SaveEditor(raw)
-        self.file_preview.update(save)
+        elif len(raw.data) == 0x6dc90:
+            self.ty = SaveType.GameSave
+            self.file_type.setCurrentText(self.ty.name)
+            save = SaveEditor(raw)
+            self.file_preview.update(save)
+        else:
+            self.raw = None
+            self.file_preview.empty()
 
 
 class LocationBar(QScrollArea):
