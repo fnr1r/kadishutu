@@ -18,38 +18,10 @@ from PySide6.QtWidgets import *
 from .demons import STATS_NAMES, HealableEditor, StatsEditor
 from .file_handling import DecryptedSave
 from .game import SaveEditor
+from .gui_icons import ICON_LOADER
 
 
 MAIN_WINDOW: "MainWindow"
-
-
-try:
-    UMODEL_EXPORT_PATH = os.environ["SMTVV_UMODEL_EXPORT"]
-except KeyError:
-    UMODEL_EXPORT_PATH = ""
-DEMON_ICON_PATH = UMODEL_EXPORT_PATH + "/Game/Design/UI/CharaIcon/Textures/dev{id:03}.tga"
-
-_DEMON_ICON_CACHE: Dict[int, Tuple[Image, QPixmap, QIcon]] = {}
-
-
-def demon_icon(id: int) -> Tuple[Image, QPixmap, QIcon]:
-    if id == 0xffff:
-        raise ValueError
-    try:
-        pak = _DEMON_ICON_CACHE[id]
-    except KeyError:
-        imgx = ModImage.open(DEMON_ICON_PATH.format(id=id))
-        (width, height) = imgx.size
-        crop_hor = 100
-        crop_ver = 40
-        box = (crop_hor, crop_ver, width - crop_hor, height - crop_ver)
-        imgx = imgx.crop(box)
-        xx = ImageQt(imgx)
-        pix = QPixmap.fromImage(xx)
-        icon = QIcon()
-        icon.addPixmap(pix)
-        _DEMON_ICON_CACHE[id] = pak = (imgx, pix, icon)
-    return pak
 
 
 class QModifiedMixin:
@@ -196,14 +168,12 @@ class DemonSelectorScreen(GWidget):
                 except:
                     demon_txt = f"Unknown ({demon.demon_id})"
                 try:
-                    (_, pix, icon) = demon_icon(demon.demon_id)
-                    sel.setIcon(icon)
-                    size = QSize()
-                    size.setWidth(pix.size().width() // 4)
-                    size.setHeight(pix.size().height() // 4)
-                    sel.setIconSize(size)
+                    icon = ICON_LOADER.mini_character_icon(demon.demon_id)
                 except Exception as e:
                     print("Failed to load demon icon:", e)
+                else:
+                    sel.setIcon(icon.icon)
+                    sel.setIconSize(icon.size_div(2))
             sel.setText(f"Demon {demon_number}: {demon_txt}")
             sel.clicked.connect(self.demon_stats(demon_number))
             COLUMNS = 4
