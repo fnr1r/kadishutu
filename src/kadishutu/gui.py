@@ -244,13 +244,13 @@ class FileSelector(QWidget):
         self._path = path
         self.file_path_display.setText(str(path))
 
-    def on_file_selected(self, file: str):
-        self.path = Path(file)
-
     def on_select_clicked(self):
-        dialog = QFileDialog(self)
-        dialog.fileSelected.connect(self.on_file_selected)
-        dialog.exec()
+        (pathstr, _) = QFileDialog.getOpenFileName(self)
+        if not pathstr:
+            return
+        path = Path(pathstr)
+        self._path = path
+        self.file_path_display.setText(pathstr)
 
 
 class FileSelectorPreview(QWidget):
@@ -486,7 +486,12 @@ class MainWindow(QMainWindow):
         self.inner.editor_widget.modified = False
 
     def on_save_as(self):
-        pass
+        (pathstr, _) = QFileDialog.getSaveFileName(self)
+        if not pathstr:
+            return
+        path = Path(pathstr)
+        self.inner.editor_widget.raw_save.encrypt().save(path)
+        self.inner.editor_widget.modified = False
 
     def on_file_close(self):
         if self.alert_abandoning_modifications():
