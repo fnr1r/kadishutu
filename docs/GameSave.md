@@ -128,7 +128,7 @@ For some reason, there are two values that dictate difficulty.
 
 Data for 0x20:
 
-- Godborn save from Bai Gaming: 1371 c242
+- Clear save from Bai Gaming: 1371 c242
 - Hard: ac4b 2f81
 - Normal: 0000 0000
 - Casual: 1600 0000
@@ -136,12 +136,14 @@ Data for 0x20:
 
 Data for 0x4fc (the real difficulty???):
 
-- Godborn save from Bai Gaming: 82????
+- Clear save from Bai Gaming: 82????
 - Hard: 03
 - Normal: 02
 - Casual: 01
 - Safety: 00
-- (assuming 04 would be godborn)
+
+Godborn IS NOT a difficulty setting, so it's (most likely) stored
+somewhere else.
 
 ## Name info
 
