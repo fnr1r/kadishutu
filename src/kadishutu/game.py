@@ -1,5 +1,6 @@
 from dataclasses import dataclass
 from datetime import datetime, timedelta
+from enum import Enum, auto
 from struct import Struct, pack_into, unpack_from
 from typing import Optional, Tuple
 
@@ -119,6 +120,13 @@ class PositionEditor(BaseStaticEditor):
         return 0x68c5
 
 
+class Difficulty(Enum):
+    Safety = 0
+    Casual = auto()
+    Normal = auto()
+    Hard = auto()
+
+
 class SaveEditor(BaseMasterEditor):
     @structproperty(
         datetime, "<Q",
@@ -127,6 +135,15 @@ class SaveEditor(BaseMasterEditor):
     )
     def time_of_saving(self) -> int:
         return 0x4f4
+
+    @structproperty(
+        Difficulty, "<B",
+        lambda u: Difficulty(u),
+        lambda t: t.value
+    )
+    def difficulty(self) -> int:
+        return 0x4fc
+
     @property
     def dlc(self) -> DlcEditor:
         return self.dispatch(DlcEditor)

@@ -27,6 +27,10 @@ KEY = bytes([0x30, 0x31, 0x32, 0x33, 0x34, 0x35, 0x36, 0x37,
 - 0x4f4 - 0x4fc - [Time of Saving](#time-of-saving-info)  
   (an unsigned long long / u64 (8 bytes))
 - 0x4fc - 0x4fd - [Difficulty?](#difficulty-values)
+- 0x502 - 0x503 - [Cycles](#cycles-value)  
+  (an unsigned char / u8 (1 byte))
+- 0x503 - 0x504 - [Endings](#endings-value)  
+  (an unsigned char / u8 (1 byte))
 - 0x504 - 0x524 - [Demon Icons Block](#demon-icons-block)  
   (32 bytes)
 - 0x524 - 0x528 - [Save location](#save-location)  
@@ -121,6 +125,19 @@ This includes (but is not limited to):
 This is also why the workaround from
 [issue #1](https://github.com/fnr1r/kadishutu/issues/1#issuecomment-2255997834)
 worked.
+
+### Cycles value
+
+It's an unsigned char / u8 (1 byte) with an in-game cap of 99.
+
+### Endings value
+
+- 0x01 - Creation - Neutral
+- 0x02 - Creation - Law
+- 0x04 - Creation - Chaos
+- 0x08 - Creation - True Neutral
+- 0x10 - Vengeance - Law
+- 0x20 - Vengeance - Chaos
 
 ## Difficulty values
 
