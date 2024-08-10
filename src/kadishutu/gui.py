@@ -288,7 +288,6 @@ class FileSelectorPreview(QWidget):
         self.location.setText("Location: TODO")
         self.layout().addWidget(self.location)
         self.difficulty = QLabel(self)
-        self.difficulty.setText("Difficulty: TODO")
         self.layout().addWidget(self.difficulty)
         self.play_time = QLabel(self)
         self.layout().addWidget(self.play_time)
@@ -298,11 +297,13 @@ class FileSelectorPreview(QWidget):
 
     def empty(self):
         self.name.setText("Name: N/A")
+        self.difficulty.setText("Difficulty: N/A")
         self.play_time.setText("Play Time: N/A")
         self.date.setText("Date: N/A")
 
     def update(self, save: SaveEditor):
         self.name.setText("Name: " + save.player.names.save_name.get())
+        self.difficulty.setText("Difficulty: " + save.difficulty.name)
         self.play_time.setText("Play Time: " + str(save.play_time))
         self.date.setText("Date: " + str(save.time_of_saving))
 
