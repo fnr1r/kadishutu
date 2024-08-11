@@ -1,6 +1,6 @@
 from typing import Dict, Optional
 
-from .data.items import ITEMS, Item
+from .data.items import ITEM_ID_MAP, ITEM_NAME_MAP, ITEM_TABLE_OFFSET, Item
 from .file_handling import BaseDynamicEditor, BaseStaticEditor, BaseStructAsSingularValueEditor
 
 
@@ -14,11 +14,7 @@ class ItemEditor(BaseDynamicEditor, BaseStructAsSingularValueEditor):
     @property
     def item_meta(self) -> Item:
         if not self._item_meta:
-            self._item_meta = [
-                item
-                for item in ITEMS
-                if item.offset == self.offset
-            ][0]
+            self._item_meta = ITEM_ID_MAP[self.offset - ITEM_TABLE_OFFSET]
         return self._item_meta
 
     @property
@@ -46,8 +42,4 @@ class ItemManager(BaseStaticEditor):
         return self.at_offset(item.offset, item_meta=item)
 
     def from_name(self, name: str) -> ItemEditor:
-        return self.from_meta([
-            item
-            for item in ITEMS
-            if item.name == name
-        ][0])
+        return self.from_meta(ITEM_NAME_MAP[name])
