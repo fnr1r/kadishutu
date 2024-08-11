@@ -499,10 +499,15 @@ class ItemEditorScreen(GTabWidget, AppliableWidget):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.tabs: List[ItemEditorWidget] = []
-
-        consumables = ItemEditorWidget(self)
-        self.tabs.append(consumables)
-        self.addTab(consumables, "Consumables")
+        
+        for name, func in [
+            ("Consumables", lambda: ItemEditorWidget(self)),
+            ("Relics", lambda: GWidget(self)),
+            ("Key Items", lambda: GWidget(self))
+        ]:
+            widget = func()
+            self.tabs.append(widget)
+            self.addTab(widget, name)
 
     def stack_refresh(self):
         for tab in self.tabs:
