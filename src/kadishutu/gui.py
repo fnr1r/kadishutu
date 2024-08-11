@@ -5,18 +5,26 @@ from pathlib import Path
 import sys
 from typing import Any, Callable, Dict, List, Optional, Tuple
 from PySide6.QtGui import QCloseEvent
-#from PySide6.QtWidgets import (
-#    QApplication, QComboBox, QFileDialog, QHBoxLayout, QLabel, QLineEdit,
-#    QMainWindow, QPushButton, QVBoxLayout, QWidget
-#)
-from PySide6.QtWidgets import *
+from PySide6.QtWidgets import (
+    QApplication, QCheckBox, QComboBox, QFileDialog, QGridLayout, QHBoxLayout,
+    QLabel, QLineEdit, QMainWindow, QMenu, QMessageBox, QPushButton,
+    QScrollArea, QSpinBox, QStackedWidget, QTabWidget, QVBoxLayout, QWidget,
+)
+# NOTE: I wish Python had a better tool for this
+# Like (for example) rustfmt
 
 from .data.alignment import ALIGNMENT_DATA, AlignmentBit
 from .data.demons import DEMON_ID_MAP, DEMON_NAME_MAP
 from .data.element_icons import Element
-from .data.items import CONSUMABLES_RANGE, KEY_ITEMS_RANGE, RELICS_RANGE_1, RELICS_RANGE_2, Item, items_from
+from .data.items import (
+    CONSUMABLES_RANGE, KEY_ITEMS_RANGE, RELICS_RANGE_1, RELICS_RANGE_2,
+    Item, items_from
+)
 from .data.skills import SKILL_ID_MAP, SKILL_NAME_MAP
-from .demons import AFFINITY_MAP, AFFINITY_NAMES, STATS_NAMES, Affinity, AffinityEditor, DemonEditor, HealableEditor, PType, PotentialEditor, StatsEditor
+from .demons import (
+    AFFINITY_MAP, AFFINITY_NAMES, STATS_NAMES, Affinity, AffinityEditor,
+    DemonEditor, HealableEditor, PType, PotentialEditor, StatsEditor
+)
 from .dlc import DLCS, DlcBitflags
 from .file_handling import DecryptedSave
 from .game import SaveEditor
@@ -26,7 +34,7 @@ from .player import NameEdit, NameManager
 from .skills import Skill, SkillEditor
 
 
-U16_MAX = 2 ** 16 -1
+U16_MAX = 2 ** 16 - 1
 # RuntimeWarning: libshiboken: Overflow: Value 7378697629483820646 exceeds
 # limits of type  [signed] "i" (4bytes).
 SHIBOKEN_MAX = 2 ** 31 - 1
@@ -68,7 +76,7 @@ class OnStackRemovedHook:
 class QU8(QSpinBox, QModifiedMixin):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.setMaximum(2 ** 8 -1)
+        self.setMaximum(2 ** 8 - 1)
         self.valueChanged.connect(lambda _: self.setModified(True))
 
     def get_value(self) -> int:
@@ -173,9 +181,9 @@ class NameEditorScreen(GWidget, AppliableWidget):
         super().__init__(*args, **kwargs)
         self.names = names
         self.namelist: List[Tuple[NameEdit, QLineEdit]] = []
-        
+
         self.setLayout(QVBoxLayout())
-        
+
         for name in self.NAMES:
             label = QLabel(name, self)
             self.layout().addWidget(label)
@@ -233,7 +241,13 @@ class DlcEditorScreen(GWidget, AppliableWidget):
 class StatEditorScreen(GWidget, AppliableWidget):
     STAT_TYPES = ["Base", "Changes", "Current", "Healable"]
 
-    def __init__(self, stats: StatsEditor, healable: HealableEditor, *args, **kwargs):
+    def __init__(
+        self,
+        stats: StatsEditor,
+        healable: HealableEditor,
+        *args,
+        **kwargs
+    ):
         super().__init__(*args, **kwargs)
         self.stats = stats
         self.healable = healable
@@ -646,7 +660,7 @@ class DemonSelectorScreen(GWidget):
         else:
             try:
                 demon_txt = demon.name
-            except:
+            except KeyError:
                 demon_txt = f"Unknown ({demon.demon_id})"
             try:
                 icon = ICON_LOADER.mini_character_icon(demon.demon_id)
@@ -710,7 +724,7 @@ class ItemEditorScreen(GTabWidget, AppliableWidget):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.tabs: List[ItemEditorWidget] = []
-        
+
         for name, item_ranges in [
             ("Consumables", [CONSUMABLES_RANGE]),
             ("Relics", [RELICS_RANGE_1, RELICS_RANGE_2]),
@@ -765,7 +779,7 @@ class AlignmentEditorScreen(GTabWidget, AppliableWidget):
         for name in ["Main story", "Side quests"]:
             nameq = name.lower().replace(" ", "_")
             self.tabmap[nameq] = AlignmentPacked.from_parent(self, name)
-        
+
         self.flat_data: List[Tuple[int, AlignmentBit]] = []
 
         for byte in ALIGNMENT_DATA:
@@ -787,7 +801,6 @@ class AlignmentEditorScreen(GTabWidget, AppliableWidget):
             box = QCheckBox(packed.inner)
             packed.layout.addWidget(box, packed.i - 1, 1)
             self.checkboxmap[offset * 8 + bit.bit] = box
-
 
     def stack_refresh(self):
         for byte in ALIGNMENT_DATA:
@@ -871,7 +884,7 @@ class FileSelector(QWidget):
         self.file_open_button = QPushButton("Select", self)
         self.file_open_button.clicked.connect(self.on_select_clicked)
         self.layout().addWidget(self.file_open_button)
-    
+
     @property
     def path(self) -> Path:
         return self._path
@@ -928,7 +941,8 @@ class FileSelectorMenu(QWidget):
         super().__init__(*args, **kwargs)
         self.setLayout(QVBoxLayout())
         self.file_path = FileSelector(self)
-        self.file_path.file_path_display.textChanged.connect(self.file_selected)
+        file_path_display = self.file_path.file_path_display
+        file_path_display.textChanged.connect(self.file_selected)
         self.layout().addWidget(self.file_path)
         self.file_type = QComboBox(self)
         self.file_type.addItems([ty.name for ty in SaveType])
