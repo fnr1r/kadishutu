@@ -387,11 +387,20 @@ class SkillEditorScreen(GWidget, AppliableWidget):
             mystery_box.setattr_if_modified(skill_box.skill, "_unknown")
 
 
+class MComboBox(QComboBox, QModifiedMixin):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.currentIndexChanged.connect(lambda _: self.setModified(True))
+
+    def get_value(self) -> str:
+        return self.currentText()
+
+
 class AffinityEditorScreen(GWidget, AppliableWidget):
     def __init__(self, affinities: AffinityEditor, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.affinities = affinities
-        self.aff_map: Dict[str, QComboBox] = {}
+        self.aff_map: Dict[str, MComboBox] = {}
 
         self.l = QGridLayout(self)
         self.setLayout(self.l)
@@ -400,7 +409,7 @@ class AffinityEditorScreen(GWidget, AppliableWidget):
         for i, name in enumerate(AFFINITY_NAMES):
             label = QLabel(name)
             self.l.addWidget(label, i, 1)
-            affinity_box = QComboBox(self)
+            affinity_box = MComboBox(self)
             affinity_box.addItems(cb_items)
             self.l.addWidget(affinity_box, i, 2)
             self.aff_map[name.lower()] = affinity_box
@@ -420,10 +429,15 @@ class AffinityEditorScreen(GWidget, AppliableWidget):
             affinity: Affinity = self.affinities.__getattribute__(name)
             affinity_box.setCurrentText(affinity.name)
 
+    def _upd(self, name: str):
+        def inner(value: str):
+            affinity = Affinity[value]
+            self.affinities.__setattr__(name, affinity)
+        return inner
+
     def apply_changes(self):
         for name, affinity_box in self.aff_map.items():
-            affinity = Affinity[affinity_box.currentText()]
-            self.affinities.__setattr__(name, affinity)
+            affinity_box.update_if_modified(self._upd(name))
 
 
 class QPotentialBox(QSpinBox, QModifiedMixin):
