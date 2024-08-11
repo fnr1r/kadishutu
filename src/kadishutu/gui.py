@@ -16,7 +16,7 @@ from .data.demons import DEMON_ID_MAP, DEMON_NAME_MAP
 from .data.element_icons import Element
 from .data.items import CONSUMABLES_RANGE, KEY_ITEMS_RANGE, RELICS_RANGE_1, RELICS_RANGE_2, Item, items_from
 from .data.skills import SKILL_ID_MAP, SKILL_NAME_MAP
-from .demons import AFFINITY_MAP, AFFINITY_NAMES, STATS_NAMES, Affinity, AffinityEditor, DemonEditor, HealableEditor, StatsEditor
+from .demons import AFFINITY_MAP, AFFINITY_NAMES, STATS_NAMES, Affinity, AffinityEditor, DemonEditor, HealableEditor, PType, PotentialEditor, StatsEditor
 from .dlc import DLCS, DlcBitflags
 from .file_handling import DecryptedSave
 from .game import SaveEditor
@@ -426,6 +426,59 @@ class AffinityEditorScreen(GWidget, AppliableWidget):
             self.affinities.__setattr__(name, affinity)
 
 
+class QPotentialBox(QSpinBox, QModifiedMixin):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.setMinimum(-9)
+        self.setMaximum(9)
+        self.valueChanged.connect(lambda _: self.setModified(True))
+
+    def get_value(self) -> int:
+        return self.value()
+
+
+class PotentialEditorScreen(GWidget, AppliableWidget):
+    def __init__(self, potentials: PotentialEditor, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.potentials = potentials
+        self.potential_map: Dict[PType, QPotentialBox] = {}
+
+        self.l = QGridLayout(self)
+        self.setLayout(self.l)
+
+        for i, ptype in enumerate(PType):
+            label = QLabel(ptype.name)
+            self.l.addWidget(label, i, 1)
+            potential_box = QPotentialBox(self)
+            self.l.addWidget(potential_box, i, 2)
+            self.potential_map[ptype] = potential_box
+            try:
+                if ptype.name == "_UNKNOWN":
+                    elname = Element.Misc
+                else:
+                    elname = Element[ptype.name]
+                pak = ICON_LOADER.element_icon(elname)
+            except Exception as e:
+                print("Failed to load element icon:", e)
+            else:
+                pix = pak.pixmap.scaled(pak.size_div(2))
+                icon = QLabel(self)
+                icon.setFixedSize(pix.size())
+                icon.setPixmap(pix)
+                self.l.addWidget(icon, i, 0)
+
+    def stack_refresh(self):
+        for ptype, potential_box in self.potential_map.items():
+            potential = self.potentials.get(ptype)
+            potential_box.setValue(potential)
+
+    def apply_changes(self):
+        for ptype, potential_box in self.potential_map.items():
+            potential_box.update_if_modified(
+                lambda x: self.potentials.set(ptype, x)
+            )
+
+
 class PlayerEditorScreen(GWidget):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -446,6 +499,9 @@ class PlayerEditorScreen(GWidget):
             )),
             ("Affinities", lambda: AffinityEditorScreen(
                 self.save.player.affinities, self
+            )),
+            ("Potentials", lambda: PotentialEditorScreen(
+                self.save.player.potentials, self
             ))
         ]:
             button = QPushButton(name, self)
@@ -521,6 +577,9 @@ class DemonEditorScreen(GWidget, AppliableWidget):
             )),
             ("Affinities", lambda: AffinityEditorScreen(
                 self.demon.affinities, self
+            )),
+            ("Potentials", lambda: PotentialEditorScreen(
+                self.demon.potentials, self
             ))
         ]:
             button = QPushButton(name, self.side_panel_widget)

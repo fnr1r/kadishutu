@@ -182,6 +182,7 @@ class AffinityEditor(BaseDynamicEditor, BaseStructAsFieldEditor):
         return self.field_as_absolute_offset(20)
 
 
+# TODO: Rename Healing to Recovery
 class PType(Enum):
     Physical = 0
     Fire = auto()
