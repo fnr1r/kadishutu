@@ -42,10 +42,12 @@ class ItemManager(BaseStaticEditor):
     def at_offset(self, offset: int, *args, **kwargs) -> ItemEditor:
         return self.dispatch(ItemEditor, offset, *args, **kwargs)
 
+    def from_meta(self, item: Item) -> ItemEditor:
+        return self.at_offset(item.offset, item_meta=item)
+
     def from_name(self, name: str) -> ItemEditor:
-        item = [
+        return self.from_meta([
             item
             for item in ITEMS
             if item.name == name
-        ][0]
-        return self.at_offset(item.offset, item)
+        ][0])

@@ -18,7 +18,7 @@ from .dlc import DlcBitflags
 from .essences import ESSENCE_META_MAP, EssenceManager, EssenceMetadata
 from .file_handling import DecryptedSave, EncryptedSave, is_save_decrypted
 from .game import SaveEditor
-from .items import ItemManager
+from .items import ItemEditor, ItemManager
 from .player import NameManager
 from .skills import SKILL_ID_MAP, Skill, SkillEditor
 
@@ -493,33 +493,32 @@ class ItemList(Frame):
     def __init__(self, *args, items: ItemManager, item_list: List[Item], **kwargs):
         super().__init__(*args, **kwargs)
         self.obj = items
-        self.itemd: Dict[int, MutInt] = {}
+        self.item_list: List[Tuple[ItemEditor, MutInt]] = []
 
         self.list = VerticalScrolledFrame(self)
         self.list.pack()
 
         for item in item_list:
             f = Frame(self.list.inner)
-            item = items.at_offset(item.offset, item_meta=item)
+            item = items.from_meta(item)
             txt = Label(f, text=item.name, width=24)
             desc = item.item_meta.desc
             if desc is not None:
                 ToolTip(txt, msg=desc, delay=1)
             txt.pack(anchor="e", expand=True, fill="x", side="left")
             Label(f, text="Limit: " + str(item.limit), width=16).pack(side="right", padx=4)
-            amount = MutInt(f, value=item.amount, width=10)
-            amount.pack(side="right")
-            self.itemd[item.offset] = amount
+            amount_box = MutInt(f, value=item.amount, width=10)
+            amount_box.pack(side="right")
+            self.item_list.append((item, amount_box))
             f.pack(expand=True, fill="x")
 
         Button(self, text="Save", command=self.save).pack()
 
     def save(self):
-        for k, v in self.itemd.items():
-            if not v.modified:
+        for item, amount_box in self.item_list:
+            if not amount_box.modified:
                 continue
-            item = self.obj.at_offset(k)
-            item.amount = v.get()
+            item.amount = amount_box.get()
 
 
 class EssenceList(Frame):
