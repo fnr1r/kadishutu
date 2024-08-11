@@ -11,11 +11,13 @@ from PySide6.QtGui import QCloseEvent
 from PySide6.QtWidgets import *
 
 from .data.demons import DEMON_ID_MAP, DEMON_NAME_MAP
+from .data.items import CONSUMABLES_RANGE, items_from
 from .data.skills import SKILL_ID_MAP, SKILL_NAME_MAP
 from .demons import STATS_NAMES, DemonEditor, HealableEditor, StatsEditor
 from .file_handling import DecryptedSave
 from .game import SaveEditor
 from .gui_icons import ICON_LOADER
+from .items import ItemEditor
 from .skills import Skill, SkillEditor
 
 
@@ -117,6 +119,14 @@ class EditorMixin:
 
 
 class GWidget(EditorMixin, QWidget):
+    pass
+
+
+class GTabWidget(EditorMixin, QTabWidget):
+    pass
+
+
+class GScrollArea(EditorMixin, QScrollArea):
     pass
 
 
@@ -466,6 +476,52 @@ class DemonSelectorScreen(GWidget):
         )
 
 
+class ItemEditorWidget(GScrollArea, AppliableWidget):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.items: List[Tuple[ItemEditor, QLabel, QU8]] = []
+
+        self.setWidgetResizable(True)
+        self.inner = QWidget()
+        self.setWidget(self.inner)
+        self.l = QGridLayout()
+        self.inner.setLayout(self.l)
+
+        for i, item_meta in enumerate(items_from(CONSUMABLES_RANGE)):
+            item = self.save.items.from_meta(item_meta)
+            label = QLabel(item.name, self.inner)
+            self.l.addWidget(label, i, 0)
+            amount_box = QU8(self.inner)
+            self.l.addWidget(amount_box, i, 1)
+            self.items.append((item, label, amount_box))
+
+    def stack_refresh(self):
+        for item, _, amount_box in self.items:
+            amount_box.setValue(item.amount)
+
+    def apply_changes(self):
+        for item, _, amount_box in self.items:
+            amount_box.setattr_if_modified(item, "amount")
+
+
+class ItemEditorScreen(GTabWidget, AppliableWidget):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.tabs: List[ItemEditorWidget] = []
+
+        consumables = ItemEditorWidget(self)
+        self.tabs.append(consumables)
+        self.addTab(consumables, "Consumables")
+
+    def stack_refresh(self):
+        for tab in self.tabs:
+            tab.stack_refresh()
+
+    def apply_changes(self):
+        for tab in self.tabs:
+            tab.apply_changes()
+
+
 class GameSaveEditor(QWidget, AppliableWidget):
     path: Path
     raw_save: DecryptedSave
@@ -493,22 +549,19 @@ class GameSaveEditor(QWidget, AppliableWidget):
         self.macca_label.setText("Macca:")
         w = hboxed(self, self.macca_label, self.macca)
         self.l.addWidget(w)
-        self.player_menu = QPushButton("Player", self)
-        self.player_menu.clicked.connect(self.open_player_menu)
-        self.l.addWidget(self.player_menu)
-        self.demons_menu = QPushButton("Demons", self)
-        self.demons_menu.clicked.connect(self.open_demons_menu)
-        self.l.addWidget(self.demons_menu)
+        self.menu_buttons = []
+
+        for name, cls in [
+            ("Player", PlayerEditorScreen),
+            ("Demons", DemonSelectorScreen),
+            ("Items", ItemEditorScreen)
+        ]:
+            widget = QPushButton(name, self)
+            widget.clicked.connect(lambda: MAIN_WINDOW.stack_add(cls(self)))
+            self.l.addWidget(widget)
+            self.menu_buttons.append(widget)
 
         self.l.addStretch()
-
-    def open_player_menu(self):
-        widget = PlayerEditorScreen(self)
-        MAIN_WINDOW.stack_add(widget)
-
-    def open_demons_menu(self):
-        widget = DemonSelectorScreen(self)
-        MAIN_WINDOW.stack_add(widget)
 
     def apply_changes(self):
         self.macca.setattr_if_modified(self.save, "macca")
