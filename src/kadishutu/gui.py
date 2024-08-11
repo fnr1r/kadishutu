@@ -149,6 +149,15 @@ class StatEditorScreen(GWidget, AppliableWidget):
             self.widgets["healable"][stat] = widget
             self.l.addWidget(widget, i, 4)
 
+        self.heal_button = QPushButton("Heal", self)
+        self.heal_button.clicked.connect(self.on_heal)
+        self.l.addWidget(self.heal_button, 8, 1)
+
+    def on_heal(self):
+        for stat in ["hp", "mp"]:
+            value = self.widgets["current"][stat].value()
+            self.widgets["healable"][stat].setValue(value)
+
     def apply_widget(self, ty: str, stat: str, widget: QU16):
         if not widget.getModified():
             return
@@ -315,16 +324,19 @@ class GameSaveEditor(QWidget, AppliableWidget):
         self.save = SaveEditor(raw_save)
         self.modified = False
 
-        self.setLayout(QVBoxLayout())
+        self.l = QVBoxLayout()
+        self.setLayout(self.l)
         self.macca = QU32(self)
         self.macca.setValue(self.save.macca)
         self.macca_label = QLabel(self)
         self.macca_label.setText("Macca:")
         w = hboxed(self, self.macca_label, self.macca)
-        self.layout().addWidget(w)
+        self.l.addWidget(w)
         self.demons_menu = QPushButton("Demons", self)
         self.demons_menu.clicked.connect(self.open_demons_menu)
-        self.layout().addWidget(self.demons_menu)
+        self.l.addWidget(self.demons_menu)
+
+        self.l.addStretch()
 
     def open_demons_menu(self):
         widget = DemonSelectorScreen(self)
