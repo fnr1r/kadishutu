@@ -117,6 +117,9 @@ class EditorMixin:
         widget = cls(self)
         self.stack_add(widget)
 
+    def spawner(self, fun):
+        return lambda: self.stack_add(fun())
+
 
 class GWidget(EditorMixin, QWidget):
     pass
@@ -313,25 +316,19 @@ class PlayerEditorScreen(GWidget):
         self.setLayout(self.l)
 
         for name, fun in [
-            ("Stats", self.player_stats),
-            ("Skills", self.player_skills)
+            ("Stats", lambda: StatEditorScreen(
+                self.save.player.stats, self.save.player.healable, self
+            )),
+            ("Skills", lambda: SkillEditorScreen(
+                self.save.player.skills, self
+            ))
         ]:
             button = QPushButton(name, self)
-            button.clicked.connect(fun)
+            button.clicked.connect(self.spawner(fun))
             self.l.addWidget(button)
             self.buttons.append(button)
 
         self.l.addStretch()
-
-    def player_stats(self):
-        self.stack_add(StatEditorScreen(
-            self.save.player.stats, self.save.player.healable, self
-        ))
-
-    def player_skills(self):
-        self.stack_add(SkillEditorScreen(
-            self.save.player.skills, self
-        ))
 
 
 class DemonIdnWidget(QWidget, QModifiedMixin):
@@ -391,11 +388,15 @@ class DemonEditorScreen(GWidget, AppliableWidget):
         ]
 
         for name, fun in [
-            ("Stats", self.demon_stats),
-            ("Skills", self.demon_skills)
+            ("Stats", lambda: StatEditorScreen(
+                self.demon.stats, self.demon.healable, self
+            )),
+            ("Skills", lambda: SkillEditorScreen(
+                self.demon.skills, self
+            ))
         ]:
             button = QPushButton(name, self.side_panel_widget)
-            button.clicked.connect(fun)
+            button.clicked.connect(self.spawner(fun))
             self.side_panel_widgets.append(button)
 
         for button in self.side_panel_widgets:
@@ -419,16 +420,6 @@ class DemonEditorScreen(GWidget, AppliableWidget):
 
     def apply_changes(self):
         self.demon_idn_widget.setattr_if_modified(self.demon, "demon_id")
-
-    def demon_stats(self):
-        self.stack_add(StatEditorScreen(
-            self.demon.stats, self.demon.healable, self
-        ))
-
-    def demon_skills(self):
-        self.stack_add(SkillEditorScreen(
-            self.demon.skills, self
-        ))
 
 
 class DemonSelectorScreen(GWidget):
@@ -557,11 +548,14 @@ class GameSaveEditor(QWidget, AppliableWidget):
             ("Items", ItemEditorScreen)
         ]:
             widget = QPushButton(name, self)
-            widget.clicked.connect(lambda: MAIN_WINDOW.stack_add(cls(self)))
+            widget.clicked.connect(self.spawner(cls))
             self.l.addWidget(widget)
             self.menu_buttons.append(widget)
 
         self.l.addStretch()
+
+    def spawner(self, cls, *args, **kwargs):
+        return lambda: MAIN_WINDOW.stack_add(cls(self, *args, **kwargs))
 
     def apply_changes(self):
         self.macca.setattr_if_modified(self.save, "macca")
