@@ -2,7 +2,7 @@ from abc import abstractmethod
 from enum import Enum, auto
 from pathlib import Path
 import sys
-from typing import Dict, List, Optional
+from typing import Dict, List, Optional, Tuple
 from PySide6.QtGui import QCloseEvent
 #from PySide6.QtWidgets import (
 #    QApplication, QComboBox, QFileDialog, QHBoxLayout, QLabel, QLineEdit,
@@ -10,12 +10,13 @@ from PySide6.QtGui import QCloseEvent
 #)
 from PySide6.QtWidgets import *
 
-from kadishutu.data.demons import DEMON_ID_MAP, DEMON_NAME_MAP
-
+from .data.demons import DEMON_ID_MAP, DEMON_NAME_MAP
+from .data.skills import SKILL_ID_MAP, SKILL_NAME_MAP
 from .demons import STATS_NAMES, DemonEditor, HealableEditor, StatsEditor
 from .file_handling import DecryptedSave
 from .game import SaveEditor
 from .gui_icons import ICON_LOADER
+from .skills import Skill, SkillEditor
 
 
 U16_MAX = 2 ** 16 -1
@@ -173,6 +174,103 @@ class StatEditorScreen(GWidget, AppliableWidget):
                 self.apply_widget(ty, stat, widget)
 
 
+class AbstractStrIntMap(QWidget, QModifiedMixin):
+    def __init__(self, items: List[str], *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        QModifiedMixin.__init__(self)
+        self.setLayout(QHBoxLayout())
+        self.layout().setContentsMargins(0, 0, 0, 0)
+        self.str_box = QComboBox(self)
+        self.str_box.addItems(items)
+        self.str_box.currentTextChanged.connect(self.str_changed)
+        self.layout().addWidget(self.str_box)
+        self.int_box = QSpinBox(self)
+        self.int_box.valueChanged.connect(self.int_changed)
+        self.layout().addWidget(self.int_box)
+
+    @abstractmethod
+    def refresh(self):
+        raise NotImplementedError
+
+    @abstractmethod
+    def apply_changes(self):
+        raise NotImplementedError
+
+    @abstractmethod
+    def int_to_str(self, value: int) -> str:
+        raise NotImplementedError
+
+    @abstractmethod
+    def str_to_int(self, value: str) -> int:
+        raise NotImplementedError
+
+    def int_changed(self, value: int):
+        self.setModified(True)
+        self.str_box.setCurrentText(self.int_to_str(value))
+
+    def str_changed(self, value: str):
+        self.setModified(True)
+        self.int_box.setValue(self.str_to_int(value))
+
+
+class SkillBox(AbstractStrIntMap, QModifiedMixin):
+    def __init__(self, skill: Skill, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        QModifiedMixin.__init__(self)
+        self.skill = skill
+        self.int_box.setMaximum(U16_MAX)
+
+    def refresh(self):
+        self.int_box.setValue(self.skill.id)
+        self.str_box.setCurrentText(self.skill.name)
+
+    def apply_changes(self):
+        if self.getModified:
+            self.skill.id = self.int_box.value()
+            self.setModified(False)
+
+    def int_to_str(self, value: int) -> str:
+        return SKILL_ID_MAP[value].name
+
+    def str_to_int(self, value: str) -> int:
+        return SKILL_NAME_MAP[value].id
+
+
+class SkillEditorScreen(GWidget, AppliableWidget):
+    def __init__(self, skills: SkillEditor, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.l = QVBoxLayout()
+        self.setLayout(self.l)
+        self.widgets: List[Tuple[QWidget, QLabel, SkillBox, QU16]] = []
+
+        for i in range(8):
+            skill = skills.slot(i)
+            label = QLabel(f"Skill {i + 1}", self)
+            skill_box = SkillBox(skill, list(SKILL_NAME_MAP.keys()), self)
+            mystery_box = QU16(self)
+            widget = hboxed(self, label, skill_box, mystery_box)
+            self.l.addWidget(widget)
+            self.widgets.append((widget, label, skill_box, mystery_box))
+
+        self.l.addStretch()
+
+    def stack_refresh(self):
+        for i in range(8):
+            (_, _, skill_box, mystery_box) = self.widgets[i]
+            skill_box.refresh()
+            skill = skill_box.skill
+            mystery_box.setValue(skill._unknown)
+
+    def apply_changes(self):
+        for i in range(8):
+            (_, _, skill_box, mystery_box) = self.widgets[i]
+            skill_box.apply_changes()
+            skill = skill_box.skill
+            if mystery_box.getModified():
+                skill._unknown = mystery_box.value()
+                mystery_box.setModified(False)
+
+
 class DemonIdnWidget(QWidget, QModifiedMixin):
     def __init__(self, demon: DemonEditor, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -226,9 +324,13 @@ class DemonEditorScreen(GWidget, AppliableWidget):
             self.demon_idn_widget
         ]
 
-        button = QPushButton("Stats", self.side_panel_widget)
-        button.clicked.connect(self.demon_stats)
-        self.side_panel_widgets.append(button)
+        for name, fun in [
+            ("Stats", self.demon_stats),
+            ("Skills", self.demon_skills)
+        ]:
+            button = QPushButton(name, self.side_panel_widget)
+            button.clicked.connect(fun)
+            self.side_panel_widgets.append(button)
 
         for button in self.side_panel_widgets:
             self.side_panel_layout.addWidget(button)
@@ -257,6 +359,11 @@ class DemonEditorScreen(GWidget, AppliableWidget):
     def demon_stats(self):
         self.stack_add(StatEditorScreen(
             self.demon.stats, self.demon.healable, self
+        ))
+
+    def demon_skills(self):
+        self.stack_add(SkillEditorScreen(
+            self.demon.skills, self
         ))
 
 
