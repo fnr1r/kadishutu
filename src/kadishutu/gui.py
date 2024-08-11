@@ -12,7 +12,7 @@ from PySide6.QtWidgets import *
 
 from .data.demons import DEMON_ID_MAP, DEMON_NAME_MAP
 from .data.element_icons import Element
-from .data.items import CONSUMABLES_RANGE, items_from
+from .data.items import CONSUMABLES_RANGE, KEY_ITEMS_RANGE, RELICS_RANGE_1, RELICS_RANGE_2, Item, items_from
 from .data.skills import SKILL_ID_MAP, SKILL_NAME_MAP
 from .demons import STATS_NAMES, DemonEditor, HealableEditor, StatsEditor
 from .file_handling import DecryptedSave
@@ -469,7 +469,7 @@ class DemonSelectorScreen(GWidget):
 
 
 class ItemEditorWidget(GScrollArea, AppliableWidget):
-    def __init__(self, *args, **kwargs):
+    def __init__(self, items: List[Item], *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.items: List[Tuple[ItemEditor, QLabel, QU8]] = []
 
@@ -479,7 +479,7 @@ class ItemEditorWidget(GScrollArea, AppliableWidget):
         self.l = QGridLayout()
         self.inner.setLayout(self.l)
 
-        for i, item_meta in enumerate(items_from(CONSUMABLES_RANGE)):
+        for i, item_meta in enumerate(items):
             item = self.save.items.from_meta(item_meta)
             label = QLabel(item.name, self.inner)
             try:
@@ -511,12 +511,13 @@ class ItemEditorScreen(GTabWidget, AppliableWidget):
         super().__init__(*args, **kwargs)
         self.tabs: List[ItemEditorWidget] = []
         
-        for name, func in [
-            ("Consumables", lambda: ItemEditorWidget(self)),
-            ("Relics", lambda: GWidget(self)),
-            ("Key Items", lambda: GWidget(self))
+        for name, item_ranges in [
+            ("Consumables", [CONSUMABLES_RANGE]),
+            ("Relics", [RELICS_RANGE_1, RELICS_RANGE_2]),
+            ("Key Items", [KEY_ITEMS_RANGE])
         ]:
-            widget = func()
+            items = items_from(*item_ranges)
+            widget = ItemEditorWidget(items, self)
             self.tabs.append(widget)
             self.addTab(widget, name)
 
