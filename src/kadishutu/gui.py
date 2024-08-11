@@ -11,7 +11,7 @@ from .alignment import AlignmentEditor, AlignmentManager
 from .data.alignment import ALIGNMENT_OFFSET_MAP, AlignmentByte
 from .data.demons import DEMON_ID_MAP, DEMON_NAME_MAP, DEMONS
 from .data.essences import ESSENCE_OFFSETS
-from .data.items import BUILTIN_ITEM_TABLE, ITEM_TABLE_OFFSET
+from .data.items import CONSUMABLES_RANGE, Item, items_from
 from .data.skills import NEW_SKILLS, SKILL_NAME_MAP
 from .demons import AFFINITY_MAP, AFFINITY_NAMES, STATS_NAMES, Affinity, AffinityEditor, DemonEditor, PType, PotentialEditor, StatsEditor
 from .dlc import DlcBitflags
@@ -490,7 +490,7 @@ class VerticalScrolledFrame(Frame):
 
 
 class ItemList(Frame):
-    def __init__(self, *args, items: ItemManager, itemsx: list[dict[str, Any]], **kwargs):
+    def __init__(self, *args, items: ItemManager, item_list: List[Item], **kwargs):
         super().__init__(*args, **kwargs)
         self.obj = items
         self.itemd: Dict[int, MutInt] = {}
@@ -498,17 +498,12 @@ class ItemList(Frame):
         self.list = VerticalScrolledFrame(self)
         self.list.pack()
 
-        for i in itemsx:
-            id: int = i["id"]
-            name: str = i["name"]
+        for item in item_list:
             f = Frame(self.list.inner)
-            item = items.at_offset(ITEM_TABLE_OFFSET + id)
-            txt = Label(f, text=name, width=24)
-            try:
-                desc: str = i["desc"]
-            except KeyError:
-                pass
-            else:
+            item = items.at_offset(item.offset, item_meta=item)
+            txt = Label(f, text=item.name, width=24)
+            desc = item.item_meta.desc
+            if desc is not None:
                 ToolTip(txt, msg=desc, delay=1)
             txt.pack(anchor="e", expand=True, fill="x", side="left")
             Label(f, text="Limit: " + str(item.limit), width=16).pack(side="right", padx=4)
@@ -582,7 +577,8 @@ class ItemEditorTk(Toplevel, SpawnerMixin):
 
         self.tabbed = Notebook(self)
         self.tabbed.pack()
-        self.consumables = ItemList(self.tabbed, items=items, itemsx=BUILTIN_ITEM_TABLE)
+        consumable_item_list = items_from(CONSUMABLES_RANGE)
+        self.consumables = ItemList(self.tabbed, items=items, item_list=consumable_item_list)
         self.tabbed.add(self.consumables, text="Consumables")
         try:
             self.essences = EssenceList(self.tabbed, essences=essences)

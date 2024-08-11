@@ -1,46 +1,25 @@
-from dataclasses import dataclass
-from dataclasses_json import DataClassJsonMixin
-from typing import Dict, List, Optional
+from typing import Dict, Optional
 
-from .data.items import BUILTIN_ITEM_TABLE, ITEM_TABLE_OFFSET
+from .data.items import ITEMS, Item
 from .file_handling import BaseDynamicEditor, BaseStaticEditor, BaseStructAsSingularValueEditor
 
 
-@dataclass
-class ItemInfo(DataClassJsonMixin):
-    id: int
-    name: str
-    desc: Optional[str] = None
-    limit: Optional[int] = None
-
-    def get_limit(self) -> int:
-        if self.limit:
-            return self.limit
-        return 99
-
-    @property
-    def offset(self) -> int:
-        return ITEM_TABLE_OFFSET + self.id
-
-
-@dataclass
-class ItemTable(DataClassJsonMixin):
-    items: List[ItemInfo]
-
-
-ITEM_TABLE = ItemTable.from_dict({"items": BUILTIN_ITEM_TABLE})
-
-
-class Item(BaseDynamicEditor, BaseStructAsSingularValueEditor):
+class ItemEditor(BaseDynamicEditor, BaseStructAsSingularValueEditor):
     struct = "<B"
 
+    def __init__(self, *args, item_meta: Optional[Item] = None, **kwargs):
+        super().__init__(*args, **kwargs)
+        self._item_meta = item_meta
+
     @property
-    def item_info(self) -> ItemInfo:
-        return [
-            i
-            for i in ITEM_TABLE.items
-            if i.offset == self.offset
-        ][0]
+    def item_meta(self) -> Item:
+        if not self._item_meta:
+            self._item_meta = [
+                item
+                for item in ITEMS
+                if item.offset == self.offset
+            ][0]
+        return self._item_meta
 
     @property
     def name_table(self) -> Dict[int, str]:
@@ -48,24 +27,25 @@ class Item(BaseDynamicEditor, BaseStructAsSingularValueEditor):
 
     @property
     def name(self) -> str:
-        return self.item_info.name
+        return self.item_meta.name
 
     amount = property(lambda x: x.value, lambda x, y: x.struct_pack(0, y))
 
     @property
     def limit(self) -> int:
-        return self.item_info.get_limit()
+        return self.item_meta.limit
 
 
 class ItemManager(BaseStaticEditor):
     offset = 0x4c72
 
-    def at_offset(self, offset: int) -> Item:
-        return self.dispatch(Item, offset)
+    def at_offset(self, offset: int, *args, **kwargs) -> ItemEditor:
+        return self.dispatch(ItemEditor, offset, *args, **kwargs)
 
-    def from_name(self, name: str) -> Item:
-        return self.at_offset([
-            i
-            for i in ITEM_TABLE.items
-            if i.name == name
-        ][0].offset)
+    def from_name(self, name: str) -> ItemEditor:
+        item = [
+            item
+            for item in ITEMS
+            if item.name == name
+        ][0]
+        return self.at_offset(item.offset, item)

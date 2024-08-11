@@ -2,7 +2,7 @@ from enum import Enum
 
 from .data.essences import ESSENCE_OFFSETS, ESSENCE_RANGE
 from .file_handling import BaseEditor, BaseStaticEditor
-from .items import Item
+from .items import ItemEditor
 
 
 class EssenceMetadata(Enum):
@@ -25,7 +25,7 @@ def essence_metadata_map() -> dict[str, EssenceMetadata]:
 ESSENCE_META_MAP = essence_metadata_map()
 
 
-class Essence(Item):
+class Essence(ItemEditor):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         #assert self.offset in ESSENCE_RANGE

@@ -1,0 +1,897 @@
+,
+0,NOT USED:ITEM_USE_00
+1,Life Stone
+2,Chakra Drop
+3,Chakra Pot
+4,Bead
+5,Bead Chain
+6,Soma
+7,Revival Bead
+8,Balm of Life
+9,Amrita Soda
+10,Amrita Shower
+11,Medicine
+12,Ox Bezoar
+13,Ambrosia
+14,Muscle Drink
+15,Life Stone Chain
+16,Soma Drop
+17,Fire Shard
+18,Ice Shard
+19,Elec Shard
+20,Force Shard
+21,Light Shard
+22,Dark Shard
+23,Fire Gem
+24,Ice Gem
+25,Elec Gem
+26,Force Gem
+27,Light Gem
+28,Dark Gem
+29,NOT USED:ITEM_USE_29
+30,NOT USED:ITEM_USE_30
+31,NOT USED:ITEM_USE_31
+32,NOT USED:ITEM_USE_32
+33,NOT USED:ITEM_USE_33
+34,NOT USED:ITEM_USE_34
+35,NOT USED:ITEM_USE_35
+36,NOT USED:ITEM_USE_36
+37,Poison Gem
+38,Sleep Gem
+39,Confusion Gem
+40,Mirage Gem
+41,Seal Gem
+42,Charm Gem
+43,Charge Gem
+44,Concentrate Gem
+45,Critical Gem
+46,Spirit Drain Gem
+47,Life Drain Gem
+48,NOT USED:ITEM_USE_48
+49,NOT USED:ITEM_USE_49
+50,Purge Charm
+51,Dispel Charm
+52,Attack Mirror
+53,Magic Mirror
+54,NOT USED:ITEM_USE_54
+55,Spyglass
+56,NOT USED:ITEM_USE_56
+57,NOT USED:ITEM_USE_57
+58,NOT USED:ITEM_USE_58
+59,Gold Card
+60,Whittled Goat
+61,Smoke Ball
+62,Phys Dampener
+63,Fire Dampener
+64,Ice Dampener
+65,Elec Dampener
+66,Force Dampener
+67,Light Dampener
+68,Dark Dampener
+69,NOT USED:ITEM_USE_69
+70,Return Pillar
+71,NOT USED:ITEM_USE_71
+72,Attract Pipe
+73,Miracle Ice
+74,Chakra Elixir
+75,Curative Cattail
+76,Soul-Return
+77,Blessed Fan
+78,Eye of Balor
+79,Spyscope
+80,Haraedo Bead
+81,Gleam Grenade
+82,Gospel
+83,Grimoire
+84,Health Balm
+85,Stamina Balm
+86,Strength Balm
+87,Magic Balm
+88,Vitality Balm
+89,Agility Balm
+90,Luck Balm
+91,Health Incense
+92,Stamina Incense
+93,Strength Incense
+94,Magic Incense
+95,Vitality Incense
+96,Agility Incense
+97,Luck Incense
+98,Battle Sutra
+99,Fire Sutra
+100,Ice Sutra
+101,Elec Sutra
+102,Force Sutra
+103,Light Sutra
+104,Dark Sutra
+105,Destruction Sutra
+106,Healing Sutra
+107,Aiding Sutra
+108,Calamity Sutra
+109,Small Glory Crystal
+110,Large Glory Crystal
+111,Simple Demon Box
+112,Lavish Demon Box
+113,New Testament Tablet
+114,NOT USED:ITEM_USE_114
+115,NOT USED:ITEM_USE_115
+116,NOT USED:ITEM_USE_116
+117,NOT USED:ITEM_USE_117
+118,NOT USED:ITEM_USE_118
+119,NOT USED:ITEM_USE_119
+120,NOT USED:ITEM_USE_120
+121,NOT USED:ITEM_USE_121
+122,NOT USED:ITEM_USE_122
+123,NOT USED:ITEM_USE_123
+124,NOT USED:ITEM_USE_124
+125,NOT USED:ITEM_USE_125
+126,NOT USED:ITEM_USE_126
+127,NOT USED:ITEM_USE_127
+128,NOT USED:ITEM_USE_128
+129,NOT USED:ITEM_USE_129
+130,NOT USED:ITEM_USE_130
+131,NOT USED:ITEM_USE_131
+132,NOT USED:ITEM_USE_132
+133,NOT USED:ITEM_USE_133
+134,NOT USED:ITEM_USE_134
+135,NOT USED:ITEM_USE_135
+136,NOT USED:ITEM_USE_136
+137,NOT USED:ITEM_USE_137
+138,NOT USED:ITEM_USE_138
+139,NOT USED:ITEM_USE_139
+140,NOT USED:ITEM_USE_140
+141,NOT USED:ITEM_USE_141
+142,NOT USED:ITEM_USE_142
+143,NOT USED:ITEM_USE_143
+144,NOT USED:ITEM_USE_144
+145,NOT USED:ITEM_USE_145
+146,NOT USED:ITEM_USE_146
+147,NOT USED:ITEM_USE_147
+148,NOT USED:ITEM_USE_148
+149,NOT USED:ITEM_USE_149
+150,NOT USED:ITEM_USE_150
+151,NOT USED:ITEM_USE_151
+152,NOT USED:ITEM_USE_152
+153,NOT USED:ITEM_USE_153
+154,NOT USED:ITEM_USE_154
+155,NOT USED:ITEM_USE_155
+156,NOT USED:ITEM_USE_156
+157,NOT USED:ITEM_USE_157
+158,NOT USED:ITEM_USE_158
+159,NOT USED:ITEM_USE_159
+160,NOT USED:ITEM_USE_160
+161,NOT USED:ITEM_USE_161
+162,NOT USED:ITEM_USE_162
+163,NOT USED:ITEM_USE_163
+164,NOT USED:ITEM_USE_164
+165,NOT USED:ITEM_USE_165
+166,NOT USED:ITEM_USE_166
+167,NOT USED:ITEM_USE_167
+168,NOT USED:ITEM_USE_168
+169,NOT USED:ITEM_USE_169
+170,NOT USED:ITEM_USE_170
+171,NOT USED:ITEM_USE_171
+172,NOT USED:ITEM_USE_172
+173,NOT USED:ITEM_USE_173
+174,NOT USED:ITEM_USE_174
+175,NOT USED:ITEM_USE_175
+176,NOT USED:ITEM_USE_176
+177,NOT USED:ITEM_USE_177
+178,NOT USED:ITEM_USE_178
+179,NOT USED:ITEM_USE_179
+180,NOT USED:ITEM_USE_180
+181,NOT USED:ITEM_USE_181
+182,NOT USED:ITEM_USE_182
+183,NOT USED:ITEM_USE_183
+184,NOT USED:ITEM_USE_184
+185,NOT USED:ITEM_USE_185
+186,NOT USED:ITEM_USE_186
+187,NOT USED:ITEM_USE_187
+188,NOT USED:ITEM_USE_188
+189,NOT USED:ITEM_USE_189
+190,NOT USED:ITEM_USE_190
+191,NOT USED:ITEM_USE_191
+192,NOT USED:ITEM_USE_192
+193,NOT USED:ITEM_USE_193
+194,NOT USED:ITEM_USE_194
+195,NOT USED:ITEM_USE_195
+196,NOT USED:ITEM_USE_196
+197,NOT USED:ITEM_USE_197
+198,NOT USED:ITEM_USE_198
+199,NOT USED:ITEM_USE_199
+200,NOT USED:ITEM_USE_200
+201,NOT USED:ITEM_USE_201
+202,NOT USED:ITEM_USE_202
+203,NOT USED:ITEM_USE_203
+204,NOT USED:ITEM_USE_204
+205,NOT USED:ITEM_USE_205
+206,NOT USED:ITEM_USE_206
+207,NOT USED:ITEM_USE_207
+208,NOT USED:ITEM_USE_208
+209,NOT USED:ITEM_USE_209
+210,NOT USED:ITEM_USE_210
+211,NOT USED:ITEM_USE_211
+212,NOT USED:ITEM_USE_212
+213,NOT USED:ITEM_USE_213
+214,NOT USED:ITEM_USE_214
+215,NOT USED:ITEM_USE_215
+216,NOT USED:ITEM_USE_216
+217,NOT USED:ITEM_USE_217
+218,NOT USED:ITEM_USE_218
+219,NOT USED:ITEM_USE_219
+220,NOT USED:ITEM_USE_220
+221,NOT USED:ITEM_SKILLGET_1
+222,NOT USED:ITEM_SKILLGET_2
+223,NOT USED:ITEM_SKILLGET_3
+224,NOT USED:ITEM_SKILLGET_4
+225,NOT USED:ITEM_SKILLGET_5
+226,NOT USED:ITEM_SKILLGET_6
+227,NOT USED:ITEM_SKILLGET_7
+228,NOT USED:ITEM_SKILLGET_8
+229,NOT USED:ITEM_SKILLGET_9
+230,NOT USED:ITEM_SKILLGET_10
+231,NOT USED:ITEM_SKILLGET_11
+232,NOT USED:ITEM_SKILLGET_12
+233,NOT USED:ITEM_SKILLGET_13
+234,NOT USED:ITEM_SKILLGET_14
+235,NOT USED:ITEM_SKILLGET_15
+236,NOT USED:ITEM_SKILLGET_16
+237,NOT USED:ITEM_SKILLGET_17
+238,NOT USED:ITEM_SKILLGET_18
+239,NOT USED:ITEM_SKILLGET_19
+240,NOT USED:ITEM_SKILLGET_20
+241,NOT USED:ITEM_SKILLGET_21
+242,NOT USED:ITEM_SKILLGET_22
+243,NOT USED:ITEM_SKILLGET_23
+244,NOT USED:ITEM_SKILLGET_24
+245,NOT USED:ITEM_SKILLGET_25
+246,NOT USED:ITEM_SKILLGET_26
+247,NOT USED:ITEM_SKILLGET_27
+248,NOT USED:ITEM_SKILLGET_28
+249,NOT USED:ITEM_SKILLGET_29
+250,NOT USED:ITEM_SKILLGET_30
+251,NOT USED:ITEM_SKILLGET_31
+252,NOT USED:ITEM_SKILLGET_32
+253,NOT USED:ITEM_SKILLGET_33
+254,NOT USED:ITEM_SKILLGET_34
+255,NOT USED:ITEM_SKILLGET_35
+256,NOT USED:ITEM_SKILLGET_36
+257,NOT USED:ITEM_SKILLGET_37
+258,NOT USED:ITEM_SKILLGET_38
+259,NOT USED:ITEM_SKILLGET_39
+260,NOT USED:ITEM_SKILLGET_40
+261,NOT USED:ITEM_SKILLGET_41
+262,NOT USED:ITEM_SKILLGET_42
+263,NOT USED:ITEM_SKILLGET_43
+264,NOT USED:ITEM_SKILLGET_44
+265,NOT USED:ITEM_SKILLGET_45
+266,NOT USED:ITEM_SKILLGET_46
+267,NOT USED:ITEM_SKILLGET_47
+268,NOT USED:ITEM_SKILLGET_48
+269,NOT USED:ITEM_SKILLGET_49
+270,NOT USED:ITEM_SKILLGET_50
+271,NOT USED:ITEM_SKILLGET_51
+272,NOT USED:ITEM_SKILLGET_52
+273,NOT USED:ITEM_SKILLGET_53
+274,NOT USED:ITEM_SKILLGET_54
+275,NOT USED:ITEM_SKILLGET_55
+276,NOT USED:ITEM_SKILLGET_56
+277,NOT USED:ITEM_SKILLGET_57
+278,NOT USED:ITEM_SKILLGET_58
+279,NOT USED:ITEM_SKILLGET_59
+280,NOT USED:ITEM_SKILLGET_60
+281,NOT USED:ITEM_SKILLGET_61
+282,NOT USED:ITEM_SKILLGET_62
+283,NOT USED:ITEM_SKILLGET_63
+284,NOT USED:ITEM_SKILLGET_64
+285,NOT USED:ITEM_SKILLGET_65
+286,NOT USED:ITEM_SKILLGET_66
+287,NOT USED:ITEM_SKILLGET_67
+288,NOT USED:ITEM_SKILLGET_68
+289,NOT USED:ITEM_SKILLGET_69
+290,NOT USED:ITEM_SKILLGET_70
+291,NOT USED:ITEM_SKILLGET_71
+292,NOT USED:ITEM_SKILLGET_72
+293,NOT USED:ITEM_SKILLGET_73
+294,NOT USED:ITEM_SKILLGET_74
+295,NOT USED:ITEM_SKILLGET_75
+296,NOT USED:ITEM_SKILLGET_76
+297,NOT USED:ITEM_SKILLGET_77
+298,NOT USED:ITEM_SKILLGET_78
+299,NOT USED:ITEM_SKILLGET_79
+300,NOT USED:ITEM_SKILLGET_80
+301,NOT USED:ITEM_SKILLGET_81
+302,NOT USED:ITEM_SKILLGET_82
+303,NOT USED:ITEM_SKILLGET_83
+304,NOT USED:ITEM_SKILLGET_84
+305,NOT USED:ITEM_SKILLGET_85
+306,NOT USED:ITEM_SKILLGET_86
+307,NOT USED:ITEM_SKILLGET_87
+308,NOT USED:ITEM_SKILLGET_88
+309,NOT USED:ITEM_SKILLGET_89
+310,NOT USED:ITEM_SKILLGET_90
+311,Khonsu's Essence
+312,Zeus's Essence
+313,Odin's Essence
+314,Mitra's Essence
+315,Atavaka's Essence
+316,Horus's Essence
+317,Thoth's Essence
+318,Khonsu Ra's Essence
+319,Vishnu's Essence
+320,Baal's Essence
+321,Demeter's Essence
+322,Anahita's Essence
+323,Lakshmi's Essence
+324,Norn's Essence
+325,Idun's Essence
+326,Sarasvati's Essence
+327,Ishtar's Essence
+328,Scathach's Essence
+329,Parvati's Essence
+330,Ame-no-Uzume's Essence
+331,Fortuna's Essence
+332,Maria's Essence
+333,Artemis's Essence
+334,Hanuman's Essence
+335,Fionn's Essence
+336,Cu Chulainn's Essence
+337,Kurama Tengu's Essence
+338,Amanozako's Essence
+339,Koppa Tengu's Essence
+340,Apsaras's Essence
+341,Agathion's Essence
+342,Mandrake's Essence
+343,Titania's Essence
+344,Oberon's Essence
+345,Silky's Essence
+346,Setanta's Essence
+347,Kelpie's Essence
+348,High Pixie's Essence
+349,Jack-o'-Lantern's Essence
+350,Jack Frost's Essence
+351,Pixie's Essence
+352,Queen Medb's Essence
+353,Succubus's Essence
+354,Kaiwan's Essence
+355,Lilim's Essence
+356,Incubus's Essence
+357,Mokoi's Essence
+358,Sandman's Essence
+359,Lilith's Essence
+360,Black Frost's Essence
+361,Nuwa's Essence
+362,Amon's Essence
+363,Mara's Essence
+364,Mephisto's Essence
+365,Chi You's Essence
+366,Surt's Essence
+367,Beelzebub's Essence
+368,Arioch's Essence
+369,Belial's Essence
+370,Abaddon's Essence
+371,Moloch's Essence
+372,Belphegor's Essence
+373,King Frost's Essence
+374,Mithras's Essence
+375,Loki's Essence
+376,Huang Long's Essence
+377,Quetzalcoatl's Essence
+378,Qinglong's Essence
+379,Xuanwu's Essence
+380,Ananta's Essence
+381,Yamata-no-Orochi's Essence
+382,Naga Raja's Essence
+383,Yurlungur's Essence
+384,Naga's Essence
+385,Vasuki's Essence
+386,Seth's Essence
+387,Basilisk's Essence
+388,Aitvaras's Essence
+389,Hydra's Essence
+390,Fafnir's Essence
+391,Barong's Essence
+392,Anubis's Essence
+393,Makami's Essence
+394,Baihu's Essence
+395,Chimera's Essence
+396,Cironnup's Essence
+397,Shiisaa's Essence
+398,Cerberus's Essence
+399,Orthrus's Essence
+400,Loup-garou's Essence
+401,Nekomata's Essence
+402,Inugami's Essence
+403,Orobas's Essence
+404,Cait Sith's Essence
+405,Bugs's Essence
+406,Nue's Essence
+407,Bicorn's Essence
+408,Mothman's Essence
+409,Hayataro's Essence
+410,Flaemis's Essence
+411,Aquans's Essence
+412,Aeros's Essence
+413,Erthys's Essence
+414,NOT USED:ITEM_UTSUSEMI_104
+415,NOT USED:ITEM_UTSUSEMI_105
+416,NOT USED:ITEM_UTSUSEMI_106
+417,NOT USED:ITEM_UTSUSEMI_107
+418,Black Ooze's Essence
+419,Legion's Essence
+420,Slime's Essence
+421,Shiva's Essence
+422,Mot's Essence
+423,Zaou-Gongen's Essence
+424,Asura's Essence
+425,Chernobog's Essence
+426,Dionysus's Essence
+427,Danu's Essence
+428,Inanna's Essence
+429,Kali's Essence
+430,Cybele's Essence
+431,Skadi's Essence
+432,Isis's Essence
+433,Kikuri-Hime's Essence
+434,Hariti's Essence
+435,Nuwa's Essence
+436,Alilat's Essence
+437,Thor's Essence
+438,Futsunushi's Essence
+439,Attis's Essence
+440,Bishamonten's Essence
+441,Jikokuten's Essence
+442,Koumokuten's Essence
+443,Zouchouten's Essence
+444,Arahabaki's Essence
+445,Oyamatsumi's Essence
+446,Kushinada-Hime's Essence
+447,Sukuna-Hikona's Essence
+448,Okuninushi's Essence
+449,Take-Minakata's Essence
+450,Ganesha's Essence
+451,Siegfried's Essence
+452,Valkyrie's Essence
+453,Yoshitsune's Essence
+454,Neko Shogun's Essence
+455,Mada's Essence
+456,Girimekhala's Essence
+457,Pazuzu's Essence
+458,Mishaguji's Essence
+459,Baphomet's Essence
+460,Lahmu's Essence
+461,Abdiel's Essence
+462,Metatron's Essence
+463,Michael's Essence
+464,Gabriel's Essence
+465,Sraosha's Essence
+466,Raphael's Essence
+467,Sandalphon's Essence
+468,Uriel's Essence
+469,Camael's Essence
+470,Melchizedek's Essence
+471,Throne's Essence
+472,Dominion's Essence
+473,Power's Essence
+474,Principality's Essence
+475,Archangel's Essence
+476,Angel's Essence
+477,Abdiel's Essence
+478,Adramelech's Essence
+479,Flauros's Essence
+480,Nebiros's Essence
+481,Berith's Essence
+482,Ose's Essence
+483,Eligor's Essence
+484,Forneus's Essence
+485,Andras's Essence
+486,Decarabia's Essence
+487,Garuda's Essence
+488,Zhuque's Essence
+489,Yatagarasu's Essence
+490,Jatayu's Essence
+491,Feng Huang's Essence
+492,Thunderbird's Essence
+493,Anzu's Essence
+494,Zhen's Essence
+495,Muu Shuwuu's Essence
+496,Onmoraki's Essence
+497,Cleopatra's Essence
+498,Rangda's Essence
+499,Dakini's Essence
+500,Atropos's Essence
+501,Yakshini's Essence
+502,Lachesis's Essence
+503,Clotho's Essence
+504,Manananggal's Essence
+505,Lamia's Essence
+506,Mermaid's Essence
+507,Leanan Sidhe's Essence
+508,Ongyo-Ki's Essence
+509,Shiki-Ouji's Essence
+510,Sui-Ki's Essence
+511,Fuu-Ki's Essence
+512,Kin-Ki's Essence
+513,Azumi's Essence
+514,Ippon-Datara's Essence
+515,Daemon's Essence
+516,Oni's Essence
+517,Hecatoncheires's Essence
+518,Loa's Essence
+519,Rakshasa's Essence
+520,Turdak's Essence
+521,Macabre's Essence
+522,Kaya-no-Hime's Essence
+523,Tsuchigumo's Essence
+524,Narcissus's Essence
+525,Hua Po's Essence
+526,Koropokkur's Essence
+527,Sudama's Essence
+528,Kodama's Essence
+529,Pisaca's Essence
+530,Kumbhanda's Essence
+531,Poltergeist's Essence
+532,Obariyon's Essence
+533,Preta's Essence
+534,Trumpeter's Essence
+535,Mother Harlot's Essence
+536,Black Rider's Essence
+537,Red Rider's Essence
+538,White Rider's Essence
+539,Alice's Essence
+540,Hell Biker's Essence
+541,Daisoujou's Essence
+542,Pale Rider's Essence
+543,Matador's Essence
+544,Aogami Type-1 Essence
+545,Aogami Type-2 Essence
+546,Aogami Type-3 Essence
+547,Aogami Type-4 Essence
+548,Aogami Type-5 Essence
+549,Aogami Type-6 Essence
+550,Aogami Type-7 Essence
+551,Aogami Type-8 Essence
+552,Aogami Type-9 Essence
+553,Aogami Type-10 Essence
+554,Aogami Type-0 Essence
+555,Demi-fiend's Essence
+556,Aogami Type-A Essence
+557,Aogami Type-B Essence
+558,Aogami Type-C Essence
+559,Aogami Type-D Essence
+560,Satan's Essence
+561,Lucifer's Essence
+562,Dagda's Essence
+563,Kresnik's Essence
+564,Anansi's Essence
+565,Dis's Essence
+566,Efreet's Essence
+567,Nahobeeho's Essence
+568,Vritra's Essence
+569,Nyami Nyami's Essence
+570,Nozuchi's Essence
+571,Vouivre's Essence
+572,Zhu Tun She's Essence
+573,Samael's Essence
+574,Xiezhai's Essence
+575,Senri's Essence
+576,Unicorn's Essence
+577,Dormarth's Essence
+578,Glasya-Labolas's Essence
+579,Fenrir's Essence
+580,Peallaidh's Essence
+581,Mad Gasser's Essence
+582,Turbo Granny's Essence
+583,Nezha Taizi's Essence
+584,Masakado's Essence
+585,Saturnus's Essence
+586,Tzitzimitl's 's Essence
+587,Mastema's Essence
+588,Armaiti's Essence
+589,Cherub's Essence
+590,Halphas's Essence
+591,Azazel's Essence
+592,Gurulu's Essence
+593,Karasu Tengu's Essence
+594,Gremlin's Essence
+595,Gogmagog's Essence
+596,Kudlak's Essence
+597,Hare of Inaba's Essence
+598,Kinmamon's Essence
+599,Onyankopon's Essence
+600,Amabie's Essence
+601,Lilith's Essence
+602,Agrat's Essence
+603,Naamah's Essence
+604,Eisheth's Essence
+605,Konohana Sakuya's Essence
+606,Tsukuyomi's Essence Base
+607,Tsukuyomi's Essence Median
+608,Tsukuyomi's Essence Ultimus
+609,Tao's Essence
+610,Yoko's Essence
+611,NOT USED:ITEM_UTSUSEMI_301
+612,NOT USED:ITEM_UTSUSEMI_302
+613,NOT USED:ITEM_UTSUSEMI_303
+614,NOT USED:ITEM_UTSUSEMI_304
+615,NOT USED:ITEM_UTSUSEMI_305
+616,Fortune
+617,Soda
+618,Melted Doll
+619,Cloth Mask
+620,Cartridge Game Console
+621,Shabby Building Material
+622,Hexagram Trading Card
+623,Can of Jelly
+624,Anime Paperweight
+625,Simple Undershirt
+626,Segata III Game Console
+627,Mouse Mummy
+628,Telephone Card
+629,Can of Oden
+630,Electronic Music Box
+631,School Swimsuit
+632,Tablet Game Console
+633,Crow Mummy
+634,Hologram Trading Card
+635,Time Capsule
+636,Balloon Value Pack
+637,Antique Shirt
+638,Game Console with Handle
+639,Mysterious Mummy
+640,Black Tape Set
+641,Ripped Manga
+642,High-Capacity Bottle
+643,Vinyl Umbrella
+644,Powder Box
+645,Bottle Container
+646,Radio-yaki
+647,Rubber Duck
+648,Old Newspaper
+649,Old Magazine
+650,Novel
+651,Sealed Magazine
+652,Cardboard Cap Bottle
+653,Marble Bottle
+654,Maid Costume
+655,Golden Triangle
+656,Golden Apple
+657,Akiha-Gongen Talisman
+658,Key of Austerity
+659,Key of Benevolence
+660,Key of Harmony
+661,Angel Feather
+662,NOT USED:ITEM_IMPORTANT_007
+663,NOT USED:ITEM_IMPORTANT_008
+664,NOT USED:ITEM_IMPORTANT_009
+665,NOT USED:ITEM_IMPORTANT_010
+666,NOT USED:ITEM_IMPORTANT_011
+667,NOT USED:ITEM_IMPORTANT_012
+668,NOT USED:ITEM_IMPORTANT_013
+669,NOT USED:ITEM_IMPORTANT_014
+670,NOT USED:ITEM_IMPORTANT_015
+671,NOT USED:ITEM_IMPORTANT_016
+672,NOT USED:ITEM_IMPORTANT_017
+673,NOT USED:ITEM_IMPORTANT_018
+674,NOT USED:ITEM_IMPORTANT_019
+675,NOT USED:ITEM_IMPORTANT_020
+676,NOT USED:ITEM_IMPORTANT_021
+677,NOT USED:ITEM_IMPORTANT_022
+678,NOT USED:ITEM_IMPORTANT_023
+679,NOT USED:ITEM_IMPORTANT_024
+680,NOT USED:ITEM_IMPORTANT_025
+681,NOT USED:ITEM_IMPORTANT_026
+682,NOT USED:ITEM_IMPORTANT_027
+683,NOT USED:ITEM_IMPORTANT_028
+684,NOT USED:ITEM_IMPORTANT_029
+685,NOT USED:ITEM_IMPORTANT_030
+686,NOT USED:ITEM_IMPORTANT_031
+687,NOT USED:ITEM_IMPORTANT_032
+688,NOT USED:ITEM_IMPORTANT_033
+689,NOT USED:ITEM_IMPORTANT_034
+690,NOT USED:ITEM_IMPORTANT_035
+691,NOT USED:ITEM_IMPORTANT_036
+692,NOT USED:ITEM_IMPORTANT_037
+693,NOT USED:ITEM_IMPORTANT_038
+694,NOT USED:ITEM_IMPORTANT_039
+695,NOT USED:ITEM_IMPORTANT_040
+696,NOT USED:ITEM_IMPORTANT_041
+697,NOT USED:ITEM_IMPORTANT_042
+698,NOT USED:ITEM_IMPORTANT_043
+699,NOT USED:ITEM_IMPORTANT_044
+700,NOT USED:ITEM_IMPORTANT_045
+701,NOT USED:ITEM_IMPORTANT_046
+702,NOT USED:ITEM_IMPORTANT_047
+703,NOT USED:ITEM_IMPORTANT_048
+704,NOT USED:ITEM_IMPORTANT_049
+705,NOT USED:ITEM_IMPORTANT_050
+706,Grimalkin Periapt
+707,Children of Echidna Periapt
+708,Mischievous Mascot Periapt
+709,Asgardian Kin Periapt
+710,Shadow Warrior Periapt
+711,Exalted Seraphim Periapt
+712,Macabre Family Periapt
+713,Siblings of Olympus Periapt
+714,Cardinal Deity Periapt
+715,Elemental Oni Periapt
+716,Heavenly Kings' Periapt
+717,Pixie Periapt
+718,Amorphous Periapt
+719,Servants of Heaven Periapt
+720,Twinned Throne Periapt
+721,Seeds of Dana Periapt
+722,Virtuous Order Periapt
+723,Treacherous Order Periapt
+724,Unwrit Order Periapt
+725,Virtuous Chaos Periapt
+726,Treacherous Chaos Periapt
+727,Unwrit Chaos Periapt
+728,Virtuous Neutral Periapt
+729,Treacherous Neutral Periapt
+730,Unwrit Neutral Periapt
+731,Qadištu Periapt
+732,Mountain Gods Periapt
+733,NOT USED:ITEM_IMPORTANT_078
+734,NOT USED:ITEM_IMPORTANT_079
+735,NOT USED:ITEM_IMPORTANT_080
+736,NOT USED:ITEM_IMPORTANT_081
+737,NOT USED:ITEM_IMPORTANT_082
+738,NOT USED:ITEM_IMPORTANT_083
+739,NOT USED:ITEM_IMPORTANT_084
+740,NOT USED:ITEM_IMPORTANT_085
+741,NOT USED:ITEM_IMPORTANT_086
+742,NOT USED:ITEM_IMPORTANT_087
+743,NOT USED:ITEM_IMPORTANT_088
+744,NOT USED:ITEM_IMPORTANT_089
+745,Designer Heels
+746,Instant Camera
+747,Amabie's Bromide Photo
+748,Sangaku Beads
+749,Relay Sash
+750,Sample Container
+751,Attis's Business Card
+752,Heavenly Keystone
+753,Purified Sake
+754,Kiou Sword
+755,Oak Staff
+756,Jatayu Egg
+757,Mandrake Root
+758,Giant Bird's Feather
+759,Shikigami Talisman
+760,Mothman Capture Pot
+761,Kumbhanda's Bottle
+762,Incubus's Letter
+763,Frozen King Salmon
+764,Kunitsu Keystone
+765,Gibbon Guitar
+766,Large Model Kit
+767,TV-Game Combination
+768,Horn of Plenty
+769,Diamond
+770,Garnet
+771,Aquamarine
+772,Dragon Scale
+773,Girimekhala's Head
+774,Lord's Sword
+775,Winged Sun Crest
+776,Angel Ring
+777,Seed of Life
+778,Inugami's Head
+779,Bicorn Horn
+780,Horus's Head
+781,Dark Contract
+782,Magnetite Powder
+783,Menorah of Knowledge
+784,Menorah of Foundation
+785,Menorah of Eternity
+786,Menorah of Dignity
+787,Menorah of Compassion
+788,Menorah of Insight
+789,Menorah of Wisdom
+790,Menorah of Majesty
+791,Menorah of Beauty
+792,Menorah of Glory
+793,Menorah of Monarchy
+794,Student Handbook
+795,Sake and Dango Medley
+796,Fiendish Sash
+797,Emerald
+798,Amethyst
+799,Young Star
+800,Poisonous Flower Bud
+801,Four-Leaf Clover
+802,Attaché Case
+803,NOT USED:ITEM_IMPORTANT_148
+804,NOT USED:ITEM_IMPORTANT_149
+805,NOT USED:ITEM_IMPORTANT_150
+806,Haunt Talisman
+807,Raptor Talisman
+808,Herald Talisman
+809,Megami Talisman
+810,Avian Talisman
+811,Divine Talisman
+812,Yoma Talisman
+813,Vile Talisman
+814,Deity Talisman
+815,Wargod Talisman
+816,Avatar Talisman
+817,Holy Talisman
+818,Genma Talisman
+819,Element Talisman
+820,Fairy Talisman
+821,Beast Talisman
+822,Jirae Talisman
+823,Fiend Talisman
+824,Jaki Talisman
+825,Wilder Talisman
+826,Fury Talisman
+827,Lady Talisman
+828,Dragon Talisman
+829,Kishin Talisman
+830,Kunitsu Talisman
+831,Femme Talisman
+832,Brute Talisman
+833,Fallen Talisman
+834,Night Talisman
+835,Snake Talisman
+836,Tyrant Talisman
+837,Drake Talisman
+838,Foul Talisman
+839,Tsukuyomi Talisman
+840,UMA Talisman
+841,Enigma Talisman
+842,Qadištu Talisman
+843,Primal Talisman
+844,Devil Talisman
+845,Panagia Talisman
+846,Chaos Talisman
+847,NOT USED:ITEM_IMPORTANT_192
+848,NOT USED:ITEM_IMPORTANT_193
+849,NOT USED:ITEM_IMPORTANT_194
+850,NOT USED:ITEM_IMPORTANT_195
+851,NOT USED:ITEM_IMPORTANT_196
+852,NOT USED:ITEM_IMPORTANT_197
+853,NOT USED:ITEM_IMPORTANT_198
+854,NOT USED:ITEM_IMPORTANT_199
+855,NOT USED:ITEM_IMPORTANT_200
+856,Soup Can
+857,Dry Cell Battery
+858,Disposable Camera
+859,Mini Cartridge
+860,Traveler's Check
+861,Crowned Bottle
+862,Chipped Decoration
+863,Floral Painting
+864,Dazzling Dress
+865,Western Game Console
+866,Monstrous Mummy
+867,NOT USED:ITEM_RELIC_052
+868,NOT USED:ITEM_RELIC_053
+869,NOT USED:ITEM_RELIC_054
+870,NOT USED:ITEM_RELIC_055
+871,NOT USED:ITEM_RELIC_056
+872,NOT USED:ITEM_RELIC_057
+873,NOT USED:ITEM_RELIC_058
+874,NOT USED:ITEM_RELIC_059
+875,NOT USED:ITEM_RELIC_060
+876,NOT USED:ITEM_RELIC_061
+877,NOT USED:ITEM_RELIC_062
+878,NOT USED:ITEM_RELIC_063
+879,NOT USED:ITEM_RELIC_064
+880,NOT USED:ITEM_RELIC_065
+881,NOT USED:ITEM_RELIC_066
+882,NOT USED:ITEM_RELIC_067
+883,NOT USED:ITEM_RELIC_068
+884,NOT USED:ITEM_RELIC_069
+885,NOT USED:ITEM_RELIC_070
+886,NOT USED:ITEM_RELIC_071
+887,NOT USED:ITEM_RELIC_072
+888,NOT USED:ITEM_RELIC_073
+889,NOT USED:ITEM_RELIC_074
+890,NOT USED:ITEM_RELIC_075
+891,NOT USED:ITEM_RELIC_076
+892,NOT USED:ITEM_RELIC_077
+893,NOT USED:ITEM_RELIC_078
+894,NOT USED:ITEM_RELIC_079
+895,NOT USED:ITEM_RELIC_080

@@ -8,7 +8,7 @@ class PandasMixin(ABC):
     @classmethod
     def from_dataframe(
         cls, df: DataFrame, rename: Optional[Dict[str, str]] = None
-    ) -> list[Self]:
+    ) -> List[Self]:
         if rename:
             df = df.rename(columns=rename)
         return [
@@ -18,7 +18,7 @@ class PandasMixin(ABC):
     @classmethod
     def from_csv(
         cls, path: Path, *args, skiprows: Optional[int] = None, **kwargs
-    ) -> list[Self]:
+    ) -> List[Self]:
         with open(path, "r") as file:
             if skiprows:
                 df = read_csv(file, skiprows=skiprows)
@@ -28,7 +28,7 @@ class PandasMixin(ABC):
 
 
 def is_unused(name: str) -> bool:
-        return name.startswith("NOT USED:")
+    return name.startswith("NOT USED:")
 
 
 class IHaveAName(ABC):
