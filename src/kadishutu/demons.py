@@ -193,7 +193,7 @@ class PType(Enum):
     Almighty = auto()
     Ailment = auto()
     Support = auto()
-    Healing = auto()
+    Recovery = auto()
     _UNKNOWN = auto()
 
 
@@ -233,7 +233,7 @@ class PotentialEditor(BaseDynamicEditor, BaseStructAsFieldEditor):
     almighty = gsproperty(PType.Almighty)
     ailment = gsproperty(PType.Ailment)
     support = gsproperty(PType.Support)
-    healing = gsproperty(PType.Healing)
+    recovery = gsproperty(PType.Recovery)
     _unknown = gsproperty(PType._UNKNOWN)
 
 
