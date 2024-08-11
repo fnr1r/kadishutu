@@ -22,6 +22,7 @@ from .file_handling import DecryptedSave
 from .game import SaveEditor
 from .gui_icons import ICON_LOADER
 from .items import ItemEditor
+from .player import NameEdit, NameManager
 from .skills import Skill, SkillEditor
 
 
@@ -157,6 +158,47 @@ def hboxed(parent: QWidget, *args: QWidget):
         widget.setParent(w)
         l.addWidget(widget)
     return w
+
+
+OVERWRITTEN_WARN = "WARNING: This is overwritten with \"First name\" when saving"
+
+
+class NameEditorScreen(GWidget, AppliableWidget):
+    NAMES = [
+        "Save name", "First name", "Last name", "First name again",
+        "Combined name"
+    ]
+
+    def __init__(self, names: NameManager, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.names = names
+        self.namelist: List[Tuple[NameEdit, QLineEdit]] = []
+        
+        self.setLayout(QVBoxLayout())
+        
+        for name in self.NAMES:
+            label = QLabel(name, self)
+            self.layout().addWidget(label)
+            name = name.lower().replace(" ", "_")
+            if name == "save_name":
+                label = QLabel(OVERWRITTEN_WARN, self)
+                self.layout().addWidget(label)
+            editor: NameEdit = names.__getattribute__(name)
+            box = QLineEdit(self)
+            box.setMaxLength(editor.length)
+            self.layout().addWidget(box)
+            self.namelist.append((editor, box))
+
+    def stack_refresh(self):
+        for editor, box in self.namelist:
+            box.setText(editor.get())
+
+    def apply_changes(self):
+        for editor, box in self.namelist:
+            if not box.isModified():
+                continue
+            editor.set(box.text())
+            box.setModified(False)
 
 
 class DlcEditorScreen(GWidget, AppliableWidget):
@@ -354,6 +396,9 @@ class PlayerEditorScreen(GWidget):
         self.setLayout(self.l)
 
         for name, fun in [
+            ("Names", lambda: NameEditorScreen(
+                self.save.player.names, self
+            )),
             ("Stats", lambda: StatEditorScreen(
                 self.save.player.stats, self.save.player.healable, self
             )),
