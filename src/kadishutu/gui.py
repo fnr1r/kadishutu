@@ -16,7 +16,7 @@ from .data.demons import DEMON_ID_MAP, DEMON_NAME_MAP
 from .data.element_icons import Element
 from .data.items import CONSUMABLES_RANGE, KEY_ITEMS_RANGE, RELICS_RANGE_1, RELICS_RANGE_2, Item, items_from
 from .data.skills import SKILL_ID_MAP, SKILL_NAME_MAP
-from .demons import STATS_NAMES, DemonEditor, HealableEditor, StatsEditor
+from .demons import AFFINITY_MAP, AFFINITY_NAMES, STATS_NAMES, Affinity, AffinityEditor, DemonEditor, HealableEditor, StatsEditor
 from .dlc import DLCS, DlcBitflags
 from .file_handling import DecryptedSave
 from .game import SaveEditor
@@ -387,6 +387,45 @@ class SkillEditorScreen(GWidget, AppliableWidget):
             mystery_box.setattr_if_modified(skill_box.skill, "_unknown")
 
 
+class AffinityEditorScreen(GWidget, AppliableWidget):
+    def __init__(self, affinities: AffinityEditor, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.affinities = affinities
+        self.aff_map: Dict[str, QComboBox] = {}
+
+        self.l = QGridLayout(self)
+        self.setLayout(self.l)
+        cb_items = list(AFFINITY_MAP.keys())
+
+        for i, name in enumerate(AFFINITY_NAMES):
+            label = QLabel(name)
+            self.l.addWidget(label, i, 1)
+            affinity_box = QComboBox(self)
+            affinity_box.addItems(cb_items)
+            self.l.addWidget(affinity_box, i, 2)
+            self.aff_map[name.lower()] = affinity_box
+            try:
+                pak = ICON_LOADER.element_icon(Element[name])
+            except Exception as e:
+                print("Failed to load element icon:", e)
+            else:
+                pix = pak.pixmap.scaled(pak.size_div(2))
+                icon = QLabel(self)
+                icon.setFixedSize(pix.size())
+                icon.setPixmap(pix)
+                self.l.addWidget(icon, i, 0)
+
+    def stack_refresh(self):
+        for name, affinity_box in self.aff_map.items():
+            affinity: Affinity = self.affinities.__getattribute__(name)
+            affinity_box.setCurrentText(affinity.name)
+
+    def apply_changes(self):
+        for name, affinity_box in self.aff_map.items():
+            affinity = Affinity[affinity_box.currentText()]
+            self.affinities.__setattr__(name, affinity)
+
+
 class PlayerEditorScreen(GWidget):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -404,6 +443,9 @@ class PlayerEditorScreen(GWidget):
             )),
             ("Skills", lambda: SkillEditorScreen(
                 self.save.player.skills, self
+            )),
+            ("Affinities", lambda: AffinityEditorScreen(
+                self.save.player.affinities, self
             ))
         ]:
             button = QPushButton(name, self)
@@ -476,6 +518,9 @@ class DemonEditorScreen(GWidget, AppliableWidget):
             )),
             ("Skills", lambda: SkillEditorScreen(
                 self.demon.skills, self
+            )),
+            ("Affinities", lambda: AffinityEditorScreen(
+                self.demon.affinities, self
             ))
         ]:
             button = QPushButton(name, self.side_panel_widget)
