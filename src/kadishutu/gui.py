@@ -104,10 +104,15 @@ class EditorMixin:
         self.mixin()
 
     def mixin(self):
-        parent = self.game_save_editor
-        self.save = parent.save
         self.stack_add = MAIN_WINDOW.stack_add
         self.stack_remove = MAIN_WINDOW.stack_remove
+        try:
+            parent = self.game_save_editor
+        except IndexError:
+            return
+        else:
+            assert not hasattr(self, "save")
+            self.save = parent.save
 
     def stack_refresh(self): ...
 
@@ -636,7 +641,7 @@ class AlignmentEditorScreen(GTabWidget, AppliableWidget):
                 byte_editor.set_flag(bit.bit, box.isChecked())
 
 
-class GameSaveEditor(QWidget, AppliableWidget):
+class GameSaveEditor(GWidget, AppliableWidget):
     path: Path
     raw_save: DecryptedSave
     save: SaveEditor
@@ -658,7 +663,6 @@ class GameSaveEditor(QWidget, AppliableWidget):
         self.l = QVBoxLayout()
         self.setLayout(self.l)
         self.macca = QU32(self)
-        self.macca.setValue(self.save.macca)
         self.macca_label = QLabel(self)
         self.macca_label.setText("Macca:")
         w = hboxed(self, self.macca_label, self.macca)
@@ -679,8 +683,8 @@ class GameSaveEditor(QWidget, AppliableWidget):
 
         self.l.addStretch()
 
-    def spawner(self, cls, *args, **kwargs):
-        return lambda: MAIN_WINDOW.stack_add(cls(self, *args, **kwargs))
+    def stack_refresh(self):
+        self.macca.setValue(self.save.macca)
 
     def apply_changes(self):
         self.macca.setattr_if_modified(self.save, "macca")
@@ -897,7 +901,7 @@ class MainWindow(QMainWindow):
         self.menuBar().addMenu(self.file_menu)
         self.edit_menu = QMenu("Edit", self)
         self.undo_button = self.edit_menu.addAction("Undo")
-        #self.undo_button.triggered.connect(self.on_save)
+        self.undo_button.triggered.connect(self.on_undo)
         self.menuBar().addMenu(self.edit_menu)
         self.menu_separator = self.menuBar().addSeparator()
         self.apply_button = self.menuBar().addAction("Apply")
@@ -934,10 +938,12 @@ class MainWindow(QMainWindow):
             self.save_button.setEnabled(True)
             self.save_as_button.setEnabled(True)
             self.close_button.setEnabled(True)
+            self.undo_button.setEnabled(True)
         else:
             self.save_button.setEnabled(False)
             self.save_as_button.setEnabled(False)
             self.close_button.setEnabled(False)
+            self.undo_button.setEnabled(False)
         #self.statusBar().showMessage(" > ".join([
         #    i.__class__.__name__
         #    for i in self.inner.widget_stack
@@ -977,6 +983,12 @@ class MainWindow(QMainWindow):
             return
         while len(self.inner.widget_stack) > 1:
             self.stack_remove()
+
+    def on_undo(self):
+        widget = self.inner.top_widget
+        if not isinstance(widget, EditorMixin):
+            raise NotImplementedError
+        widget.stack_refresh()
 
     def alert_abandoning_modifications(self) -> bool:
         if not (self.inner.should_show_navigation and
