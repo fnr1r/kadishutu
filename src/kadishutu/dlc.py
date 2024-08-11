@@ -1,5 +1,7 @@
 from enum import IntFlag, auto
+from functools import reduce
 from math import log
+import operator
 from typing import Dict, List
 from typing_extensions import Self
 
@@ -44,6 +46,13 @@ class DlcBitflags(IntFlag):
 
     def get_flags(self) -> List[str]:
         return [DLCS[int(log(i.value, 2))] for i in self]
+
+    @classmethod
+    def from_flags(cls, flags: List[str]) -> Self:
+        return reduce(operator.or_, [
+            cls.from_str(flag)
+            for flag in flags
+        ], cls(0))
 
 
 class DlcEditor(BaseStaticEditor, BaseStructAsSingularValueEditor):

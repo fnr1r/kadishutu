@@ -15,6 +15,7 @@ from .data.element_icons import Element
 from .data.items import CONSUMABLES_RANGE, KEY_ITEMS_RANGE, RELICS_RANGE_1, RELICS_RANGE_2, Item, items_from
 from .data.skills import SKILL_ID_MAP, SKILL_NAME_MAP
 from .demons import STATS_NAMES, DemonEditor, HealableEditor, StatsEditor
+from .dlc import DLCS, DlcBitflags
 from .file_handling import DecryptedSave
 from .game import SaveEditor
 from .gui_icons import ICON_LOADER
@@ -149,6 +150,35 @@ def hboxed(parent: QWidget, *args: QWidget):
         widget.setParent(w)
         l.addWidget(widget)
     return w
+
+
+class DlcEditorScreen(GWidget, AppliableWidget):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.dlcmap: Dict[str, QCheckBox] = {}
+
+        self.l = QGridLayout()
+        self.setLayout(self.l)
+
+        for i, dlc in enumerate(DLCS.values()):
+            label = QLabel(dlc, self)
+            self.l.addWidget(label, i, 0)
+            dlc_box = QCheckBox(self)
+            self.l.addWidget(dlc_box, i, 1)
+            self.dlcmap[dlc] = dlc_box
+
+    def stack_refresh(self):
+        dlcs = self.save.dlc.flags.get_flags()
+        for name, dlc_box in self.dlcmap.items():
+            dlc_box.setChecked(name in dlcs)
+
+    def apply_changes(self):
+        dlcs = [
+            name
+            for name, dlc_box in self.dlcmap.items()
+            if dlc_box.isChecked()
+        ]
+        self.save.dlc.flags = DlcBitflags.from_flags(dlcs)
 
 
 class StatEditorScreen(GWidget, AppliableWidget):
@@ -560,6 +590,7 @@ class GameSaveEditor(QWidget, AppliableWidget):
         self.menu_buttons = []
 
         for name, cls in [
+            ("DLC", DlcEditorScreen),
             ("Player", PlayerEditorScreen),
             ("Demons", DemonSelectorScreen),
             ("Items", ItemEditorScreen)
