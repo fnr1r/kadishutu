@@ -9,6 +9,8 @@ from PIL.ImageQt import ImageQt
 from PySide6.QtCore import QSize
 from PySide6.QtGui import QIcon, QPixmap
 
+from .data.element_icons import Element
+
 
 try:
     UMODEL_EXPORT_PATH = os.environ["SMTVV_UMODEL_EXPORT"]
@@ -48,6 +50,7 @@ class ImagePak:
 class IconLoaderPaths:
     CHARACTER_ICON = "/Game/Design/UI/CharaIcon/Textures/dev{id:03}.tga"
     MINI_CHARACTER_ICON = "/Game/Design/UI/CharaIcon/Textures/face_all_001.tga"
+    ELEMENT_ICONS = "/Game/Design/UI/Icon/Element/Textures/icon_element_01.tga"
     LOADING_CHARACTER_ICON = "/Game/Design/UI/LoadingCharaIcon/dev_L_{id:03}.tga"
 
     def character_icon(self, id: int) -> Path:
@@ -56,6 +59,10 @@ class IconLoaderPaths:
     @property
     def mini_character_icon(self) -> Path:
         return Path(UMODEL_EXPORT_PATH + self.MINI_CHARACTER_ICON)
+
+    @property
+    def element_icons(self) -> Path:
+        return Path(UMODEL_EXPORT_PATH + self.ELEMENT_ICONS)
 
     def loading_character_icon(self, id: int) -> Path:
         return Path(UMODEL_EXPORT_PATH + self.LOADING_CHARACTER_ICON.format(id=id))
@@ -66,6 +73,7 @@ class IconLoader:
         self.paths = IconLoaderPaths()
         self.char_icon_map: Dict[int, ImagePak] = {}
         self.mini_char_icon_map: Dict[int, ImagePak] = {}
+        self.element_icon_map: Dict[Element, ImagePak] = {}
         self.loading_char_icon_map: Dict[int, ImagePak] = {}
 
     @staticmethod
@@ -110,6 +118,28 @@ class IconLoader:
         box = (x1, y1, x2, y2)
         img = img.crop(box)
         self.mini_char_icon_map[id] = pak = ImagePak.from_image(img)
+        return pak
+
+    def element_icon(self, element: Element) -> ImagePak:
+        try:
+            return self.element_icon_map[element]
+        except KeyError:
+            pass
+        if not hasattr(self, "element_icons_img"):
+            self.element_icons_img = ModImage.open(self.paths.element_icons)
+        img = self.element_icons_img
+        width = height = 84
+        id = element.value
+        ELEMENT_CHAR_COLUMNS = 12
+        column = id // ELEMENT_CHAR_COLUMNS
+        row = id % ELEMENT_CHAR_COLUMNS
+        x1 = width * row
+        x2 = x1 + width
+        y1 = height * column
+        y2 = y1 + height
+        box = (x1, y1, x2, y2)
+        img = img.crop(box)
+        self.element_icon_map[element] = pak = ImagePak.from_image(img)
         return pak
 
     def loading_character_icon(self, id: int) -> ImagePak:

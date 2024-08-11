@@ -11,6 +11,7 @@ from PySide6.QtGui import QCloseEvent
 from PySide6.QtWidgets import *
 
 from .data.demons import DEMON_ID_MAP, DEMON_NAME_MAP
+from .data.element_icons import Element
 from .data.items import CONSUMABLES_RANGE, items_from
 from .data.skills import SKILL_ID_MAP, SKILL_NAME_MAP
 from .demons import STATS_NAMES, DemonEditor, HealableEditor, StatsEditor
@@ -481,9 +482,19 @@ class ItemEditorWidget(GScrollArea, AppliableWidget):
         for i, item_meta in enumerate(items_from(CONSUMABLES_RANGE)):
             item = self.save.items.from_meta(item_meta)
             label = QLabel(item.name, self.inner)
-            self.l.addWidget(label, i, 0)
+            try:
+                pak = ICON_LOADER.element_icon(Element.Misc)
+            except Exception as e:
+                print("Failed to load element icon:", e)
+            else:
+                pix = pak.pixmap.scaled(pak.size_div(2))
+                icon = QLabel(self.inner)
+                icon.setFixedSize(pix.size())
+                icon.setPixmap(pix)
+                self.l.addWidget(icon, i, 0)
+            self.l.addWidget(label, i, 1)
             amount_box = QU8(self.inner)
-            self.l.addWidget(amount_box, i, 1)
+            self.l.addWidget(amount_box, i, 2)
             self.items.append((item, label, amount_box))
 
     def stack_refresh(self):
