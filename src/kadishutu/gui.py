@@ -10,12 +10,15 @@ from PySide6.QtGui import QCloseEvent
 #)
 from PySide6.QtWidgets import *
 
-from .demons import STATS_NAMES, HealableEditor, StatsEditor
+from kadishutu.data.demons import DEMON_ID_MAP, DEMON_NAME_MAP
+
+from .demons import STATS_NAMES, DemonEditor, HealableEditor, StatsEditor
 from .file_handling import DecryptedSave
 from .game import SaveEditor
 from .gui_icons import ICON_LOADER
 
 
+U16_MAX = 2 ** 16 -1
 # RuntimeWarning: libshiboken: Overflow: Value 7378697629483820646 exceeds
 # limits of type  [signed] "i" (4bytes).
 SHIBOKEN_MAX = 2 ** 31 - 1
@@ -34,6 +37,12 @@ class QModifiedMixin:
         self._modified = modified
 
 
+class OnStackRemovedHook:
+    @abstractmethod
+    def on_stack_removed(self):
+        raise NotImplementedError
+
+
 class QU8(QSpinBox, QModifiedMixin):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -44,7 +53,7 @@ class QU8(QSpinBox, QModifiedMixin):
 class QU16(QSpinBox, QModifiedMixin):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.setMaximum(2 ** 16 -1)
+        self.setMaximum(U16_MAX)
         self.valueChanged.connect(lambda _: self.setModified(True))
 
 
@@ -70,6 +79,8 @@ class EditorMixin:
         self.stack_add = MAIN_WINDOW.stack_add
         self.stack_remove = MAIN_WINDOW.stack_remove
 
+    def stack_refresh(self): ...
+
     @property
     def game_save_editor(self) -> "GameSaveEditor":
         widget = MAIN_WINDOW.inner.widget_stack[1]
@@ -82,10 +93,6 @@ class EditorMixin:
 
 
 class GWidget(EditorMixin, QWidget):
-    pass
-
-
-class GScrollArea(EditorMixin, QScrollArea):
     pass
 
 
@@ -157,8 +164,91 @@ class StatEditorScreen(GWidget, AppliableWidget):
                 self.apply_widget(ty, stat, widget)
 
 
-class DemonEditorScreen(StatEditorScreen):
-    pass
+class DemonIdnWidget(QWidget, QModifiedMixin):
+    def __init__(self, demon: DemonEditor, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        QModifiedMixin.__init__(self)
+        self.setLayout(QVBoxLayout())
+        self.layout().setContentsMargins(0, 0, 0, 0)
+
+        self.id_label = QLabel("ID:", self)
+        self.id_box = QSpinBox(self)
+        self.id_box.setMaximum(U16_MAX)
+        self.id_box.setValue(demon.demon_id)
+        self.id_box.valueChanged.connect(self.id_changed)
+        self.id_widget = hboxed(self, self.id_label, self.id_box)
+        self.layout().addWidget(self.id_widget)
+
+        self.name_label = QLabel("Name:", self)
+        self.name_box = QComboBox(self)
+        self.name_box.addItems(list(DEMON_NAME_MAP.keys()))
+        self.name_box.setCurrentText(demon.name)
+        self.name_box.currentTextChanged.connect(self.name_changed)
+        self.name_widget = hboxed(self, self.name_label, self.name_box)
+        self.layout().addWidget(self.name_widget)
+
+    def id_changed(self, id: int):
+        self.setModified(True)
+        try:
+            self.name_box.setCurrentText(DEMON_ID_MAP[id]["name"])
+        except KeyError:
+            pass
+
+    def name_changed(self, name: str):
+        self.setModified(True)
+        self.id_box.setValue(DEMON_NAME_MAP[name]["id"])
+
+
+class DemonEditorScreen(GWidget, AppliableWidget):
+    def __init__(self, demon: DemonEditor, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.demon = demon
+
+        self.setLayout(QHBoxLayout())
+        self.layout().setContentsMargins(0, 0, 0, 0)
+        self.side_panel_widget = QWidget(self)
+        self.side_panel_layout = QVBoxLayout()
+        self.side_panel_widget.setLayout(self.side_panel_layout)
+        self.layout().addWidget(self.side_panel_widget)
+
+        self.demon_idn_widget = DemonIdnWidget(demon, self.side_panel_widget)
+
+        self.side_panel_widgets: List[QWidget] = [
+            self.demon_idn_widget
+        ]
+
+        button = QPushButton("Stats", self.side_panel_widget)
+        button.clicked.connect(self.demon_stats)
+        self.side_panel_widgets.append(button)
+
+        for button in self.side_panel_widgets:
+            self.side_panel_layout.addWidget(button)
+        self.side_panel_layout.addStretch()
+
+        self.demon_graphic = QLabel(self)
+        self.layout().addWidget(self.demon_graphic)
+
+    def stack_refresh(self):
+        try:
+            icon = ICON_LOADER.loading_character_icon(self.demon.demon_id)
+        except FileNotFoundError:
+            self.demon_graphic.hide()
+        else:
+            size = icon.size_div(2)
+            self.demon_graphic_pix = icon.pixmap.scaled(size)
+            self.demon_graphic.setPixmap(self.demon_graphic_pix)
+            self.demon_graphic.setFixedSize(size)
+            self.demon_graphic.show()
+
+    def apply_changes(self):
+        if self.demon_idn_widget.getModified:
+            self.demon.demon_id = self.demon_idn_widget.id_box.value()
+            self.demon_idn_widget.setModified(False)
+
+    def demon_stats(self):
+        self.stack_add(StatEditorScreen(
+            self.demon.stats, self.demon.healable, self
+        ))
 
 
 class DemonSelectorScreen(GWidget):
@@ -166,37 +256,43 @@ class DemonSelectorScreen(GWidget):
         super().__init__(*args, **kwargs)
         self.l = QGridLayout()
         self.setLayout(self.l)
-        self.demons = []
+        self.demons: List[QPushButton] = []
         for demon_number in range(24):
-            demon = self.save.demon(demon_number)
             sel = QPushButton(self)
-            if demon.demon_id == 0xffff:
-                demon_txt = "None"
-                sel.setEnabled(False)
-            else:
-                try:
-                    demon_txt = demon.name
-                except:
-                    demon_txt = f"Unknown ({demon.demon_id})"
-                try:
-                    icon = ICON_LOADER.mini_character_icon(demon.demon_id)
-                except Exception as e:
-                    print("Failed to load demon icon:", e)
-                else:
-                    sel.setIcon(icon.icon)
-                    sel.setIconSize(icon.size_div(2))
-            sel.setText(f"Demon {demon_number}: {demon_txt}")
-            sel.clicked.connect(self.demon_stats(demon_number))
+            sel.clicked.connect(self.demon_editor(demon_number))
             COLUMNS = 4
             row = demon_number // COLUMNS
             column = demon_number % COLUMNS
             self.l.addWidget(sel, row, column)
             self.demons.append(sel)
 
-    def demon_stats(self, demon_number: int):
+    def demon_button_refresh(self, demon_number: int, button: QPushButton):
+        demon = self.save.demon(demon_number)
+        if demon.demon_id == 0xffff:
+            demon_txt = "None"
+            button.setEnabled(False)
+        else:
+            try:
+                demon_txt = demon.name
+            except:
+                demon_txt = f"Unknown ({demon.demon_id})"
+            try:
+                icon = ICON_LOADER.mini_character_icon(demon.demon_id)
+            except Exception as e:
+                print("Failed to load demon icon:", e)
+            else:
+                button.setIcon(icon.icon)
+                button.setIconSize(icon.size_div(2))
+        button.setText(f"Demon {demon_number}: {demon_txt}")
+
+    def stack_refresh(self):
+        for demon_number, button in enumerate(self.demons):
+            self.demon_button_refresh(demon_number, button)
+
+    def demon_editor(self, demon_number: int):
         demon = self.save.demon(demon_number)
         return lambda: self.stack_add(
-            DemonEditorScreen(demon.stats, demon.healable, self)
+            DemonEditorScreen(demon, self)
         )
 
 
@@ -402,6 +498,8 @@ class ManagedStackWidget(QWidget):
         return len(self.widget_stack) > 1
 
     def stack_add(self, widget: QWidget):
+        if isinstance(widget, EditorMixin):
+            widget.stack_refresh()
         widget.setParent(self)
         self.widget_stack.append(widget)
         self.stack.addWidget(widget)
@@ -413,7 +511,9 @@ class ManagedStackWidget(QWidget):
         if len(self.widget_stack) < 2:
             raise ValueError("Refusing to go back with widget stack at 1")
         widget = self.widget_stack.pop()
-        self.stack.addWidget(widget)
+        if isinstance(widget, OnStackRemovedHook):
+            widget.on_stack_removed()
+        self.stack.removeWidget(widget)
         self.stack.setCurrentWidget(self.widget_stack[-1])
         #if len(self.widget_stack) < 2:
         #    self.location_bar.hide()
@@ -502,6 +602,10 @@ class MainWindow(QMainWindow):
             raise NotImplementedError
         self.inner.editor_widget.modified = True
         widget.apply_changes()
+        for widget in self.inner.widget_stack:
+            if not isinstance(widget, EditorMixin):
+                continue
+            widget.stack_refresh()
 
     def on_save(self):
         if not self.inner.should_show_navigation:

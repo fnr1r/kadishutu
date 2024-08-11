@@ -66,6 +66,7 @@ class IconLoader:
         self.paths = IconLoaderPaths()
         self.char_icon_map: Dict[int, ImagePak] = {}
         self.mini_char_icon_map: Dict[int, ImagePak] = {}
+        self.loading_char_icon_map: Dict[int, ImagePak] = {}
 
     @staticmethod
     def assert_is_a_demon(id: int):
@@ -109,6 +110,17 @@ class IconLoader:
         box = (x1, y1, x2, y2)
         img = img.crop(box)
         self.mini_char_icon_map[id] = pak = ImagePak.from_image(img)
+        return pak
+
+    def loading_character_icon(self, id: int) -> ImagePak:
+        self.assert_is_a_demon(id)
+        try:
+            return self.loading_char_icon_map[id]
+        except KeyError:
+            pass
+        path = self.paths.loading_character_icon(id)
+        img = ModImage.open(path)
+        self.loading_char_icon_map[id] = pak = ImagePak.from_image(img)
         return pak
 
 
