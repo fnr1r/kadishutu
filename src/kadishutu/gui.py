@@ -46,6 +46,11 @@ class QModifiedMixin:
             updater(self.get_value())
             self.setModified(False)
 
+    def setattr_if_modified(self, obj: object, attr: str):
+        if self.getModified():
+            obj.__setattr__(attr, self.get_value())
+            self.setModified(False)
+
 
 class OnStackRemovedHook:
     @abstractmethod
@@ -286,10 +291,7 @@ class SkillEditorScreen(GWidget, AppliableWidget):
         for i in range(8):
             (_, _, skill_box, mystery_box) = self.widgets[i]
             skill_box.apply_changes()
-            skill = skill_box.skill
-            if mystery_box.getModified():
-                skill._unknown = mystery_box.value()
-                mystery_box.setModified(False)
+            mystery_box.setattr_if_modified(skill_box.skill, "_unknown")
 
 
 class PlayerEditorScreen(GWidget):
@@ -406,9 +408,7 @@ class DemonEditorScreen(GWidget, AppliableWidget):
             self.demon_graphic.show()
 
     def apply_changes(self):
-        if self.demon_idn_widget.getModified:
-            self.demon.demon_id = self.demon_idn_widget.id_box.value()
-            self.demon_idn_widget.setModified(False)
+        self.demon_idn_widget.setattr_if_modified(self.demon, "demon_id")
 
     def demon_stats(self):
         self.stack_add(StatEditorScreen(
@@ -511,9 +511,7 @@ class GameSaveEditor(QWidget, AppliableWidget):
         MAIN_WINDOW.stack_add(widget)
 
     def apply_changes(self):
-        if self.macca.getModified():
-            self.save.macca = self.macca.value()
-            self.macca.setModified(False)
+        self.macca.setattr_if_modified(self.save, "macca")
 
 
 class SaveType(Enum):
