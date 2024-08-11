@@ -292,6 +292,36 @@ class SkillEditorScreen(GWidget, AppliableWidget):
                 mystery_box.setModified(False)
 
 
+class PlayerEditorScreen(GWidget):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.buttons = []
+
+        self.l = QVBoxLayout()
+        self.setLayout(self.l)
+
+        for name, fun in [
+            ("Stats", self.player_stats),
+            ("Skills", self.player_skills)
+        ]:
+            button = QPushButton(name, self)
+            button.clicked.connect(fun)
+            self.l.addWidget(button)
+            self.buttons.append(button)
+
+        self.l.addStretch()
+
+    def player_stats(self):
+        self.stack_add(StatEditorScreen(
+            self.save.player.stats, self.save.player.healable, self
+        ))
+
+    def player_skills(self):
+        self.stack_add(SkillEditorScreen(
+            self.save.player.skills, self
+        ))
+
+
 class DemonIdnWidget(QWidget, QModifiedMixin):
     def __init__(self, demon: DemonEditor, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -463,11 +493,18 @@ class GameSaveEditor(QWidget, AppliableWidget):
         self.macca_label.setText("Macca:")
         w = hboxed(self, self.macca_label, self.macca)
         self.l.addWidget(w)
+        self.player_menu = QPushButton("Player", self)
+        self.player_menu.clicked.connect(self.open_player_menu)
+        self.l.addWidget(self.player_menu)
         self.demons_menu = QPushButton("Demons", self)
         self.demons_menu.clicked.connect(self.open_demons_menu)
         self.l.addWidget(self.demons_menu)
 
         self.l.addStretch()
+
+    def open_player_menu(self):
+        widget = PlayerEditorScreen(self)
+        MAIN_WINDOW.stack_add(widget)
 
     def open_demons_menu(self):
         widget = DemonSelectorScreen(self)
