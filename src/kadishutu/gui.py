@@ -2,7 +2,7 @@ from abc import abstractmethod
 from enum import Enum, auto
 from pathlib import Path
 import sys
-from typing import Dict, List, Optional, Tuple
+from typing import Any, Callable, Dict, List, Optional, Tuple
 from PySide6.QtGui import QCloseEvent
 #from PySide6.QtWidgets import (
 #    QApplication, QComboBox, QFileDialog, QHBoxLayout, QLabel, QLineEdit,
@@ -37,6 +37,15 @@ class QModifiedMixin:
     def setModified(self, modified: bool):
         self._modified = modified
 
+    @abstractmethod
+    def get_value(self) -> Any:
+        raise NotImplementedError
+
+    def update_if_modified(self, updater: Callable[..., None]):
+        if self.getModified():
+            updater(self.get_value())
+            self.setModified(False)
+
 
 class OnStackRemovedHook:
     @abstractmethod
@@ -50,6 +59,9 @@ class QU8(QSpinBox, QModifiedMixin):
         self.setMaximum(2 ** 8 -1)
         self.valueChanged.connect(lambda _: self.setModified(True))
 
+    def get_value(self) -> int:
+        return self.value()
+
 
 class QU16(QSpinBox, QModifiedMixin):
     def __init__(self, *args, **kwargs):
@@ -57,12 +69,18 @@ class QU16(QSpinBox, QModifiedMixin):
         self.setMaximum(U16_MAX)
         self.valueChanged.connect(lambda _: self.setModified(True))
 
+    def get_value(self) -> int:
+        return self.value()
+
 
 class QU32(QSpinBox, QModifiedMixin):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.setMaximum(SHIBOKEN_MAX)
         self.valueChanged.connect(lambda _: self.setModified(True))
+
+    def get_value(self) -> int:
+        return self.value()
 
 
 class EditorMixin:
@@ -159,19 +177,19 @@ class StatEditorScreen(GWidget, AppliableWidget):
             value = self.widgets["current"][stat].value()
             self.widgets["healable"][stat].setValue(value)
 
-    def apply_widget(self, ty: str, stat: str, widget: QU16):
-        if not widget.getModified():
-            return
+    def apply_widget(self, ty: str, stat: str):
         if ty == "healable":
-            self.healable.__setattr__(stat, widget.value())
+            def inner(value: int):
+                self.healable.__setattr__(stat, value)
         else:
-            self.stats.__getattribute__(ty).__setattr__(stat, widget.value())
-        widget.setModified(False)
+            def inner(value: int):
+                self.stats.__getattribute__(ty).__setattr__(stat, value)
+        return inner
 
     def apply_changes(self):
         for ty, v in self.widgets.items():
             for stat, widget in v.items():
-                self.apply_widget(ty, stat, widget)
+                widget.update_if_modified(self.apply_widget(ty, stat))
 
 
 class AbstractStrIntMap(QWidget, QModifiedMixin):
@@ -187,6 +205,9 @@ class AbstractStrIntMap(QWidget, QModifiedMixin):
         self.int_box = QSpinBox(self)
         self.int_box.valueChanged.connect(self.int_changed)
         self.layout().addWidget(self.int_box)
+
+    def get_value(self) -> int:
+        return self.int_box.value()
 
     @abstractmethod
     def refresh(self):
@@ -293,6 +314,9 @@ class DemonIdnWidget(QWidget, QModifiedMixin):
         self.name_box.currentTextChanged.connect(self.name_changed)
         self.name_widget = hboxed(self, self.name_label, self.name_box)
         self.layout().addWidget(self.name_widget)
+
+    def get_value(self) -> int:
+        return self.id_box.value()
 
     def id_changed(self, id: int):
         self.setModified(True)
