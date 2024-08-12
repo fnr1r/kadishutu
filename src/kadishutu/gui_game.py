@@ -22,67 +22,32 @@ from .demons import (
 from .dlc import DLCS, DlcBitflags
 from .file_handling import DecryptedSave
 from .game import SaveEditor
-from .gui_common import QU16, QU32, QU8, U16_MAX, AppliableWidget, ModifiedMixin, hboxed
+from .gui_common import QU16, QU32, QU8, U16_MAX, AppliableWidget, SaveScreenMixin, ScreenMixin, ModifiedMixin, hboxed
 from .gui_icons import ICON_LOADER
 from .items import ItemEditor
 from .player import NameEdit, NameManager
 from .skills import Skill, SkillEditor
 
 
-class EditorMixin:
-    def __init__(
-        self,
-        *args,
-        **kwargs
-    ):
-        super().__init__(*args, **kwargs)
-        self.mixin()
-
-    def mixin(self):
-        from .gui import MAIN_WINDOW
-        self.stack_add = MAIN_WINDOW.stack_add
-        self.stack_remove = MAIN_WINDOW.stack_remove
-        try:
-            parent = self.game_save_editor
-        except IndexError:
-            return
-        else:
-            assert not hasattr(self, "save")
-            self.save = parent.save
-
-    def stack_refresh(self): ...
-
-    @property
-    def game_save_editor(self) -> "GameSaveEditorScreen":
-        from .gui import MAIN_WINDOW
-        widget = MAIN_WINDOW.inner.widget_stack[1]
-        assert isinstance(widget, GameSaveEditorScreen)
-        return widget
-
-    def dispatch(self, cls):
-        widget = cls(self)
-        self.stack_add(widget)
-
-    def spawner(self, fun):
-        return lambda: self.stack_add(fun())
-
-
-class GWidget(EditorMixin, QWidget):
-    pass
-
-
-class GTabWidget(EditorMixin, QTabWidget):
-    pass
-
-
-class GScrollArea(EditorMixin, QScrollArea):
-    pass
-
-
 OVERWRITTEN_WARN = "WARNING: This is overwritten with \"First name\" when saving"
 
 
-class NameEditorScreen(GWidget, AppliableWidget):
+class GameScreenMixin(ScreenMixin):
+    def mixin(self):
+        super().mixin()
+        if not self.editor_widget_on_stack:
+            return
+        assert not hasattr(self, "save")
+        self.save = self.game_save_editor.save
+
+    @property
+    def game_save_editor(self) -> "GameSaveEditorScreen":
+        widget = self.some_save_editor_widget
+        assert isinstance(widget, GameSaveEditorScreen)
+        return widget
+
+
+class NameEditorScreen(QWidget, GameScreenMixin, AppliableWidget):
     NAMES = [
         "Save name", "First name", "Last name", "First name again",
         "Combined name"
@@ -120,7 +85,7 @@ class NameEditorScreen(GWidget, AppliableWidget):
             box.setModified(False)
 
 
-class DlcEditorScreen(GWidget, AppliableWidget):
+class DlcEditorScreen(QWidget, GameScreenMixin, AppliableWidget):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.dlcmap: Dict[str, QCheckBox] = {}
@@ -149,7 +114,7 @@ class DlcEditorScreen(GWidget, AppliableWidget):
         self.save.dlc.flags = DlcBitflags.from_flags(dlcs)
 
 
-class StatEditorScreen(GWidget, AppliableWidget):
+class StatEditorScreen(QWidget, GameScreenMixin, AppliableWidget):
     STAT_TYPES = ["Base", "Changes", "Current", "Healable"]
 
     def __init__(
@@ -280,7 +245,7 @@ class SkillBox(AbstractStrIntMap, ModifiedMixin):
         return SKILL_NAME_MAP[value].id
 
 
-class SkillEditorScreen(GWidget, AppliableWidget):
+class SkillEditorScreen(QWidget, GameScreenMixin, AppliableWidget):
     def __init__(self, skills: SkillEditor, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.l = QVBoxLayout()
@@ -321,7 +286,7 @@ class MComboBox(QComboBox, ModifiedMixin):
         return self.currentText()
 
 
-class AffinityEditorScreen(GWidget, AppliableWidget):
+class AffinityEditorScreen(QWidget, GameScreenMixin, AppliableWidget):
     def __init__(self, affinities: AffinityEditor, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.affinities = affinities
@@ -376,7 +341,7 @@ class QPotentialBox(QSpinBox, ModifiedMixin):
         return self.value()
 
 
-class PotentialEditorScreen(GWidget, AppliableWidget):
+class PotentialEditorScreen(QWidget, GameScreenMixin, AppliableWidget):
     def __init__(self, potentials: PotentialEditor, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.potentials = potentials
@@ -418,7 +383,7 @@ class PotentialEditorScreen(GWidget, AppliableWidget):
             )
 
 
-class PlayerEditorScreen(GWidget):
+class PlayerEditorScreen(QWidget, GameScreenMixin):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.buttons = []
@@ -489,7 +454,7 @@ class DemonIdnWidget(QWidget, ModifiedMixin):
         self.id_box.setValue(DEMON_NAME_MAP[name]["id"])
 
 
-class DemonEditorScreen(GWidget, AppliableWidget):
+class DemonEditorScreen(QWidget, GameScreenMixin, AppliableWidget):
     def __init__(self, demon: DemonEditor, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.demon = demon
@@ -548,7 +513,7 @@ class DemonEditorScreen(GWidget, AppliableWidget):
         self.demon_idn_widget.setattr_if_modified(self.demon, "demon_id")
 
 
-class DemonSelectorScreen(GWidget):
+class DemonSelectorScreen(QWidget, GameScreenMixin):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.l = QGridLayout()
@@ -593,7 +558,7 @@ class DemonSelectorScreen(GWidget):
         )
 
 
-class ItemEditorWidget(GScrollArea, AppliableWidget):
+class ItemEditorWidget(QScrollArea, GameScreenMixin, AppliableWidget):
     def __init__(self, items: List[Item], *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.items: List[Tuple[ItemEditor, QLabel, QU8]] = []
@@ -631,7 +596,7 @@ class ItemEditorWidget(GScrollArea, AppliableWidget):
             amount_box.setattr_if_modified(item, "amount")
 
 
-class ItemEditorScreen(GTabWidget, AppliableWidget):
+class ItemEditorScreen(QTabWidget, GameScreenMixin, AppliableWidget):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.tabs: List[ItemEditorWidget] = []
@@ -657,14 +622,14 @@ class ItemEditorScreen(GTabWidget, AppliableWidget):
 
 @dataclass
 class AlignmentPacked:
-    outer: GScrollArea
+    outer: QScrollArea
     inner: QWidget
     layout: QGridLayout
     i: int
 
     @classmethod
-    def from_parent(cls, parent: GTabWidget, name: str):
-        outer = GScrollArea(parent)
+    def from_parent(cls, parent: QTabWidget, name: str):
+        outer = QScrollArea(parent)
         outer.setWidgetResizable(True)
         inner = QWidget(outer)
         outer.setWidget(inner)
@@ -680,7 +645,7 @@ class AlignmentPacked:
         self.i += 1
 
 
-class AlignmentEditorScreen(GTabWidget, AppliableWidget):
+class AlignmentEditorScreen(QTabWidget, GameScreenMixin, AppliableWidget):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.obj = self.save.alignment
@@ -728,7 +693,7 @@ class AlignmentEditorScreen(GTabWidget, AppliableWidget):
                 byte_editor.set_flag(bit.bit, box.isChecked())
 
 
-class GameSaveEditorScreen(GWidget, AppliableWidget):
+class GameSaveEditorScreen(SaveScreenMixin, QWidget, AppliableWidget):
     path: Path
     raw_save: DecryptedSave
     save: SaveEditor
@@ -736,16 +701,11 @@ class GameSaveEditorScreen(GWidget, AppliableWidget):
 
     def __init__(
         self,
-        path: Path,
-        raw_save: DecryptedSave,
         *args,
         **kwargs
     ):
         super().__init__(*args, **kwargs)
-        self.path = path
-        self.raw_save = raw_save
-        self.save = SaveEditor(raw_save)
-        self.modified = False
+        self.save = SaveEditor(self.raw_save)
 
         self.l = QVBoxLayout()
         self.setLayout(self.l)

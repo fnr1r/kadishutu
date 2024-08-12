@@ -12,8 +12,9 @@ from PySide6.QtWidgets import (
 
 from .file_handling import DecryptedSave
 from .game import SaveEditor
-from .gui_common import AppliableWidget, OnStackRemovedHook, SaveType
-from .gui_game import EditorMixin, GameSaveEditorScreen
+from .gui_common import AppliableWidget, OnStackRemovedHook, SaveScreenMixin, SaveType, ScreenMixin
+from .gui_game import GameSaveEditorScreen
+from .gui_system import SystemSaveEditorScreen
 
 
 MAIN_WINDOW: "MainWindow"
@@ -95,6 +96,7 @@ class FileSelectorMenu(QWidget):
         self.file_type = QComboBox(self)
         self.file_type.addItems([ty.name for ty in SaveType])
         self.file_type.setCurrentText(SaveType.GameSave.name)
+        self.file_type.currentTextChanged.connect(self.on_type_changed)
         self.layout().addWidget(self.file_type)
         self.file_preview = FileSelectorPreview(self)
         self.layout().addWidget(self.file_preview)
@@ -106,12 +108,9 @@ class FileSelectorMenu(QWidget):
     def on_file_open(self):
         assert self.raw
         if self.ty == SaveType.SysSave:
-            QMessageBox.critical(
-                self, "Error", "Editing SysSave files is not implemented.",
-                QMessageBox.StandardButton.Ok
-            )
-            return
-        editor = GameSaveEditorScreen(self.file_path.path, self.raw, self)
+            editor = SystemSaveEditorScreen(self.file_path.path, self.raw, self)
+        else:
+            editor = GameSaveEditorScreen(self.file_path.path, self.raw, self)
         MAIN_WINDOW.stack_add(editor)
 
     def file_selected(self):
@@ -120,16 +119,24 @@ class FileSelectorMenu(QWidget):
         self.file_open.setEnabled(True)
         raw = self.raw
         if len(raw.data) == 0x12e0:
+            self.file_type.setDisabled(True)
             self.ty = SaveType.SysSave
             self.file_preview.empty()
         elif len(raw.data) == 0x6dc90:
+            self.file_type.setDisabled(True)
             self.ty = SaveType.GameSave
             self.file_type.setCurrentText(self.ty.name)
             save = SaveEditor(raw)
             self.file_preview.update(save)
         else:
+            self.file_type.setDisabled(False)
             self.raw = None
             self.file_preview.empty()
+        self.file_type.setCurrentText(self.ty.name)
+
+    def on_type_changed(self, tystr: str):
+        ty = SaveType[tystr]
+        self.ty = ty
 
 
 class LocationBar(QScrollArea):
@@ -177,7 +184,7 @@ class ManagedStackWidget(QWidget):
         return len(self.widget_stack) > 1
 
     def stack_add(self, widget: QWidget):
-        if isinstance(widget, EditorMixin):
+        if isinstance(widget, ScreenMixin):
             widget.stack_refresh()
         widget.setParent(self)
         self.widget_stack.append(widget)
@@ -202,9 +209,9 @@ class ManagedStackWidget(QWidget):
         return self.widget_stack[-1]
 
     @property
-    def editor_widget(self) -> GameSaveEditorScreen:
+    def editor_widget(self) -> SaveScreenMixin:
         widget = self.widget_stack[1]
-        assert isinstance(widget, GameSaveEditorScreen)
+        assert isinstance(widget, SaveScreenMixin)
         return widget
 
 
@@ -284,7 +291,7 @@ class MainWindow(QMainWindow):
         self.inner.editor_widget.modified = True
         widget.on_apply_changes()
         for widget in self.inner.widget_stack:
-            if not isinstance(widget, EditorMixin):
+            if not isinstance(widget, ScreenMixin):
                 continue
             widget.stack_refresh()
 
@@ -312,7 +319,7 @@ class MainWindow(QMainWindow):
 
     def on_undo(self):
         widget = self.inner.top_widget
-        if not isinstance(widget, EditorMixin):
+        if not isinstance(widget, ScreenMixin):
             raise NotImplementedError
         widget.stack_refresh()
 
