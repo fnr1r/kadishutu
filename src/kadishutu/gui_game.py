@@ -250,29 +250,28 @@ class SkillEditorScreen(QWidget, GameScreenMixin, AppliableWidget):
         super().__init__(*args, **kwargs)
         self.l = QVBoxLayout()
         self.setLayout(self.l)
-        self.widgets: List[Tuple[QWidget, QLabel, SkillBox, QU16]] = []
+        self.widgets: List[Tuple[SkillBox, QU16]] = []
 
         for i in range(8):
             skill = skills.slot(i)
             label = QLabel(f"Skill {i + 1}", self)
             skill_box = SkillBox(skill, list(SKILL_NAME_MAP.keys()), self)
             mystery_box = QU16(self)
-            widget = hboxed(self, label, skill_box, mystery_box)
-            self.l.addWidget(widget)
-            self.widgets.append((widget, label, skill_box, mystery_box))
+            self.l.addLayout(hboxed(label, skill_box, mystery_box))
+            self.widgets.append((skill_box, mystery_box))
 
         self.l.addStretch()
 
     def stack_refresh(self):
         for i in range(8):
-            (_, _, skill_box, mystery_box) = self.widgets[i]
+            skill_box, mystery_box = self.widgets[i]
             skill_box.refresh()
             skill = skill_box.skill
             mystery_box.setValue(skill._unknown)
 
     def on_apply_changes(self):
         for i in range(8):
-            (_, _, skill_box, mystery_box) = self.widgets[i]
+            skill_box, mystery_box = self.widgets[i]
             skill_box.apply_changes()
             mystery_box.setattr_if_modified(skill_box.skill, "_unknown")
 
@@ -420,7 +419,8 @@ class DemonIdnWidget(QWidget, ModifiedMixin):
     def __init__(self, demon: DemonEditor, *args, **kwargs):
         super().__init__(*args, **kwargs)
         ModifiedMixin.__init__(self)
-        self.setLayout(QVBoxLayout())
+        self.l = QVBoxLayout()
+        self.setLayout(self.l)
         self.layout().setContentsMargins(0, 0, 0, 0)
 
         self.id_label = QLabel("ID:", self)
@@ -428,16 +428,14 @@ class DemonIdnWidget(QWidget, ModifiedMixin):
         self.id_box.setMaximum(U16_MAX)
         self.id_box.setValue(demon.demon_id)
         self.id_box.valueChanged.connect(self.id_changed)
-        self.id_widget = hboxed(self, self.id_label, self.id_box)
-        self.layout().addWidget(self.id_widget)
+        self.l.addLayout(hboxed(self.id_label, self.id_box))
 
         self.name_label = QLabel("Name:", self)
         self.name_box = QComboBox(self)
         self.name_box.addItems(list(DEMON_NAME_MAP.keys()))
         self.name_box.setCurrentText(demon.name)
         self.name_box.currentTextChanged.connect(self.name_changed)
-        self.name_widget = hboxed(self, self.name_label, self.name_box)
-        self.layout().addWidget(self.name_widget)
+        self.l.addLayout(hboxed(self.name_label, self.name_box))
 
     def get_value(self) -> int:
         return self.id_box.value()
@@ -712,8 +710,7 @@ class GameSaveEditorScreen(SaveScreenMixin, QWidget, AppliableWidget):
         self.macca = QU32(self)
         self.macca_label = QLabel(self)
         self.macca_label.setText("Macca:")
-        w = hboxed(self, self.macca_label, self.macca)
-        self.l.addWidget(w)
+        self.l.addLayout(hboxed(self.macca_label, self.macca))
         self.menu_buttons = []
 
         for name, cls in [

@@ -1,7 +1,7 @@
 from abc import abstractmethod
 from enum import Enum, auto
 from pathlib import Path
-from typing import Any, Callable
+from typing import Any, Callable, TypeVar
 from PySide6.QtWidgets import QBoxLayout, QHBoxLayout, QSpinBox, QWidget
 
 from .file_handling import DecryptedSave
@@ -82,18 +82,17 @@ class QU32(QSpinBox, ModifiedMixin):
         return self.value()
 
 
-def boxed(layout: QBoxLayout, parent: QWidget, *args: QWidget):
-    widget = QWidget(parent)
-    layout.setContentsMargins(0, 0, 0, 0)
-    widget.setLayout(layout)
-    for child in args:
-        child.setParent(widget)
-        layout.addWidget(child)
-    return widget
+T = TypeVar("T", bound=QBoxLayout)
 
 
-def hboxed(parent: QWidget, *args: QWidget):
-    return boxed(QHBoxLayout(), parent, *args)
+def boxed(layout: T, *args: QWidget) -> T:
+    for widget in args:
+        layout.addWidget(widget)
+    return layout
+
+
+def hboxed(*args: QWidget) -> QHBoxLayout:
+    return boxed(QHBoxLayout(), *args)
 
 
 class SaveType(Enum):
