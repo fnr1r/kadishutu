@@ -14,7 +14,7 @@ from .file_handling import DecryptedSave
 from .game import SaveEditor
 from .gui_common import AppliableWidget, OnStackRemovedHook, SaveScreenMixin, SaveType, ScreenMixin
 from .gui_game import GameSaveEditorScreen
-#from .gui_sys import SysSaveEditorScreen
+from .gui_sys import SysSaveEditorScreen
 
 
 MAIN_WINDOW: "MainWindow"
@@ -108,8 +108,7 @@ class FileSelectorMenu(QWidget):
     def on_file_open(self):
         assert self.raw
         if self.ty == SaveType.SysSave:
-            #editor = SysSaveEditorScreen(self.file_path.path, self.raw, self)
-            editor = QWidget(self)
+            editor = SysSaveEditorScreen(self.file_path.path, self.raw, self)
         else:
             editor = GameSaveEditorScreen(self.file_path.path, self.raw, self)
         MAIN_WINDOW.stack_add(editor)
