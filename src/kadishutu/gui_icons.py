@@ -3,8 +3,7 @@ import os
 from pathlib import Path
 from typing import Dict
 from typing_extensions import Self
-from PIL import Image as ModImage
-from PIL.Image import Image
+from PIL.Image import Image, open as open_image
 from PIL.ImageQt import ImageQt
 from PySide6.QtCore import QSize
 from PySide6.QtGui import QIcon, QPixmap
@@ -12,10 +11,27 @@ from PySide6.QtGui import QIcon, QPixmap
 from .data.element_icons import Element
 
 
-try:
-    UMODEL_EXPORT_PATH = os.environ["SMTVV_UMODEL_EXPORT"]
-except KeyError:
-    UMODEL_EXPORT_PATH = ""
+def app_data_path() -> Path:
+    from xdg import xdg_data_home
+    try:
+        return xdg_data_home() / "kadishutu"
+    except Exception as e:
+        print("Failed to get XDG path:", e)
+    return Path()
+
+
+APP_DATA_PATH = app_data_path()
+
+
+def umodel_export_path() -> Path:
+    try:
+        return Path(os.environ["SMTVV_UMODEL_EXPORT"])
+    except KeyError:
+        pass
+    return APP_DATA_PATH / "game_data_export"
+
+
+UMODEL_EXPORT_PATH = umodel_export_path()
 
 
 @dataclass
@@ -48,24 +64,24 @@ class ImagePak:
 
 
 class IconLoaderPaths:
-    CHARACTER_ICON = "/Game/Design/UI/CharaIcon/Textures/dev{id:03}.tga"
-    MINI_CHARACTER_ICON = "/Game/Design/UI/CharaIcon/Textures/face_all_001.tga"
-    ELEMENT_ICONS = "/Game/Design/UI/Icon/Element/Textures/icon_element_01.tga"
-    LOADING_CHARACTER_ICON = "/Game/Design/UI/LoadingCharaIcon/dev_L_{id:03}.tga"
+    CHARACTER_ICON = "Game/Design/UI/CharaIcon/Textures/dev{id:03}.tga"
+    MINI_CHARACTER_ICON = "Game/Design/UI/CharaIcon/Textures/face_all_001.tga"
+    ELEMENT_ICONS = "Game/Design/UI/Icon/Element/Textures/icon_element_01.tga"
+    LOADING_CHARACTER_ICON = "Game/Design/UI/LoadingCharaIcon/dev_L_{id:03}.tga"
 
     def character_icon(self, id: int) -> Path:
-        return Path(UMODEL_EXPORT_PATH + self.CHARACTER_ICON.format(id=id))
+        return UMODEL_EXPORT_PATH / self.CHARACTER_ICON.format(id=id)
 
     @property
     def mini_character_icon(self) -> Path:
-        return Path(UMODEL_EXPORT_PATH + self.MINI_CHARACTER_ICON)
+        return UMODEL_EXPORT_PATH / self.MINI_CHARACTER_ICON
 
     @property
     def element_icons(self) -> Path:
-        return Path(UMODEL_EXPORT_PATH + self.ELEMENT_ICONS)
+        return UMODEL_EXPORT_PATH / self.ELEMENT_ICONS
 
     def loading_character_icon(self, id: int) -> Path:
-        return Path(UMODEL_EXPORT_PATH + self.LOADING_CHARACTER_ICON.format(id=id))
+        return UMODEL_EXPORT_PATH / self.LOADING_CHARACTER_ICON.format(id=id)
 
 
 class IconLoader:
@@ -84,16 +100,17 @@ class IconLoader:
     def character_icon(self, id: int) -> ImagePak:
         self.assert_is_a_demon(id)
         try:
-            pak = self.char_icon_map[id]
+            return self.char_icon_map[id]
         except KeyError:
-            path = self.paths.character_icon(id)
-            img = ModImage.open(path)
-            (width, height) = img.size
-            crop_hor = 100
-            crop_ver = 40
-            box = (crop_hor, crop_ver, width - crop_hor, height - crop_ver)
-            img = img.crop(box)
-            self.char_icon_map[id] = pak = ImagePak.from_image(img)
+            pass
+        path = self.paths.character_icon(id)
+        imgfile = open_image(path)
+        (width, height) = imgfile.size
+        crop_hor = 100
+        crop_ver = 40
+        box = (crop_hor, crop_ver, width - crop_hor, height - crop_ver)
+        img = imgfile.crop(box)
+        self.char_icon_map[id] = pak = ImagePak.from_image(img)
         return pak
 
     def mini_character_icon(self, id: int) -> ImagePak:
@@ -103,9 +120,10 @@ class IconLoader:
         except KeyError:
             pass
         if not hasattr(self, "mini_char_icon_img"):
-            img = ModImage.open(self.paths.mini_character_icon)
-            self.mini_char_icon_img = img
-        img = self.mini_char_icon_img
+            self.mini_char_icon_img = open_image(self.paths.mini_character_icon)
+        if not self.mini_char_icon_img:
+            raise ValueError("File failed to load initially")
+        imgfile = self.mini_char_icon_img
         width = 80
         height = 64
         MINI_CHAR_COLUMNS = 25
@@ -116,7 +134,7 @@ class IconLoader:
         y1 = height * column
         y2 = y1 + height
         box = (x1, y1, x2, y2)
-        img = img.crop(box)
+        img = imgfile.crop(box)
         self.mini_char_icon_map[id] = pak = ImagePak.from_image(img)
         return pak
 
@@ -126,8 +144,10 @@ class IconLoader:
         except KeyError:
             pass
         if not hasattr(self, "element_icons_img"):
-            self.element_icons_img = ModImage.open(self.paths.element_icons)
-        img = self.element_icons_img
+            self.element_icons_img = open_image(self.paths.element_icons)
+        if not self.element_icons_img:
+            raise ValueError("File failed to load initially")
+        imgfile = self.element_icons_img
         width = height = 84
         id = element.value
         ELEMENT_CHAR_COLUMNS = 12
@@ -138,7 +158,7 @@ class IconLoader:
         y1 = height * column
         y2 = y1 + height
         box = (x1, y1, x2, y2)
-        img = img.crop(box)
+        img = imgfile.crop(box)
         self.element_icon_map[element] = pak = ImagePak.from_image(img)
         return pak
 
@@ -149,7 +169,7 @@ class IconLoader:
         except KeyError:
             pass
         path = self.paths.loading_character_icon(id)
-        img = ModImage.open(path)
+        img = open_image(path)
         self.loading_char_icon_map[id] = pak = ImagePak.from_image(img)
         return pak
 
