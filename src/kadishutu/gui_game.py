@@ -21,8 +21,11 @@ from .demons import (
 )
 from .dlc import DLCS, DlcBitflags
 from .file_handling import DecryptedSave
-from .game import SaveEditor
-from .gui_common import QU16, QU32, QU8, U16_MAX, AppliableWidget, SaveScreenMixin, ScreenMixin, ModifiedMixin, hboxed
+from .game import Difficulty, SaveEditor
+from .gui_common import (
+    QU16, QU32, QU8, U16_MAX, AppliableWidget, MComboBox, SaveScreenMixin,
+    ScreenMixin, ModifiedMixin, hboxed
+)
 from .gui_icons import ICON_LOADER
 from .items import ItemEditor
 from .player import NameEdit, NameManager
@@ -274,15 +277,6 @@ class SkillEditorScreen(QWidget, GameScreenMixin, AppliableWidget):
             skill_box, mystery_box = self.widgets[i]
             skill_box.apply_changes()
             mystery_box.setattr_if_modified(skill_box.skill, "_unknown")
-
-
-class MComboBox(QComboBox, ModifiedMixin):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self.currentIndexChanged.connect(self.flag_as_modified)
-
-    def get_value(self) -> str:
-        return self.currentText()
 
 
 class AffinityEditorScreen(QWidget, GameScreenMixin, AppliableWidget):
@@ -691,6 +685,30 @@ class AlignmentEditorScreen(QTabWidget, GameScreenMixin, AppliableWidget):
                 byte_editor.set_flag(bit.bit, box.isChecked())
 
 
+class SettingsEditorScreen(QWidget, GameScreenMixin, AppliableWidget):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.l = QVBoxLayout(self)
+        self.difficulty = MComboBox(self)
+        self.difficulty.addItems([
+            difficulty.name
+            for difficulty in Difficulty
+        ])
+        self.l.addLayout(hboxed(
+            QLabel("Difficulty"), self.difficulty
+        ))
+        self.l.addStretch()
+
+    def stack_refresh(self):
+        self.difficulty.setCurrentText(self.save.difficulty.name)
+
+    def _apply_difficulty(self, value: str):
+        self.save.difficulty = Difficulty[value]
+
+    def on_apply_changes(self):
+        self.difficulty.update_if_modified(self._apply_difficulty)
+
+
 class GameSaveEditorScreen(SaveScreenMixin, QWidget, AppliableWidget):
     path: Path
     raw_save: DecryptedSave
@@ -718,7 +736,8 @@ class GameSaveEditorScreen(SaveScreenMixin, QWidget, AppliableWidget):
             ("Player", PlayerEditorScreen),
             ("Demons", DemonSelectorScreen),
             ("Items", ItemEditorScreen),
-            ("Alignment", AlignmentEditorScreen)
+            ("Alignment", AlignmentEditorScreen),
+            ("Settings", SettingsEditorScreen),
         ]:
             widget = QPushButton(name, self)
             widget.clicked.connect(self.spawner(cls))

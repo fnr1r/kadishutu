@@ -2,7 +2,9 @@ from abc import abstractmethod
 from enum import Enum, auto
 from pathlib import Path
 from typing import Any, Callable, TypeVar
-from PySide6.QtWidgets import QBoxLayout, QHBoxLayout, QSpinBox, QWidget
+from PySide6.QtWidgets import (
+    QBoxLayout, QComboBox, QHBoxLayout, QSpinBox, QWidget
+)
 
 from .file_handling import DecryptedSave
 
@@ -80,6 +82,15 @@ class QU32(QSpinBox, ModifiedMixin):
 
     def get_value(self) -> int:
         return self.value()
+
+
+class MComboBox(QComboBox, ModifiedMixin):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.currentIndexChanged.connect(self.flag_as_modified)
+
+    def get_value(self) -> str:
+        return self.currentText()
 
 
 T = TypeVar("T", bound=QBoxLayout)
