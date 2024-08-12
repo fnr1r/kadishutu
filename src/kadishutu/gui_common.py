@@ -1,9 +1,18 @@
 from abc import abstractmethod
 from enum import Enum, auto
 from pathlib import Path
-from PySide6.QtWidgets import QWidget
+from typing import Any, Callable, TypeVar
+from PySide6.QtWidgets import (
+    QBoxLayout, QComboBox, QHBoxLayout, QSpinBox, QWidget
+)
 
 from .file_handling import DecryptedSave
+
+
+U16_MAX = 2 ** 16 - 1
+# RuntimeWarning: libshiboken: Overflow: Value 7378697629483820646 exceeds
+# limits of type  [signed] "i" (4bytes).
+SHIBOKEN_MAX = 2 ** 31 - 1
 
 
 class OnStackRemovedHook:
@@ -16,6 +25,85 @@ class AppliableWidget:
     @abstractmethod
     def on_apply_changes(self):
         raise NotImplementedError
+
+
+class ModifiedMixin:
+    _modified: bool = False
+
+    def get_modified(self) -> bool:
+        return self._modified
+
+    def set_modified(self, modified: bool):
+        self._modified = modified
+
+    def flag_as_modified(self):
+        self.set_modified(True)
+
+    @abstractmethod
+    def get_value(self) -> Any:
+        raise NotImplementedError
+
+    def update_if_modified(self, updater: Callable[..., None]):
+        if self.get_modified():
+            updater(self.get_value())
+            self.set_modified(False)
+
+    def setattr_if_modified(self, obj: object, attr: str):
+        if self.get_modified():
+            obj.__setattr__(attr, self.get_value())
+            self.set_modified(False)
+
+
+class QU8(QSpinBox, ModifiedMixin):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.setMaximum(2 ** 8 - 1)
+        self.valueChanged.connect(self.flag_as_modified)
+
+    def get_value(self) -> int:
+        return self.value()
+
+
+class QU16(QSpinBox, ModifiedMixin):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.setMaximum(U16_MAX)
+        self.valueChanged.connect(self.flag_as_modified)
+
+    def get_value(self) -> int:
+        return self.value()
+
+
+class QU32(QSpinBox, ModifiedMixin):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.setMaximum(SHIBOKEN_MAX)
+        self.valueChanged.connect(self.flag_as_modified)
+
+    def get_value(self) -> int:
+        return self.value()
+
+
+class MComboBox(QComboBox, ModifiedMixin):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.currentIndexChanged.connect(self.flag_as_modified)
+
+    def get_value(self) -> str:
+        return self.currentText()
+
+
+T = TypeVar("T", bound=QBoxLayout)
+
+
+def boxed(layout: T, *args: QWidget) -> T:
+    for widget in args:
+        layout.addWidget(widget)
+    return layout
+
+
+def hboxed(*args: QWidget) -> QHBoxLayout:
+    return boxed(QHBoxLayout(), *args)
 
 
 class SaveType(Enum):

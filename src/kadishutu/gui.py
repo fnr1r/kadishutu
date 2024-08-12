@@ -13,7 +13,7 @@ from PySide6.QtWidgets import (
 from .file_handling import DecryptedSave
 from .game import SaveEditor
 from .gui_common import AppliableWidget, OnStackRemovedHook, SaveScreenMixin, SaveType, ScreenMixin
-#from .gui_game import GameSaveEditorScreen
+from .gui_game import GameSaveEditorScreen
 #from .gui_sys import SysSaveEditorScreen
 
 
@@ -111,8 +111,7 @@ class FileSelectorMenu(QWidget):
             #editor = SysSaveEditorScreen(self.file_path.path, self.raw, self)
             editor = QWidget(self)
         else:
-            #editor = GameSaveEditorScreen(self.file_path.path, self.raw, self)
-            editor = QWidget(self)
+            editor = GameSaveEditorScreen(self.file_path.path, self.raw, self)
         MAIN_WINDOW.stack_add(editor)
 
     def file_selected(self):

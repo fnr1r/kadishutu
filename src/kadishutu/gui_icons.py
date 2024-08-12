@@ -1,0 +1,177 @@
+from dataclasses import dataclass
+import os
+from pathlib import Path
+from typing import Dict
+from typing_extensions import Self
+from PIL.Image import Image, open as open_image
+from PIL.ImageQt import ImageQt
+from PySide6.QtCore import QSize
+from PySide6.QtGui import QIcon, QPixmap
+
+from .data.element_icons import Element
+
+
+def app_data_path() -> Path:
+    from xdg import xdg_data_home
+    try:
+        return xdg_data_home() / "kadishutu"
+    except Exception as e:
+        print("Failed to get XDG path:", e)
+    return Path()
+
+
+APP_DATA_PATH = app_data_path()
+
+
+def umodel_export_path() -> Path:
+    try:
+        return Path(os.environ["SMTVV_UMODEL_EXPORT"])
+    except KeyError:
+        pass
+    return APP_DATA_PATH / "game_data_export"
+
+
+UMODEL_EXPORT_PATH = umodel_export_path()
+
+
+@dataclass
+class ImagePak:
+    image: Image
+    pixmap: QPixmap
+    icon: QIcon
+
+    @classmethod
+    def from_image(cls, img: Image) -> Self:
+        pix = QPixmap.fromImage(ImageQt(img))
+        icon = QIcon()
+        icon.addPixmap(pix)
+        return cls(img, pix, icon)
+
+    @property
+    def size(self) -> QSize:
+        return self.pixmap.size()
+
+    def size_div(self, x: int) -> QSize:
+        size = self.size
+        width = size.width()
+        height = size.height()
+        if (width % x != 0 or
+            height % x != 0):
+            raise ValueError("Bad scale {} for width {} height {}".format(
+                x, width, height
+            ))
+        return QSize(width // x, height // x)
+
+
+class IconLoaderPaths:
+    CHARACTER_ICON = "Game/Design/UI/CharaIcon/Textures/dev{id:03}.tga"
+    MINI_CHARACTER_ICON = "Game/Design/UI/CharaIcon/Textures/face_all_001.tga"
+    ELEMENT_ICONS = "Game/Design/UI/Icon/Element/Textures/icon_element_01.tga"
+    LOADING_CHARACTER_ICON = "Game/Design/UI/LoadingCharaIcon/dev_L_{id:03}.tga"
+
+    def character_icon(self, id: int) -> Path:
+        return UMODEL_EXPORT_PATH / self.CHARACTER_ICON.format(id=id)
+
+    @property
+    def mini_character_icon(self) -> Path:
+        return UMODEL_EXPORT_PATH / self.MINI_CHARACTER_ICON
+
+    @property
+    def element_icons(self) -> Path:
+        return UMODEL_EXPORT_PATH / self.ELEMENT_ICONS
+
+    def loading_character_icon(self, id: int) -> Path:
+        return UMODEL_EXPORT_PATH / self.LOADING_CHARACTER_ICON.format(id=id)
+
+
+class IconLoader:
+    def __init__(self) -> None:
+        self.paths = IconLoaderPaths()
+        self.char_icon_map: Dict[int, ImagePak] = {}
+        self.mini_char_icon_map: Dict[int, ImagePak] = {}
+        self.element_icon_map: Dict[Element, ImagePak] = {}
+        self.loading_char_icon_map: Dict[int, ImagePak] = {}
+
+    @staticmethod
+    def assert_is_a_demon(id: int):
+        if id == 0xffff:
+            raise ValueError
+
+    def character_icon(self, id: int) -> ImagePak:
+        self.assert_is_a_demon(id)
+        try:
+            return self.char_icon_map[id]
+        except KeyError:
+            pass
+        path = self.paths.character_icon(id)
+        imgfile = open_image(path)
+        (width, height) = imgfile.size
+        crop_hor = 100
+        crop_ver = 40
+        box = (crop_hor, crop_ver, width - crop_hor, height - crop_ver)
+        img = imgfile.crop(box)
+        self.char_icon_map[id] = pak = ImagePak.from_image(img)
+        return pak
+
+    def mini_character_icon(self, id: int) -> ImagePak:
+        self.assert_is_a_demon(id)
+        try:
+            return self.mini_char_icon_map[id]
+        except KeyError:
+            pass
+        if not hasattr(self, "mini_char_icon_img"):
+            self.mini_char_icon_img = open_image(self.paths.mini_character_icon)
+        if not self.mini_char_icon_img:
+            raise ValueError("File failed to load initially")
+        imgfile = self.mini_char_icon_img
+        width = 80
+        height = 64
+        MINI_CHAR_COLUMNS = 25
+        column = id // MINI_CHAR_COLUMNS
+        row = id % MINI_CHAR_COLUMNS
+        x1 = width * row
+        x2 = x1 + width
+        y1 = height * column
+        y2 = y1 + height
+        box = (x1, y1, x2, y2)
+        img = imgfile.crop(box)
+        self.mini_char_icon_map[id] = pak = ImagePak.from_image(img)
+        return pak
+
+    def element_icon(self, element: Element) -> ImagePak:
+        try:
+            return self.element_icon_map[element]
+        except KeyError:
+            pass
+        if not hasattr(self, "element_icons_img"):
+            self.element_icons_img = open_image(self.paths.element_icons)
+        if not self.element_icons_img:
+            raise ValueError("File failed to load initially")
+        imgfile = self.element_icons_img
+        width = height = 84
+        id = element.value
+        ELEMENT_CHAR_COLUMNS = 12
+        column = id // ELEMENT_CHAR_COLUMNS
+        row = id % ELEMENT_CHAR_COLUMNS
+        x1 = width * row
+        x2 = x1 + width
+        y1 = height * column
+        y2 = y1 + height
+        box = (x1, y1, x2, y2)
+        img = imgfile.crop(box)
+        self.element_icon_map[element] = pak = ImagePak.from_image(img)
+        return pak
+
+    def loading_character_icon(self, id: int) -> ImagePak:
+        self.assert_is_a_demon(id)
+        try:
+            return self.loading_char_icon_map[id]
+        except KeyError:
+            pass
+        path = self.paths.loading_character_icon(id)
+        img = open_image(path)
+        self.loading_char_icon_map[id] = pak = ImagePak.from_image(img)
+        return pak
+
+
+ICON_LOADER = IconLoader()
