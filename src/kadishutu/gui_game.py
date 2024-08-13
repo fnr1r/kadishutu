@@ -253,39 +253,40 @@ class SkillEditorScreen(QWidget, GameScreenMixin, AppliableWidget):
         super().__init__(*args, **kwargs)
         self.skills = skills
 
-        self.l = QVBoxLayout()
+        self.l = QGridLayout()
         self.setLayout(self.l)
-        self.widgets: List[Tuple[QLabel, SkillBox, QU16]] = []
+        self.widgets: List[Tuple[SkillBox, QU16]] = []
 
         for i in range(8):
             skill = skills.slot(i)
             label = QLabel(f"Skill {i + 1}", self)
+            self.l.addWidget(label, i, 0)
             skill_box = SkillBox(skill, list(SKILL_NAME_MAP.keys()), self)
+            self.l.addWidget(skill_box, i, 2)
             mystery_box = QU16(self)
+            self.l.addWidget(mystery_box, i, 4)
             icon = QLabel(self)
+            self.l.addWidget(icon, i, 1)
             mp_cost = QLabel(self)
-            cb = self.make_icon_refresh_callback(icon, mp_cost)
+            self.l.addWidget(mp_cost, i, 3)
+            cb = self.make_meta_refresh_callback(icon, mp_cost)
             skill_box.int_box.valueChanged.connect(cb)
-            self.l.addLayout(hboxed(label, mp_cost, icon, skill_box, mystery_box))
-            self.widgets.append((icon, skill_box, mystery_box))
+            self.widgets.append((skill_box, mystery_box))
 
-        self.l.addStretch()
-
-    def icon_refresh(
+    def meta_refresh(
         self,
         skill_id: int,
         icon: QLabel,
         mp_cost: QLabel,
     ):
         skill_meta = SKILL_ID_MAP[skill_id]
-        el = skill_meta.icon
-        mp_cost.hide()
-        #if el == Element.Passive:
-        #    mp_cost.setText("MP cost: N/A")
-        #else:
-        #    mp_cost.setText("MP cost: " + str(skill_meta.mp_cost))
+        element = skill_meta.icon
+        if element == Element.Passive:
+            mp_cost.setText("MP cost: N/A")
+        else:
+            mp_cost.setText("MP cost: " + str(skill_meta.mp_cost))
         try:
-            pak = ICON_LOADER.element_icon(el)
+            pak = ICON_LOADER.element_icon(element)
         except Exception as e:
             print("Failed to load element icon:", e)
         else:
@@ -293,25 +294,25 @@ class SkillEditorScreen(QWidget, GameScreenMixin, AppliableWidget):
             icon.setFixedSize(pix.size())
             icon.setPixmap(pix)
 
-    def make_icon_refresh_callback(
+    def make_meta_refresh_callback(
         self,
         icon: QLabel,
         mp_cost: QLabel,
     ):
         def inner(skill_id: int):
-            return self.icon_refresh(skill_id, icon, mp_cost)
+            return self.meta_refresh(skill_id, icon, mp_cost)
         return inner
 
     def stack_refresh(self):
         for i in range(8):
-            _, skill_box, mystery_box = self.widgets[i]
+            skill_box, mystery_box = self.widgets[i]
             skill_box.refresh()
             skill = skill_box.skill
             mystery_box.setValue(skill._unknown)
 
     def on_apply_changes(self):
         for i in range(8):
-            _, skill_box, mystery_box = self.widgets[i]
+            skill_box, mystery_box = self.widgets[i]
             skill_box.apply_changes()
             mystery_box.setattr_if_modified(skill_box.skill, "_unknown")
 
