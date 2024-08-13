@@ -251,30 +251,67 @@ class SkillBox(AbstractStrIntMap, ModifiedMixin):
 class SkillEditorScreen(QWidget, GameScreenMixin, AppliableWidget):
     def __init__(self, skills: SkillManager, *args, **kwargs):
         super().__init__(*args, **kwargs)
+        self.skills = skills
+
         self.l = QVBoxLayout()
         self.setLayout(self.l)
-        self.widgets: List[Tuple[SkillBox, QU16]] = []
+        self.widgets: List[Tuple[QLabel, SkillBox, QU16]] = []
 
         for i in range(8):
             skill = skills.slot(i)
             label = QLabel(f"Skill {i + 1}", self)
             skill_box = SkillBox(skill, list(SKILL_NAME_MAP.keys()), self)
             mystery_box = QU16(self)
-            self.l.addLayout(hboxed(label, skill_box, mystery_box))
-            self.widgets.append((skill_box, mystery_box))
+            icon = QLabel(self)
+            mp_cost = QLabel(self)
+            cb = self.make_icon_refresh_callback(icon, mp_cost)
+            skill_box.int_box.valueChanged.connect(cb)
+            self.l.addLayout(hboxed(label, mp_cost, icon, skill_box, mystery_box))
+            self.widgets.append((icon, skill_box, mystery_box))
 
         self.l.addStretch()
 
+    def icon_refresh(
+        self,
+        skill_id: int,
+        icon: QLabel,
+        mp_cost: QLabel,
+    ):
+        skill_meta = SKILL_ID_MAP[skill_id]
+        el = skill_meta.icon
+        mp_cost.hide()
+        #if el == Element.Passive:
+        #    mp_cost.setText("MP cost: N/A")
+        #else:
+        #    mp_cost.setText("MP cost: " + str(skill_meta.mp_cost))
+        try:
+            pak = ICON_LOADER.element_icon(el)
+        except Exception as e:
+            print("Failed to load element icon:", e)
+        else:
+            pix = pak.pixmap.scaled(pak.size_div(2))
+            icon.setFixedSize(pix.size())
+            icon.setPixmap(pix)
+
+    def make_icon_refresh_callback(
+        self,
+        icon: QLabel,
+        mp_cost: QLabel,
+    ):
+        def inner(skill_id: int):
+            return self.icon_refresh(skill_id, icon, mp_cost)
+        return inner
+
     def stack_refresh(self):
         for i in range(8):
-            skill_box, mystery_box = self.widgets[i]
+            _, skill_box, mystery_box = self.widgets[i]
             skill_box.refresh()
             skill = skill_box.skill
             mystery_box.setValue(skill._unknown)
 
     def on_apply_changes(self):
         for i in range(8):
-            skill_box, mystery_box = self.widgets[i]
+            _, skill_box, mystery_box = self.widgets[i]
             skill_box.apply_changes()
             mystery_box.setattr_if_modified(skill_box.skill, "_unknown")
 

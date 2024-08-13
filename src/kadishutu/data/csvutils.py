@@ -4,6 +4,10 @@ from typing_extensions import Self
 from pandas import DataFrame, read_csv
 from pathlib import Path
 
+# TODO: Remove pandas
+# It's a big and unnecesary dependency. Everything can just be donw with csv
+# and BytesIO/StringIO.
+
 class PandasMixin(ABC):
     @classmethod
     def from_dataframe(

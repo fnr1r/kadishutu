@@ -1,11 +1,18 @@
-from typing import Tuple, Union
+from typing import Optional, Tuple, Union
 
-from .data.skills import SKILL_ID_MAP
+from .data.skills import SKILL_ID_MAP, Skill
 from .file_handling import BaseDynamicEditor, BaseStructAsFieldEditor, structproperty
 
 
 class SkillEditor(BaseDynamicEditor, BaseStructAsFieldEditor):
     struct = "<I"
+    _meta: Optional[Skill] = None
+
+    @property
+    def meta(self) -> Skill:
+        if not self._meta:
+            self._meta = SKILL_ID_MAP[self.id]
+        return self._meta
 
     @structproperty(int, struct)
     def _unknown(self):
