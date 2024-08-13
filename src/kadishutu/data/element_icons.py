@@ -14,6 +14,7 @@ class Element(Enum):
     Recovery = auto()
     Misc = auto()
     Passive = 12
+    Booster = 14
     KeyItem = 15
     Relic = 16
     PressTurn = 17

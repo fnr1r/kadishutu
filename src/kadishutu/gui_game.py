@@ -564,8 +564,12 @@ class ItemEditorWidget(QScrollArea, GameScreenMixin, AppliableWidget):
         for i, item_meta in enumerate(items):
             item = self.save.items.from_meta(item_meta)
             label = QLabel(item.name, self.inner)
+            desc = item.item_meta.desc
+            if desc is not None:
+                label.setToolTip(desc)
+            self.l.addWidget(label, i, 1)
             try:
-                pak = ICON_LOADER.element_icon(Element.Misc)
+                pak = ICON_LOADER.element_icon(item.item_meta.icon)
             except Exception as e:
                 print("Failed to load element icon:", e)
             else:
@@ -573,10 +577,19 @@ class ItemEditorWidget(QScrollArea, GameScreenMixin, AppliableWidget):
                 icon = QLabel(self.inner)
                 icon.setFixedSize(pix.size())
                 icon.setPixmap(pix)
+                if desc is not None:
+                    icon.setToolTip(desc)
                 self.l.addWidget(icon, i, 0)
-            self.l.addWidget(label, i, 1)
+            limit_label = QLabel(
+                "Limit: " + str(item.limit), self.inner
+            )
+            if desc is not None:
+                limit_label.setToolTip(desc)
+            self.l.addWidget(limit_label, i, 2)
             amount_box = QU8(self.inner)
-            self.l.addWidget(amount_box, i, 2)
+            if desc is not None:
+                amount_box.setToolTip(desc)
+            self.l.addWidget(amount_box, i, 3)
             self.items.append((item, label, amount_box))
 
     def stack_refresh(self):

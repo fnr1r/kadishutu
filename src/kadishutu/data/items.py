@@ -7,6 +7,7 @@ from pandas import DataFrame, read_csv
 from typing_extensions import Self
 
 from .csvutils import is_unused, make_maps
+from .element_icons import Element
 
 
 FILE_PATH = Path(os.path.realpath(__file__)).parent
@@ -25,6 +26,7 @@ ITEM_TABLE_OFFSET = 0x4c72
 
 TOTAL_ITEM_RANGE = range(0, 895 + 1)
 CONSUMABLES_RANGE = range(0, 220 + 1)
+CON_BOOST_RANGE = range(82, 108 + 1)
 ESSENCES_RANGE = range(221, 615 + 1)
 RELICS_RANGE_1 = range(616, 655 + 1)
 KEY_ITEMS_RANGE = range(656, 855 + 1)
@@ -60,6 +62,7 @@ ANY_ITEMS = AnyItem.from_csv(ITEM_NAMES_TABLE_PATH)
 class ItemExtraData(DataClassJsonMixin):
     id: int
     limit: Optional[int] = None
+    icon: Optional[Element] = None
     desc: Optional[str] = None
 
     @classmethod
@@ -71,11 +74,22 @@ class ItemExtraData(DataClassJsonMixin):
 ITEM_EXTRA_DATA = ItemExtraData.load_path(ITEM_ADDITIONAL_INFO_PATH)
 
 
+def guess_icon(id: int) -> Element:
+    if id in CON_BOOST_RANGE:
+        return Element.Booster
+    if id in RELICS_RANGE_1 or id in RELICS_RANGE_2:
+        return Element.Relic
+    if id in KEY_ITEMS_RANGE:
+        return Element.KeyItem
+    return Element.Misc
+
+
 @dataclass
 class Item:
     id: int
     name: str
     _limit: Optional[int]
+    icon: Element
     desc: Optional[str]
 
     @property
@@ -112,11 +126,16 @@ class Item:
                 ][0]
             except IndexError:
                 limit = None
+                icon = guess_icon(id)
                 desc = None
             else:
                 limit = extra.limit
+                if extra.icon:
+                    icon = extra.icon
+                else:
+                    icon = guess_icon(id)
                 desc = extra.desc
-            items.append(cls(id, name, limit, desc))
+            items.append(cls(id, name, limit, icon, desc))
         return items
 
 
