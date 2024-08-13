@@ -33,6 +33,18 @@ antivirus.
 You can open the GUI by running `kadishutu gui $OPTIONALLY_A_SAVE_FILE` in a
 terminal.
 
+#### Icons and images
+
+If you want to have icons/images in the gui, you need to extract the following
+game files (with [umodel](https://www.gildor.org/en/projects/umodel))
+to `$HOME/.local/share/kadishutu/game_data_export`.
+
+```txt
+Game/Design/UI/CharaIcon/Textures/*
+Game/Design/UI/Icon/Element/Textures/icon_element_01.tga
+Game/Design/UI/LoadingCharaIcon/*
+```
+
 ### In a terminal
 
 Available subcommands:
