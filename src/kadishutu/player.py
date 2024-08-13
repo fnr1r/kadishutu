@@ -2,7 +2,7 @@ from struct import calcsize, unpack_from
 
 from .demons import AffinityEditor, HealableEditor, PotentialEditor, StatsEditor
 from .file_handling import BaseDynamicEditor, BaseStaticEditor, BaseStructEditor, structproperty
-from .skills import Skill, SkillEditor
+from .skills import SkillEditor, SkillManager
 
 
 ENCODING = "UTF-16LE"
@@ -97,8 +97,8 @@ class PlayerEditor(BaseStaticEditor):
     def level(self) -> int:
         return 0x9c8
     @property
-    def skills(self) -> SkillEditor:
-        return self.dispatch(SkillEditor, 0xa38)
+    def skills(self) -> SkillManager:
+        return self.dispatch(SkillManager, 0xa38)
     @property
     def affinities(self) -> AffinityEditor:
         return self.dispatch(AffinityEditor, 0xa98)
@@ -106,5 +106,5 @@ class PlayerEditor(BaseStaticEditor):
     def potentials(self) -> PotentialEditor:
         return self.dispatch(PotentialEditor, 0xb38)
     @property
-    def innate_skill(self) -> Skill:
-        return self.dispatch(Skill, 0xb50 - calcsize("<I"))
+    def innate_skill(self) -> SkillEditor:
+        return self.dispatch(SkillEditor, 0xb50 - calcsize("<I"))

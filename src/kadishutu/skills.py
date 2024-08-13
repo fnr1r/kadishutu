@@ -4,7 +4,7 @@ from .data.skills import SKILL_ID_MAP
 from .file_handling import BaseDynamicEditor, BaseStructAsFieldEditor, structproperty
 
 
-class Skill(BaseDynamicEditor, BaseStructAsFieldEditor):
+class SkillEditor(BaseDynamicEditor, BaseStructAsFieldEditor):
     struct = "<I"
 
     @structproperty(int, struct)
@@ -20,13 +20,13 @@ class Skill(BaseDynamicEditor, BaseStructAsFieldEditor):
         return SKILL_ID_MAP[self.id].name
 
 
-class SkillEditor(BaseDynamicEditor, BaseStructAsFieldEditor):
+class SkillManager(BaseDynamicEditor, BaseStructAsFieldEditor):
     struct = "<II"
 
-    def slot(self, no: int) -> Skill:
-        return self.field_dispatch(Skill, no)
+    def slot(self, no: int) -> SkillEditor:
+        return self.field_dispatch(SkillEditor, no)
 
-    def __getitem__(self, indices: Union[int, Tuple[int, ...]]) -> Skill:
+    def __getitem__(self, indices: Union[int, Tuple[int, ...]]) -> SkillEditor:
         if isinstance(indices, tuple):
             raise NotImplementedError
         return self.slot(indices)

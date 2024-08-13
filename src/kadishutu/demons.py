@@ -3,7 +3,7 @@ from struct import calcsize, pack_into, unpack_from
 
 from .data.demons import DEMON_ID_MAP
 from .file_handling import BaseDynamicEditor, BaseStructAsFieldEditor, structproperty
-from .skills import Skill, SkillEditor
+from .skills import SkillEditor, SkillManager
 
 
 DEMON_TABLE_OFFSET = 0xb60
@@ -276,8 +276,8 @@ class DemonEditor(BaseDynamicEditor):
     def demon_id(self):
         return self.relative_as_absolute_offset(114)
     @property
-    def skills(self) -> SkillEditor:
-        return self.relative_dispatch(SkillEditor, 120)
+    def skills(self) -> SkillManager:
+        return self.relative_dispatch(SkillManager, 120)
     @property
     def affinities(self) -> AffinityEditor:
         return self.relative_dispatch(AffinityEditor, 216)
@@ -285,8 +285,8 @@ class DemonEditor(BaseDynamicEditor):
     def potentials(self) -> PotentialEditor:
         return self.relative_dispatch(PotentialEditor, 384)
     @property
-    def innate_skill(self) -> Skill:
-        return self.relative_dispatch(Skill, 408 - calcsize("<I"))
+    def innate_skill(self) -> SkillEditor:
+        return self.relative_dispatch(SkillEditor, 408 - calcsize("<I"))
 
     @property
     def name(self) -> str:

@@ -25,7 +25,7 @@ def essence_metadata_map() -> dict[str, EssenceMetadata]:
 ESSENCE_META_MAP = essence_metadata_map()
 
 
-class Essence(ItemEditor):
+class EssenceEditor(ItemEditor):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         #assert self.offset in ESSENCE_RANGE
@@ -58,10 +58,10 @@ class Essence(ItemEditor):
 class EssenceManager(BaseStaticEditor):
     offset = 0x4da9
 
-    def at_offset(self, offset: int) -> Essence:
-        return self.dispatch(Essence, offset)
+    def at_offset(self, offset: int) -> EssenceEditor:
+        return self.dispatch(EssenceEditor, offset)
 
-    def from_name(self, name: str) -> Essence:
+    def from_name(self, name: str) -> EssenceEditor:
         return self.at_offset([
             i
             for i in ESSENCE_OFFSETS

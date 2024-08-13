@@ -29,7 +29,7 @@ from .gui_common import (
 from .gui_icons import ICON_LOADER
 from .items import ItemEditor
 from .player import NameEdit, NameManager
-from .skills import Skill, SkillEditor
+from .skills import SkillEditor, SkillManager
 
 
 OVERWRITTEN_WARN = "WARNING: This is overwritten with \"First name\" when saving"
@@ -226,7 +226,7 @@ class AbstractStrIntMap(QWidget, ModifiedMixin):
 
 
 class SkillBox(AbstractStrIntMap, ModifiedMixin):
-    def __init__(self, skill: Skill, *args, **kwargs):
+    def __init__(self, skill: SkillEditor, *args, **kwargs):
         super().__init__(*args, **kwargs)
         ModifiedMixin.__init__(self)
         self.skill = skill
@@ -249,7 +249,7 @@ class SkillBox(AbstractStrIntMap, ModifiedMixin):
 
 
 class SkillEditorScreen(QWidget, GameScreenMixin, AppliableWidget):
-    def __init__(self, skills: SkillEditor, *args, **kwargs):
+    def __init__(self, skills: SkillManager, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.l = QVBoxLayout()
         self.setLayout(self.l)
