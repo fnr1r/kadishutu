@@ -1,3 +1,4 @@
+from argparse import Namespace
 from pathlib import Path
 import sys
 from typing import List, Optional
@@ -343,7 +344,7 @@ class MainWindow(QMainWindow):
         return super().closeEvent(event)
 
 
-def gui_main(args):
+def gui_main(args: Namespace):
     app = QApplication()
     widget = MainWindow()
     global MAIN_WINDOW

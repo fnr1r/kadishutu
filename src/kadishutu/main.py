@@ -29,7 +29,8 @@ def cmd_help(parser: ArgumentParser, args: Namespace):
 def main():
     parser = ArgumentParser()
     #parser.add_argument("command", nargs="+")
-    subparsers = parser.add_subparsers(title="subcommand", dest="subcommand", required=True)
+    parser.set_defaults(func=cmd_gui, file=None)
+    subparsers = parser.add_subparsers(title="subcommand", dest="subcommand")
 
     parser_decrypt = subparsers.add_parser("decrypt")
     parser_decrypt.add_argument("source", type=Path)
