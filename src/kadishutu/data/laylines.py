@@ -1,13 +1,13 @@
 from dataclasses import dataclass, field
 from dataclasses_json import DataClassJsonMixin, config
-import os
 from pathlib import Path
 from typing import Dict, List, Tuple
 from typing_extensions import Self
 
+from .csvutils import TABLES_PATH
 
-file_path = Path(os.path.realpath(__file__)).parent
-LAYLINE_DATA_PATH = file_path / "tables" / "laylines.json"
+
+LAYLINE_DATA_PATH = TABLES_PATH / "laylines.json"
 
 
 @dataclass

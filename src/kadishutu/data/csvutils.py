@@ -1,34 +1,100 @@
 from abc import ABC
-from typing import Dict, List, Optional, Tuple, TypeVar
-from typing_extensions import Self
-from pandas import DataFrame, read_csv
+import csv
+from dataclasses import dataclass
+import os
 from pathlib import Path
+from typing import Any, Dict, List, Optional, Tuple, TypeVar
+from typing_extensions import Self
 
-# TODO: Remove pandas
-# It's a big and unnecesary dependency. Everything can just be donw with csv
-# and BytesIO/StringIO.
 
-class PandasMixin(ABC):
-    @classmethod
-    def from_dataframe(
-        cls, df: DataFrame, rename: Optional[Dict[str, str]] = None
-    ) -> List[Self]:
-        if rename:
-            df = df.rename(columns=rename)
+FILE_PATH = Path(os.path.realpath(__file__)).parent
+TABLES_PATH = FILE_PATH / "tables"
+
+
+def csvread_headerless(path: Path, skip_lines: int = 0) -> List[List[str]]:
+    with open(path, "rt") as file:
+        while skip_lines > 0:
+            if file.read(1) == "\n":
+                skip_lines -= 1
         return [
-            cls(**row)
-            for row in df[list(cls.__annotations__.keys())].to_dict(orient="records")
+            i
+            for i in csv.reader(file)
         ]
+
+
+def csvread(path: Path, skip_lines: int = 0) -> List[Dict[str, str]]:
+    with open(path, "rt") as file:
+        while skip_lines > 0:
+            if file.read(1) == "\n":
+                skip_lines -= 1
+        return [
+            i
+            for i in csv.DictReader(file)
+        ]
+
+
+@dataclass
+class FromCsv:
     @classmethod
-    def from_csv(
-        cls, path: Path, *args, skiprows: Optional[int] = None, **kwargs
-    ) -> List[Self]:
-        with open(path, "r") as file:
-            if skiprows:
-                df = read_csv(file, skiprows=skiprows)
-            else:
-                df = read_csv(file)
-        return cls.from_dataframe(df, *args, **kwargs)
+    def converter_data(cls) -> Optional[Dict[str, Dict[str, Any]]]:
+        ...
+
+    @classmethod
+    def from_csv_headerless(cls, path: Path, skip_lines: int = 0) -> List[Self]:
+        csv_data = csvread_headerless(path, skip_lines)
+        res = []
+        conversion_info = cls.converter_data()
+        for item in csv_data:
+            target_item = []
+            for i, (k, v) in enumerate(cls.__annotations__.items()):
+                if not conversion_info:
+                    k_info = {}
+                else:
+                    try:
+                        k_info = conversion_info[k]
+                    except KeyError:
+                        k_info = {}
+                value = item[i]
+                try:
+                    value = k_info["converter"](v, value)
+                except:
+                    value = v(value)
+                target_item.append(value)
+            res.append(target_item)
+        return [
+            cls(*i)
+            for i in res
+        ]
+
+    @classmethod
+    def from_csv(cls, path: Path, skip_lines: int = 0) -> List[Self]:
+        csv_data = csvread(path, skip_lines)
+        res = []
+        conversion_info = cls.converter_data()
+        for item in csv_data:
+            target_item = {}
+            for k, v in cls.__annotations__.items():
+                if not conversion_info:
+                    k_info = {}
+                else:
+                    try:
+                        k_info = conversion_info[k]
+                    except KeyError:
+                        k_info = {}
+                try:
+                    value = item[k_info["field_name"]]
+                except KeyError:
+                    value = item[k]
+                try:
+                    value = k_info["converter"](v, value)
+                except:
+                    value = v(value)
+                target_item[k] = value
+            res.append(target_item)
+        return [
+            cls(**i)
+            for i in res
+        ]
 
 
 def is_unused(name: str) -> bool:

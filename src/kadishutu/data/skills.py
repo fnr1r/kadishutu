@@ -1,20 +1,14 @@
 from dataclasses import dataclass
 from enum import Enum
-import os
-from pathlib import Path
 import re
-from typing import List, Tuple
+from typing import Any, Dict, List, Tuple, Type, TypeVar
 
-from .csvutils import PandasMixin, is_unused, make_maps
+from .csvutils import TABLES_PATH, FromCsv, is_unused, make_maps
 from .element_icons import Element
 
 
-file_path = Path(os.path.realpath(__file__)).parent
-
-
-aaa = file_path / "tables"
-action_skills = aaa / "SMT5V Skill Data Tables - ActionSkills.csv"
-auto_skills = aaa / "SMT5V Skill Data Tables - AutoSkills.csv"
+ACTION_SKILLS_PATH = TABLES_PATH / "SMT5V Skill Data Tables - ActionSkills.csv"
+AUTO_SKILLS_PATH = TABLES_PATH / "SMT5V Skill Data Tables - AutoSkills.csv"
 
 
 EXTRACTOR_RE = re.compile(r"(\d+) \((.+)\)")
@@ -69,62 +63,67 @@ class Magatsuhi(Enum):
     Enemy = 0
 
 
+T = TypeVar("T", bound=Enum)
+
+
+def extract_from_str(cls: Type[T], text: str) -> T:
+    (num, _) = extractor(text)
+    return cls(num)
+
+
 @dataclass
-class ActionSkill(PandasMixin):
+class ActionSkill(FromCsv):
     name: str
     id: int
     mp_cost: int
     #skill_type: str
     #skill_attribute_1: str
     #magatsuhi: Optional[str]
-    icon: str
+    icon: Element
 
-    @property
-    def element(self) -> Element:
-        #print(type(self.magatsuhi), self.magatsuhi)
-        #skill_type = sktp(SkillType, self.skill_type)
-        #skill_attribute_1 = sktp(SkillAttribute1, self.skill_type)
-        #if skill_type == SkillType.E_SKILL_TYPE_PHYSICAL_ATK:
-        #    return SKILL_ATTR_1_MAP[skill_attribute_1]
-        #if skill_type == SkillType.E_SKILL_TYPE_MAGIC_ATK:
-        #    return SKILL_ATTR_1_MAP[skill_attribute_1]
-        #if skill_type == SkillType.E_SKILL_TYPE_NODAMAGE_ATK:
-        #    return SKILL_ATTR_1_MAP[skill_attribute_1]
-        #if skill_type == SkillType.E_SKILL_TYPE_RECOVERY:
-        #    return Element.Recovery
-        #if skill_type == SkillType.E_SKILL_TYPE_SUMMON:
-        #    return Element.Support
-        #return Element.Misc
-        (num, _) = extractor(self.icon)
-        return Element(num)
+    @classmethod
+    def converter_data(cls):
+        return {
+            "name": {
+                "field_name": "Skill Name",
+            },
+            "id": {
+                "field_name": "Skill ID",
+            },
+            "mp_cost": {
+                "field_name": "MP Cost",
+            },
+            #"Skill Type": "skill_type",
+            #"Skill Attribute 1": "skill_attribute_1",
+            #"Magatsuhi": "magatsuhi",
+            "icon": {
+                "field_name": "Skill Icon",
+                "converter": extract_from_str,
+            },
+        }
 
 
-ACTION_SKILLS = ActionSkill.from_csv(
-    action_skills,
-    rename={
-        "Skill Name": "name",
-        "Skill ID": "id",
-        "MP Cost": "mp_cost",
-        #"Skill Type": "skill_type",
-        #"Skill Attribute 1": "skill_attribute_1",
-        #"Magatsuhi": "magatsuhi",
-        "Skill Icon": "icon",
-    },
-    skiprows=3,
-)
+ACTION_SKILLS = ActionSkill.from_csv(ACTION_SKILLS_PATH, 3)
 
 
 @dataclass
-class AutoSkill(PandasMixin):
+class AutoSkill(FromCsv):
     name: str
     id: int
 
+    @classmethod
+    def converter_data(cls) -> Dict[str, Dict[str, Any]] | None:
+        return {
+            "name": {
+                "field_name": "Name",
+            },
+            "id": {
+                "field_name": "Skill ID",
+            },
+        }
 
-AUTO_SKILLS = AutoSkill.from_csv(
-    auto_skills,
-    rename={"Name": "name", "Skill ID": "id"},
-    skiprows=1,
-)
+
+AUTO_SKILLS = AutoSkill.from_csv(AUTO_SKILLS_PATH, 1)
 
 
 @dataclass
@@ -142,7 +141,7 @@ for skill in ACTION_SKILLS:
     if is_unused(skill.name):
         continue
     NEW_SKILLS.append(Skill(
-        skill.name, skill.id, skill.mp_cost, skill.element
+        skill.name, skill.id, skill.mp_cost, skill.icon
     ))
 
 

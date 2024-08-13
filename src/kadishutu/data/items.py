@@ -1,18 +1,13 @@
 from dataclasses import dataclass
-import os
 from pathlib import Path
 from typing import List, Optional
 from dataclasses_json import DataClassJsonMixin
-from pandas import DataFrame, read_csv
 from typing_extensions import Self
 
-from .csvutils import is_unused, make_maps
+from .csvutils import TABLES_PATH, FromCsv, is_unused, make_maps
 from .element_icons import Element
 
 
-FILE_PATH = Path(os.path.realpath(__file__)).parent
-
-TABLES_PATH = FILE_PATH / "tables"
 ITEM_NAMES_TABLE_PATH = TABLES_PATH / "SMT5V NKM Base Table_Navi Devil Data - Item Names.csv"
 ITEM_ADDITIONAL_INFO_PATH = TABLES_PATH / "item_extra_data.json"
 
@@ -38,24 +33,12 @@ ESSENCE_ITEM_LIMIT = 1
 RELICS_ITEM_LIMIT = DEFAULT_LIMIT
 
 @dataclass
-class AnyItem:
+class AnyItem(FromCsv):
     id: int
     name: str
 
-    @classmethod
-    def from_dataframe(cls, df: DataFrame) -> List[Self]:
-        return [
-            cls(*row.values())
-            for row in df.to_dict(orient="records")
-        ]
-    @classmethod
-    def from_csv(cls, path: Path) -> List[Self]:
-        with open(path, "r") as file:
-            df = read_csv(file, header=None, skiprows=1)
-        return cls.from_dataframe(df)
 
-
-ANY_ITEMS = AnyItem.from_csv(ITEM_NAMES_TABLE_PATH)
+ANY_ITEMS = AnyItem.from_csv_headerless(ITEM_NAMES_TABLE_PATH, 1)
 
 
 @dataclass
