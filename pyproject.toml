@@ -38,6 +38,13 @@ kadishutu = "src/kadishutu/__main__.py"
 [tool.poetry-pyinstaller-plugin.include]
 "src/kadishutu/data/tables" = "kadishutu/data/tables"
 
+[tool.pyinstaller-archiver]
+archive_name = "{name}-{platform}-{commit}"
+
+[tool.pyinstaller-archiver.formats]
+linux = ["xz", "7z"]
+windows = ["zip"]
+
 [build-system]
 requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
