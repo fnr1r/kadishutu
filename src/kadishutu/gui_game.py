@@ -59,29 +59,29 @@ class NameEditorScreen(QWidget, GameScreenMixin, AppliableWidget):
     def __init__(self, names: NameManager, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.names = names
-        self.namelist: List[Tuple[NameEdit, QLineEdit]] = []
+        self.widgets: List[Tuple[NameEdit, QLineEdit]] = []
 
-        self.setLayout(QVBoxLayout())
+        self.l = QVBoxLayout(self)
 
         for name in self.NAMES:
             label = QLabel(name, self)
-            self.layout().addWidget(label)
+            self.l.addWidget(label)
             name = name.lower().replace(" ", "_")
             if name == "save_name":
                 label = QLabel(OVERWRITTEN_WARN, self)
-                self.layout().addWidget(label)
+                self.l.addWidget(label)
             editor: NameEdit = names.__getattribute__(name)
             box = QLineEdit(self)
             box.setMaxLength(editor.length)
-            self.layout().addWidget(box)
-            self.namelist.append((editor, box))
+            self.l.addWidget(box)
+            self.widgets.append((editor, box))
 
     def stack_refresh(self):
-        for editor, box in self.namelist:
+        for editor, box in self.widgets:
             box.setText(editor.get())
 
     def on_apply_changes(self):
-        for editor, box in self.namelist:
+        for editor, box in self.widgets:
             if not box.isModified():
                 continue
             editor.set(box.text())
@@ -91,27 +91,26 @@ class NameEditorScreen(QWidget, GameScreenMixin, AppliableWidget):
 class DlcEditorScreen(QWidget, GameScreenMixin, AppliableWidget):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.dlcmap: Dict[str, QCheckBox] = {}
+        self.widgets: Dict[str, QCheckBox] = {}
 
-        self.l = QGridLayout()
-        self.setLayout(self.l)
+        self.l = QGridLayout(self)
 
         for i, dlc in enumerate(DLCS.values()):
-            label = QLabel(dlc, self)
+            label = QLabel(dlc)
             self.l.addWidget(label, i, 0)
-            dlc_box = QCheckBox(self)
+            dlc_box = QCheckBox()
             self.l.addWidget(dlc_box, i, 1)
-            self.dlcmap[dlc] = dlc_box
+            self.widgets[dlc] = dlc_box
 
     def stack_refresh(self):
         dlcs = self.save.dlc.flags.get_flags()
-        for name, dlc_box in self.dlcmap.items():
+        for name, dlc_box in self.widgets.items():
             dlc_box.setChecked(name in dlcs)
 
     def on_apply_changes(self):
         dlcs = [
             name
-            for name, dlc_box in self.dlcmap.items()
+            for name, dlc_box in self.widgets.items()
             if dlc_box.isChecked()
         ]
         self.save.dlc.flags = DlcBitflags.from_flags(dlcs)
@@ -132,34 +131,37 @@ class StatEditorScreen(QWidget, GameScreenMixin, AppliableWidget):
         self.healable = healable
         self.labels = []
         self.widgets: Dict[str, Dict[str, QU16]] = {}
-        self.l = QGridLayout()
-        self.setLayout(self.l)
+
+        self.l = QGridLayout(self)
+
         for i in range(0, 4):
             text = self.STAT_TYPES[i]
-            l = QLabel(text, self)
+            l = QLabel(text)
             self.l.addWidget(l, 0, i + 1)
             self.labels.append(l)
             self.widgets[text.lower()] = {}
+
         for i, stat in enumerate(STATS_NAMES, 1):
-            l = QLabel(stat, self)
+            l = QLabel(stat)
             self.labels.append(l)
             self.l.addWidget(l, i, 0)
             stat = stat.lower()
             for j in range(1, 4):
-                widget = QU16(self)
+                widget = QU16()
                 ty = self.STAT_TYPES[j - 1].lower()
                 val = self.stats.__getattribute__(ty).__getattribute__(stat)
                 widget.setValue(val)
                 self.widgets[ty][stat] = widget
                 self.l.addWidget(widget, i, j)
+
         for i, stat in enumerate(["hp", "mp"], 1):
-            widget = QU16(self)
+            widget = QU16()
             val = self.healable.__getattribute__(stat)
             widget.setValue(val)
             self.widgets["healable"][stat] = widget
             self.l.addWidget(widget, i, 4)
 
-        self.heal_button = QPushButton("Heal", self)
+        self.heal_button = QPushButton("Heal")
         self.heal_button.clicked.connect(self.on_heal)
         self.l.addWidget(self.heal_button, 8, 1)
 
@@ -187,15 +189,18 @@ class AbstractStrIntMap(QWidget, ModifiedMixin):
     def __init__(self, items: List[str], *args, **kwargs):
         super().__init__(*args, **kwargs)
         ModifiedMixin.__init__(self)
-        self.setLayout(QHBoxLayout())
-        self.layout().setContentsMargins(0, 0, 0, 0)
-        self.str_box = QComboBox(self)
+
+        self.l = QHBoxLayout(self)
+        self.l.setContentsMargins(0, 0, 0, 0)
+
+        self.str_box = QComboBox()
         self.str_box.addItems(items)
         self.str_box.currentTextChanged.connect(self.str_changed)
-        self.layout().addWidget(self.str_box)
-        self.int_box = QSpinBox(self)
+        self.l.addWidget(self.str_box)
+
+        self.int_box = QSpinBox()
         self.int_box.valueChanged.connect(self.int_changed)
-        self.layout().addWidget(self.int_box)
+        self.l.addWidget(self.int_box)
 
     def get_value(self) -> int:
         return self.int_box.value()
@@ -252,22 +257,21 @@ class SkillEditorScreen(QWidget, GameScreenMixin, AppliableWidget):
     def __init__(self, skills: SkillManager, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.skills = skills
-
-        self.l = QGridLayout()
-        self.setLayout(self.l)
         self.widgets: List[Tuple[SkillBox, QU16]] = []
+
+        self.l = QGridLayout(self)
 
         for i in range(8):
             skill = skills.slot(i)
-            label = QLabel(f"Skill {i + 1}", self)
+            label = QLabel(f"Skill {i + 1}")
             self.l.addWidget(label, i, 0)
             skill_box = SkillBox(skill, list(SKILL_NAME_MAP.keys()), self)
             self.l.addWidget(skill_box, i, 2)
-            mystery_box = QU16(self)
+            mystery_box = QU16()
             self.l.addWidget(mystery_box, i, 4)
-            icon = QLabel(self)
+            icon = QLabel()
             self.l.addWidget(icon, i, 1)
-            mp_cost = QLabel(self)
+            mp_cost = QLabel()
             self.l.addWidget(mp_cost, i, 3)
             cb = self.make_meta_refresh_callback(icon, mp_cost)
             skill_box.int_box.valueChanged.connect(cb)
@@ -324,13 +328,12 @@ class AffinityEditorScreen(QWidget, GameScreenMixin, AppliableWidget):
         self.aff_map: Dict[str, MComboBox] = {}
 
         self.l = QGridLayout(self)
-        self.setLayout(self.l)
         cb_items = list(AFFINITY_MAP.keys())
 
         for i, name in enumerate(AFFINITY_NAMES):
             label = QLabel(name)
             self.l.addWidget(label, i, 1)
-            affinity_box = MComboBox(self)
+            affinity_box = MComboBox()
             affinity_box.addItems(cb_items)
             self.l.addWidget(affinity_box, i, 2)
             self.aff_map[name.lower()] = affinity_box
@@ -340,7 +343,7 @@ class AffinityEditorScreen(QWidget, GameScreenMixin, AppliableWidget):
                 print("Failed to load element icon:", e)
             else:
                 pix = pak.pixmap.scaled(pak.size_div(2))
-                icon = QLabel(self)
+                icon = QLabel()
                 icon.setFixedSize(pix.size())
                 icon.setPixmap(pix)
                 self.l.addWidget(icon, i, 0)
@@ -379,12 +382,11 @@ class PotentialEditorScreen(QWidget, GameScreenMixin, AppliableWidget):
         self.potential_map: Dict[PType, QPotentialBox] = {}
 
         self.l = QGridLayout(self)
-        self.setLayout(self.l)
 
         for i, ptype in enumerate(PType):
             label = QLabel(ptype.name)
             self.l.addWidget(label, i, 1)
-            potential_box = QPotentialBox(self)
+            potential_box = QPotentialBox()
             self.l.addWidget(potential_box, i, 2)
             self.potential_map[ptype] = potential_box
             try:
@@ -397,7 +399,7 @@ class PotentialEditorScreen(QWidget, GameScreenMixin, AppliableWidget):
                 print("Failed to load element icon:", e)
             else:
                 pix = pak.pixmap.scaled(pak.size_div(2))
-                icon = QLabel(self)
+                icon = QLabel()
                 icon.setFixedSize(pix.size())
                 icon.setPixmap(pix)
                 self.l.addWidget(icon, i, 0)
@@ -417,32 +419,29 @@ class PotentialEditorScreen(QWidget, GameScreenMixin, AppliableWidget):
 class PlayerEditorScreen(QWidget, GameScreenMixin):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.buttons = []
-
         self.l = QVBoxLayout()
         self.setLayout(self.l)
 
         for name, fun in [
             ("Names", lambda: NameEditorScreen(
-                self.save.player.names, self
+                self.save.player.names
             )),
             ("Stats", lambda: StatEditorScreen(
-                self.save.player.stats, self.save.player.healable, self
+                self.save.player.stats, self.save.player.healable
             )),
             ("Skills", lambda: SkillEditorScreen(
-                self.save.player.skills, self
+                self.save.player.skills
             )),
             ("Affinities", lambda: AffinityEditorScreen(
-                self.save.player.affinities, self
+                self.save.player.affinities
             )),
             ("Potentials", lambda: PotentialEditorScreen(
-                self.save.player.potentials, self
+                self.save.player.potentials
             ))
         ]:
-            button = QPushButton(name, self)
+            button = QPushButton(name)
             button.clicked.connect(self.spawner(fun))
             self.l.addWidget(button)
-            self.buttons.append(button)
 
         self.l.addStretch()
 
@@ -451,19 +450,18 @@ class DemonIdnWidget(QWidget, ModifiedMixin):
     def __init__(self, demon: DemonEditor, *args, **kwargs):
         super().__init__(*args, **kwargs)
         ModifiedMixin.__init__(self)
-        self.l = QVBoxLayout()
-        self.setLayout(self.l)
-        self.layout().setContentsMargins(0, 0, 0, 0)
+        self.l = QVBoxLayout(self)
+        self.l.setContentsMargins(0, 0, 0, 0)
 
-        self.id_label = QLabel("ID:", self)
-        self.id_box = QSpinBox(self)
+        self.id_label = QLabel("ID:")
+        self.id_box = QSpinBox()
         self.id_box.setMaximum(U16_MAX)
         self.id_box.setValue(demon.demon_id)
         self.id_box.valueChanged.connect(self.id_changed)
         self.l.addLayout(hboxed(self.id_label, self.id_box))
 
-        self.name_label = QLabel("Name:", self)
-        self.name_box = QComboBox(self)
+        self.name_label = QLabel("Name:")
+        self.name_box = QComboBox()
         self.name_box.addItems(list(DEMON_NAME_MAP.keys()))
         self.name_box.setCurrentText(demon.name)
         self.name_box.currentTextChanged.connect(self.name_changed)
@@ -489,12 +487,11 @@ class DemonEditorScreen(QWidget, GameScreenMixin, AppliableWidget):
         super().__init__(*args, **kwargs)
         self.demon = demon
 
-        self.setLayout(QHBoxLayout())
+        self.parent_layout = QHBoxLayout(self)
         self.layout().setContentsMargins(0, 0, 0, 0)
         self.side_panel_widget = QWidget(self)
-        self.side_panel_layout = QVBoxLayout()
-        self.side_panel_widget.setLayout(self.side_panel_layout)
-        self.layout().addWidget(self.side_panel_widget)
+        self.l = QVBoxLayout(self.side_panel_widget)
+        self.parent_layout.addWidget(self.side_panel_widget)
 
         self.demon_idn_widget = DemonIdnWidget(demon, self.side_panel_widget)
 
@@ -504,28 +501,28 @@ class DemonEditorScreen(QWidget, GameScreenMixin, AppliableWidget):
 
         for name, fun in [
             ("Stats", lambda: StatEditorScreen(
-                self.demon.stats, self.demon.healable, self
+                self.demon.stats, self.demon.healable
             )),
             ("Skills", lambda: SkillEditorScreen(
-                self.demon.skills, self
+                self.demon.skills
             )),
             ("Affinities", lambda: AffinityEditorScreen(
-                self.demon.affinities, self
+                self.demon.affinities
             )),
             ("Potentials", lambda: PotentialEditorScreen(
-                self.demon.potentials, self
+                self.demon.potentials
             ))
         ]:
-            button = QPushButton(name, self.side_panel_widget)
+            button = QPushButton(name)
             button.clicked.connect(self.spawner(fun))
             self.side_panel_widgets.append(button)
 
         for button in self.side_panel_widgets:
-            self.side_panel_layout.addWidget(button)
-        self.side_panel_layout.addStretch()
+            self.l.addWidget(button)
+        self.l.addStretch()
 
-        self.demon_graphic = QLabel(self)
-        self.layout().addWidget(self.demon_graphic)
+        self.demon_graphic = QLabel()
+        self.parent_layout.addWidget(self.demon_graphic)
 
     def stack_refresh(self):
         try:
@@ -546,9 +543,9 @@ class DemonEditorScreen(QWidget, GameScreenMixin, AppliableWidget):
 class DemonSelectorScreen(QWidget, GameScreenMixin):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.l = QGridLayout()
-        self.setLayout(self.l)
         self.demons: List[QPushButton] = []
+
+        self.l = QGridLayout(self)
         for demon_number in range(24):
             sel = QPushButton(self)
             sel.clicked.connect(self.demon_editor(demon_number))
@@ -596,12 +593,11 @@ class ItemEditorWidget(QScrollArea, GameScreenMixin, AppliableWidget):
         self.setWidgetResizable(True)
         self.inner = QWidget()
         self.setWidget(self.inner)
-        self.l = QGridLayout()
-        self.inner.setLayout(self.l)
+        self.l = QGridLayout(self.inner)
 
         for i, item_meta in enumerate(items):
             item = self.save.items.from_meta(item_meta)
-            label = QLabel(item.name, self.inner)
+            label = QLabel(item.name)
             desc = item.item_meta.desc
             if desc is not None:
                 label.setToolTip(desc)
@@ -612,19 +608,17 @@ class ItemEditorWidget(QScrollArea, GameScreenMixin, AppliableWidget):
                 print("Failed to load element icon:", e)
             else:
                 pix = pak.pixmap.scaled(pak.size_div(2))
-                icon = QLabel(self.inner)
+                icon = QLabel()
                 icon.setFixedSize(pix.size())
                 icon.setPixmap(pix)
                 if desc is not None:
                     icon.setToolTip(desc)
                 self.l.addWidget(icon, i, 0)
-            limit_label = QLabel(
-                "Limit: " + str(item.limit), self.inner
-            )
+            limit_label = QLabel("Limit: " + str(item.limit))
             if desc is not None:
                 limit_label.setToolTip(desc)
             self.l.addWidget(limit_label, i, 2)
-            amount_box = QU8(self.inner)
+            amount_box = QU8()
             if desc is not None:
                 amount_box.setToolTip(desc)
             self.l.addWidget(amount_box, i, 3)
@@ -650,7 +644,7 @@ class ItemEditorScreen(QTabWidget, GameScreenMixin, AppliableWidget):
             ("Key Items", [KEY_ITEMS_RANGE])
         ]:
             items = items_from(*item_ranges)
-            widget = ItemEditorWidget(items, self)
+            widget = ItemEditorWidget(items)
             self.tabs.append(widget)
             self.addTab(widget, name)
 
@@ -691,7 +685,7 @@ class AlignmentPacked:
 class AlignmentEditorScreen(QTabWidget, GameScreenMixin, AppliableWidget):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.obj = self.save.alignment
+        self.alignment = self.save.alignment
         self.tabmap: Dict[str, AlignmentPacked] = {}
         self.checkboxmap: Dict[int, QCheckBox] = {}
 
@@ -723,14 +717,14 @@ class AlignmentEditorScreen(QTabWidget, GameScreenMixin, AppliableWidget):
 
     def stack_refresh(self):
         for byte in ALIGNMENT_DATA:
-            byte_editor = self.obj.at_offset(byte.offset)
+            byte_editor = self.alignment.at_offset(byte.offset)
             for bit in byte.bits:
                 box = self.checkboxmap[byte.offset * 8 + bit.bit]
                 box.setChecked(byte_editor.get_flag(bit.bit))
 
     def on_apply_changes(self):
         for byte in ALIGNMENT_DATA:
-            byte_editor = self.obj.at_offset(byte.offset)
+            byte_editor = self.alignment.at_offset(byte.offset)
             for bit in byte.bits:
                 box = self.checkboxmap[byte.offset * 8 + bit.bit]
                 byte_editor.set_flag(bit.bit, box.isChecked())
@@ -740,7 +734,7 @@ class SettingsEditorScreen(QWidget, GameScreenMixin, AppliableWidget):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.l = QVBoxLayout(self)
-        self.difficulty = MComboBox(self)
+        self.difficulty = MComboBox()
         self.difficulty.addItems([
             difficulty.name
             for difficulty in Difficulty
@@ -774,13 +768,9 @@ class GameSaveEditorScreen(SaveScreenMixin, QWidget, AppliableWidget):
         super().__init__(*args, **kwargs)
         self.save = SaveEditor(self.raw_save)
 
-        self.l = QVBoxLayout()
-        self.setLayout(self.l)
-        self.macca = QU32(self)
-        self.macca_label = QLabel(self)
-        self.macca_label.setText("Macca:")
-        self.l.addLayout(hboxed(self.macca_label, self.macca))
-        self.menu_buttons = []
+        self.l = QVBoxLayout(self)
+        self.macca = QU32()
+        self.l.addLayout(hboxed(QLabel("Macca"), self.macca))
 
         for name, cls in [
             ("DLC", DlcEditorScreen),
@@ -790,10 +780,9 @@ class GameSaveEditorScreen(SaveScreenMixin, QWidget, AppliableWidget):
             ("Alignment", AlignmentEditorScreen),
             ("Settings", SettingsEditorScreen),
         ]:
-            widget = QPushButton(name, self)
+            widget = QPushButton(name)
             widget.clicked.connect(self.spawner(cls))
             self.l.addWidget(widget)
-            self.menu_buttons.append(widget)
 
         self.l.addStretch()
 
