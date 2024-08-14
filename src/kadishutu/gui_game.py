@@ -786,6 +786,8 @@ class GameSaveEditorScreen(SaveScreenMixin, QWidget, AppliableWidget):
         self.l = QVBoxLayout(self)
         self.macca = QU32()
         self.l.addLayout(hboxed(QLabel("Macca"), self.macca))
+        self.glory = QU32()
+        self.l.addLayout(hboxed(QLabel("Glory"), self.glory))
 
         for name, cls in [
             ("DLC", DlcEditorScreen),
@@ -803,6 +805,8 @@ class GameSaveEditorScreen(SaveScreenMixin, QWidget, AppliableWidget):
 
     def stack_refresh(self):
         self.macca.setValue(self.save.macca)
+        self.glory.setValue(self.save.glory)
 
     def on_apply_changes(self):
         self.macca.setattr_if_modified(self.save, "macca")
+        self.glory.setattr_if_modified(self.save, "glory")
