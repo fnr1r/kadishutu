@@ -2,6 +2,14 @@ from argparse import Namespace
 from pathlib import Path
 import sys
 from typing import List, Optional
+
+try:
+    from PySide6 import __version__
+except ImportError:
+    print("PySide6 is not installed.")
+    print("Please install it before running the gui.")
+    sys.exit(1)
+
 from PySide6.QtGui import QCloseEvent
 from PySide6.QtWidgets import (
     QApplication, QComboBox, QFileDialog, QHBoxLayout, QLabel, QLineEdit,
