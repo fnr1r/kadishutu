@@ -254,18 +254,30 @@ class SkillBox(AbstractStrIntMap, ModifiedMixin):
 
 
 class SkillEditorScreen(QWidget, GameScreenMixin, AppliableWidget):
-    def __init__(self, skills: SkillManager, *args, **kwargs):
+    def __init__(
+        self,
+        skills: SkillManager,
+        innate_skill: SkillEditor,
+        *args,
+        **kwargs
+    ):
         super().__init__(*args, **kwargs)
         self.skills = skills
         self.widgets: List[Tuple[SkillBox, QU16]] = []
 
         self.l = QGridLayout(self)
 
-        for i in range(8):
-            skill = skills.slot(i)
-            label = QLabel(f"Skill {i + 1}")
+        all_skills = list(SKILL_NAME_MAP.keys())
+
+        for i in range(9):
+            if i == 0:
+                skill = innate_skill
+                label = QLabel("Innate skill")
+            else:
+                skill = skills.slot(i - 1)
+                label = QLabel(f"Skill {i}")
             self.l.addWidget(label, i, 0)
-            skill_box = SkillBox(skill, list(SKILL_NAME_MAP.keys()), self)
+            skill_box = SkillBox(skill, all_skills)
             self.l.addWidget(skill_box, i, 2)
             mystery_box = QU16()
             self.l.addWidget(mystery_box, i, 4)
@@ -273,6 +285,9 @@ class SkillEditorScreen(QWidget, GameScreenMixin, AppliableWidget):
             self.l.addWidget(icon, i, 1)
             mp_cost = QLabel()
             self.l.addWidget(mp_cost, i, 3)
+            if not i:
+                mystery_box.hide()
+                mp_cost.hide()
             cb = self.make_meta_refresh_callback(icon, mp_cost)
             skill_box.int_box.valueChanged.connect(cb)
             self.widgets.append((skill_box, mystery_box))
@@ -308,14 +323,14 @@ class SkillEditorScreen(QWidget, GameScreenMixin, AppliableWidget):
         return inner
 
     def stack_refresh(self):
-        for i in range(8):
+        for i in range(9):
             skill_box, mystery_box = self.widgets[i]
             skill_box.refresh()
             skill = skill_box.skill
             mystery_box.setValue(skill._unknown)
 
     def on_apply_changes(self):
-        for i in range(8):
+        for i in range(9):
             skill_box, mystery_box = self.widgets[i]
             skill_box.apply_changes()
             mystery_box.setattr_if_modified(skill_box.skill, "_unknown")
@@ -430,7 +445,7 @@ class PlayerEditorScreen(QWidget, GameScreenMixin):
                 self.save.player.stats, self.save.player.healable
             )),
             ("Skills", lambda: SkillEditorScreen(
-                self.save.player.skills
+                self.save.player.skills, self.save.player.innate_skill
             )),
             ("Affinities", lambda: AffinityEditorScreen(
                 self.save.player.affinities
@@ -504,7 +519,7 @@ class DemonEditorScreen(QWidget, GameScreenMixin, AppliableWidget):
                 self.demon.stats, self.demon.healable
             )),
             ("Skills", lambda: SkillEditorScreen(
-                self.demon.skills
+                self.demon.skills, self.demon.innate_skill
             )),
             ("Affinities", lambda: AffinityEditorScreen(
                 self.demon.affinities
