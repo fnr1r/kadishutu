@@ -25,8 +25,15 @@ mypy = "^1.11.1"
 pylint = "^3.2.6"
 flake8 = "^7.1.0"
 
+[tool.poetry-pyinstaller-plugin]
+post-build = "src/post-build:post_build"
+
 [tool.poetry-pyinstaller-plugin.scripts]
 kadishutu = "src/kadishutu/__main__.py"
+
+[tool.poetry-pyinstaller-plugin.package]
+"README.md" = "."
+"docs" = "."
 
 [tool.poetry-pyinstaller-plugin.include]
 "src/kadishutu/data/tables" = "kadishutu/data/tables"
