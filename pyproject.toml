@@ -28,8 +28,11 @@ flake8 = "^7.1.0"
 [tool.poetry-pyinstaller-plugin]
 post-build = "src/post-build:post_build"
 
-[tool.poetry-pyinstaller-plugin.scripts]
-kadishutu = "src/kadishutu/__main__.py"
+[tool.poetry-pyinstaller-plugin.scripts.kadishutu]
+runtime_hooks = [
+    "src/pyinstaller_runtime.py"
+]
+source = "src/kadishutu/__main__.py"
 
 [tool.poetry-pyinstaller-plugin.package]
 "README.md" = "."

@@ -6,9 +6,8 @@ from typing import List, Optional
 try:
     from PySide6 import __version__
 except ImportError:
-    print("PySide6 is not installed.")
-    print("Please install it before running the gui.")
-    sys.exit(1)
+    from .gui_prompt_install import handle_no_qt
+    sys.exit(handle_no_qt())
 
 from PySide6.QtGui import QCloseEvent
 from PySide6.QtWidgets import (
