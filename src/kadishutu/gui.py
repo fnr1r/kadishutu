@@ -308,6 +308,7 @@ class MainWindow(QMainWindow):
         if not self.inner.should_show_navigation:
             return
         widget = self.inner.editor_widget
+        widget.raw_save.hash_update()
         widget.raw_save.encrypt().save(widget.path)
         widget.modified = False
 
@@ -317,6 +318,7 @@ class MainWindow(QMainWindow):
             return
         path = Path(pathstr)
         widget = self.inner.editor_widget
+        widget.raw_save.hash_update()
         widget.raw_save.encrypt().save(path)
         widget.modified = False
 
