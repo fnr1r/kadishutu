@@ -471,6 +471,14 @@ add_dat("x_magic_number", 64, "<l")
 add_dat("statsx", 84, "<HH")
 -->
 
+### Empty demon entry
+
+0x1a8 sized array with nulls except for:
+
+- 0x72 - 0x74 - Demon ID - 0xffff
+- 0x74 - 0x76 - ???????? - 0x0001
+- 0x110 - 0x148 - Affinities - repeated 0x6400
+
 ### Demon table
 
 The demon table start at 0xb60.
