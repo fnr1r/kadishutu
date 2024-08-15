@@ -1,8 +1,7 @@
 from enum import Enum
 
-from .data.essences import ESSENCE_OFFSETS, ESSENCE_RANGE
-from .file_handling import BaseEditor, BaseStaticEditor
-from .items import ItemEditor
+from .data.items import ESSENCES_RANGE, ITEM_TABLE_OFFSET
+from .items import ItemEditor, ItemManager
 
 
 class EssenceMetadata(Enum):
@@ -28,7 +27,6 @@ ESSENCE_META_MAP = essence_metadata_map()
 class EssenceEditor(ItemEditor):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        #assert self.offset in ESSENCE_RANGE
 
     @property
     def metadata_offset(self) -> int:
@@ -55,15 +53,9 @@ class EssenceEditor(ItemEditor):
     #        self.metadata = EssenceMetadata.Owned
 
 
-class EssenceManager(BaseStaticEditor):
-    offset = 0x4da9
+class EssenceManager(ItemManager):
+    SUBEDITOR = EssenceEditor
 
-    def at_offset(self, offset: int) -> EssenceEditor:
-        return self.dispatch(EssenceEditor, offset)
-
-    def from_name(self, name: str) -> EssenceEditor:
-        return self.at_offset([
-            i
-            for i in ESSENCE_OFFSETS
-            if i["name"] == name
-        ][0]["offset"])
+    def at_offset(self, offset: int, *args, **kwargs):
+        assert offset - ITEM_TABLE_OFFSET in ESSENCES_RANGE
+        return super().at_offset(offset, *args, **kwargs)

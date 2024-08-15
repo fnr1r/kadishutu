@@ -7,15 +7,15 @@ from .file_handling import BaseDynamicEditor, BaseStaticEditor, BaseStructAsSing
 class ItemEditor(BaseDynamicEditor, BaseStructAsSingularValueEditor):
     struct = "<B"
 
-    def __init__(self, *args, item_meta: Optional[Item] = None, **kwargs):
+    def __init__(self, *args, meta: Optional[Item] = None, **kwargs):
         super().__init__(*args, **kwargs)
-        self._item_meta = item_meta
+        self._meta = meta
 
     @property
-    def item_meta(self) -> Item:
-        if not self._item_meta:
-            self._item_meta = ITEM_ID_MAP[self.offset - ITEM_TABLE_OFFSET]
-        return self._item_meta
+    def meta(self) -> Item:
+        if not self._meta:
+            self._meta = ITEM_ID_MAP[self.offset - ITEM_TABLE_OFFSET]
+        return self._meta
 
     @property
     def name_table(self) -> Dict[int, str]:
@@ -23,23 +23,24 @@ class ItemEditor(BaseDynamicEditor, BaseStructAsSingularValueEditor):
 
     @property
     def name(self) -> str:
-        return self.item_meta.name
+        return self.meta.name
 
     amount = property(lambda x: x.value, lambda x, y: x.struct_pack(0, y))
 
     @property
     def limit(self) -> int:
-        return self.item_meta.limit
+        return self.meta.limit
 
 
 class ItemManager(BaseStaticEditor):
     offset = 0x4c72
+    SUBEDITOR = ItemEditor
 
-    def at_offset(self, offset: int, *args, **kwargs) -> ItemEditor:
-        return self.dispatch(ItemEditor, offset, *args, **kwargs)
+    def at_offset(self, offset: int, *args, **kwargs):
+        return self.dispatch(self.SUBEDITOR, offset, *args, **kwargs)
 
-    def from_meta(self, item: Item) -> ItemEditor:
-        return self.at_offset(item.offset, item_meta=item)
+    def from_meta(self, item: Item):
+        return self.at_offset(item.offset, meta=item)
 
-    def from_name(self, name: str) -> ItemEditor:
+    def from_name(self, name: str):
         return self.from_meta(ITEM_NAME_MAP[name])

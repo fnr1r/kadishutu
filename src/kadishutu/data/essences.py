@@ -19,5 +19,3 @@ ESSENCE_OFFSETS = [
     {"offset": 0x4ea4, "name": "Dagda"},
     {"offset": 0x4ebb, "name": "Saturnus"},
 ]
-
-ESSENCE_RANGE = range(0x4da9, 0x4ebb + 1)

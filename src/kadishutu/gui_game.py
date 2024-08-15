@@ -610,15 +610,15 @@ class ItemEditorWidget(QScrollArea, GameScreenMixin, AppliableWidget):
         self.setWidget(self.inner)
         self.l = QGridLayout(self.inner)
 
-        for i, item_meta in enumerate(items):
-            item = self.save.items.from_meta(item_meta)
+        for i, meta in enumerate(items):
+            item = self.save.items.from_meta(meta)
             label = QLabel(item.name)
-            desc = item.item_meta.desc
+            desc = item.meta.desc
             if desc is not None:
                 label.setToolTip(desc)
             self.l.addWidget(label, i, 1)
             try:
-                pak = ICON_LOADER.element_icon(item.item_meta.icon)
+                pak = ICON_LOADER.element_icon(item.meta.icon)
             except Exception as e:
                 print("Failed to load element icon:", e)
             else:
