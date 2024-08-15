@@ -3,6 +3,7 @@ from typing import Optional, Union
 from .data.alignment import ALIGNMENT_OFFSET_MAP, AlignmentByte
 from .file_handling import BaseDynamicEditor, BaseStaticEditor
 
+
 class AlignmentEditor(BaseDynamicEditor):
     schema: Optional[AlignmentByte]
 
@@ -20,7 +21,7 @@ class AlignmentEditor(BaseDynamicEditor):
     @property
     def byte(self) -> int:
         return self.data[self.offset]
-    
+
     @byte.setter
     def byte(self, value: int):
         self.data[self.offset] = value

@@ -17,4 +17,3 @@ def encrypt(decrypted_data):
     cipher = AES.new(KEY, AES.MODE_ECB)
     encrypted_data = cipher.encrypt(decrypted_data)
     return encrypted_data
-

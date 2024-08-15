@@ -32,6 +32,7 @@ DEFAULT_LIMIT = 99
 ESSENCE_ITEM_LIMIT = 1
 RELICS_ITEM_LIMIT = DEFAULT_LIMIT
 
+
 @dataclass
 class AnyItem(FromCsv):
     id: int

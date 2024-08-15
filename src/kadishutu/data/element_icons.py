@@ -1,5 +1,6 @@
 from enum import Enum, auto
 
+
 class Element(Enum):
     Physical = 0
     Fire = auto()

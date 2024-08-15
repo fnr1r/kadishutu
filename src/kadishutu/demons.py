@@ -28,7 +28,7 @@ class SubStatsEditor(BaseDynamicEditor, BaseStructAsFieldEditor):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        assert not self.struct_obj.unpack_from(self.data, self.field_as_absolute_offset(7))[0],\
+        assert not self.struct_obj.unpack_from(self.data, self.field_as_absolute_offset(7))[0], \
             "Supposed NULL is not a null????"
 
     @structproperty(int, struct)
@@ -125,7 +125,7 @@ def affinityprop(fmt):
         Affinity, fmt,
         lambda u: Affinity(u),
         lambda t: t.value,
-    )    
+    ) 
 
 
 class AffinityEditor(BaseDynamicEditor, BaseStructAsFieldEditor):

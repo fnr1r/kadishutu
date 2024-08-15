@@ -175,7 +175,7 @@ class BaseStructEditor(BaseOffsetEditor, ABC):
     @property
     def struct_obj(self) -> Struct:
         return Struct(self.struct)
-    
+
     def struct_unpack(self, relative_offset: int) -> Any:
         return self.struct_obj.unpack_from(
             self.data,
@@ -216,7 +216,7 @@ class BaseStructAsSingularValueEditor(BaseStructEditor, ABC):
     @property
     def value(self) -> Any:
         return self.struct_unpack(0)[0]
-    
+
     @value.setter
     def value(self, v: Any):
         self.struct_pack(0, v)

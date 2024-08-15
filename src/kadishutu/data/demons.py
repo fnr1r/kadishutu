@@ -106,7 +106,7 @@ class DemonAffinities:
         for i in affinityv:
             try:
                 v = int(i)
-            except:
+            except ValueError:
                 v = reverse_extractor(i)[1]
             extracted.append(v)
         aff = [

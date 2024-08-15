@@ -63,7 +63,7 @@ class FromCsv:
                 value = item[i]
                 try:
                     value = k_info["converter"](v, value)
-                except:
+                except KeyError:
                     value = v(value)
                 target_item.append(value)
             res.append(target_item)
@@ -103,7 +103,7 @@ class FromCsv:
                     value = item[k]
                 try:
                     value = k_info["converter"](v, value)
-                except:
+                except KeyError:
                     value = v(value)
                 target_item[k] = value
             res.append(target_item)
@@ -161,8 +161,8 @@ T = TypeVar("T", bound=RandType)
 
 
 def make_maps(objs: List[T]) -> Tuple[Dict[int, T], Dict[str, T]]:
-    id_to_name_map = {}
-    name_to_id_map = {}
+    id_to_name_map: Dict[int, Any] = {}
+    name_to_id_map: Dict[str, Any] = {}
     for obj in objs:
         id_to_name_map[obj.id] = obj
         if obj.name in name_to_id_map.keys():
