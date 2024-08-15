@@ -54,8 +54,8 @@ KEY = bytes([0x30, 0x31, 0x32, 0x33, 0x34, 0x35, 0x36, 0x37,
 - 0xa10 - 0xa38 - [Combined name](#name-info)
 - 0xa38 - 0xa78 - Player [skills](#skill-block)  
   (64 bytes)
-- 0xa98 - 0xaa8 - Player [affinities](#affinity-block)  
-  (16 bytes)
+- 0xa98 - 0xae0 - Player [affinities](#affinity-block)  
+  (112 bytes)
 - 0xb38 - 0xb50 - Player [potentials](#potential-block)  
   (24 bytes)
 - 0xb50 - 0xb52 - Player [innate skill](#innate-skill-id)  
@@ -369,8 +369,10 @@ Here are the possible values:
 
 ### Affinity block
 
-An affinity block is an array containing 7 values in the following order:
+An affinity block is an array containing many values in the following order:
 
+- Copies of elemental values
+- Ailments
 - Physical
 - Fire
 - Ice
@@ -378,12 +380,9 @@ An affinity block is an array containing 7 values in the following order:
 - Force
 - Light
 - Dark
-- (there might be an 8th value as padding)
 
-NOTE: If an affinity-changing skill is added via save editing, the affinities
-are only updated when starting a battle.
-
-It's 14 or 16 bytes in total.
+NOTE 2: When using an essence to inherit affinities as Nahobino, your
+potentials also get updated based on your miracles.
 
 ## Potential info
 
@@ -460,6 +459,8 @@ Here's the structure:
   (64 bytes)
 - 0xd8 - 0xe8 - [Affinities](#affinity-block)  
   (16 bytes)
+- 0x108 - 0x178 - [Affinities](#affinity-block)  
+  (112 bytes)
 - 0x180 - 0x198 - [Potentials](#potential-block)  
   (24 bytes)
 - 0x198 - 0x19c - [Innate skill](#innate-skill-id)  
