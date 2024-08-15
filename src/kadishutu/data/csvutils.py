@@ -1,9 +1,11 @@
 from abc import ABC
 import csv
 from dataclasses import dataclass
+from enum import Enum
 import os
 from pathlib import Path
-from typing import Any, Dict, List, Optional, Tuple, TypeVar
+import re
+from typing import Any, Callable, Dict, List, Optional, Protocol, Tuple, Type, TypeVar
 from typing_extensions import Self
 
 
@@ -35,6 +37,10 @@ def csvread(path: Path, skip_lines: int = 0) -> List[Dict[str, str]]:
 
 @dataclass
 class FromCsv:
+    @classmethod
+    def filter_data(cls, item: Dict[str, str]) -> bool:
+        return True
+
     @classmethod
     def converter_data(cls) -> Optional[Dict[str, Dict[str, Any]]]:
         ...
@@ -72,6 +78,8 @@ class FromCsv:
         res = []
         conversion_info = cls.converter_data()
         for item in csv_data:
+            if not cls.filter_data(item):
+                continue
             target_item = {}
             for k, v in cls.__annotations__.items():
                 if not conversion_info:
@@ -81,6 +89,14 @@ class FromCsv:
                         k_info = conversion_info[k]
                     except KeyError:
                         k_info = {}
+                try:
+                    fun: Callable[[Dict[str, str]], Any] = k_info["eval"]
+                except KeyError:
+                    pass
+                else:
+                    value = fun(item)
+                    target_item[k] = value
+                    continue
                 try:
                     value = item[k_info["field_name"]]
                 except KeyError:
@@ -97,6 +113,34 @@ class FromCsv:
         ]
 
 
+EXTRACTOR_RE = re.compile(r"(\d+) \((.+)\)")
+
+
+def extractor(text: str) -> Tuple[int, str]:
+    res = EXTRACTOR_RE.match(text)
+    assert res
+    g = res.groups()
+    return (int(g[0]), g[1])
+
+
+REVERSE_EXTRACTOR_RE = re.compile(r"(.+) \((\d+)\)")
+
+
+def reverse_extractor(text: str) -> Tuple[str, int]:
+    res = REVERSE_EXTRACTOR_RE.match(text)
+    assert res
+    g = res.groups()
+    return (g[0], int(g[1]))
+
+
+T = TypeVar("T", bound=Enum)
+
+
+def extract_from_str(cls: Type[T], text: str) -> T:
+    (num, _) = extractor(text)
+    return cls(num)
+
+
 def is_unused(name: str) -> bool:
     return name.startswith("NOT USED:")
 
@@ -108,22 +152,23 @@ class IHaveAName(ABC):
         return is_unused(self.name)
 
 
-T = TypeVar("T")
+class RandType(Protocol):
+    id: int
+    name: str
+
+
+T = TypeVar("T", bound=RandType)
 
 
 def make_maps(objs: List[T]) -> Tuple[Dict[int, T], Dict[str, T]]:
     id_to_name_map = {}
     name_to_id_map = {}
     for obj in objs:
-        id_to_name_map[obj.id] = obj  # type: ignore
-        name_to_id_map[obj.name] = obj  # type: ignore
-    return (id_to_name_map, name_to_id_map)
-
-
-def make_maps_dict(objs: List[T]) -> Tuple[Dict[int, T], Dict[str, T]]:
-    id_to_name_map = {}
-    name_to_id_map = {}
-    for obj in objs:
-        id_to_name_map[obj["id"]] = obj  # type: ignore
-        name_to_id_map[obj["name"]] = obj  # type: ignore
+        id_to_name_map[obj.id] = obj
+        if obj.name in name_to_id_map.keys():
+            new_name = f"{obj.name} ({obj.id})"
+            name_to_id_map[new_name] = obj
+            obj.name = new_name
+        else:
+            name_to_id_map[obj.name] = obj
     return (id_to_name_map, name_to_id_map)

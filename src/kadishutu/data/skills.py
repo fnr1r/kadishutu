@@ -1,29 +1,13 @@
 from dataclasses import dataclass
 from enum import Enum
-import re
-from typing import Any, Dict, List, Tuple, Type, TypeVar
+from typing import Any, Dict, List
 
-from .csvutils import TABLES_PATH, FromCsv, is_unused, make_maps
+from .csvutils import TABLES_PATH, FromCsv, extract_from_str, is_unused, make_maps
 from .element_icons import Element
 
 
 ACTION_SKILLS_PATH = TABLES_PATH / "SMT5V Skill Data Tables - ActionSkills.csv"
 AUTO_SKILLS_PATH = TABLES_PATH / "SMT5V Skill Data Tables - AutoSkills.csv"
-
-
-EXTRACTOR_RE = re.compile(r"(\d+) \((.+)\)")
-
-
-def extractor(text: str) -> Tuple[int, str]:
-    res = EXTRACTOR_RE.match(text)
-    assert res
-    g = res.groups()
-    return (int(g[0]), g[1])
-
-
-def sktp(cls, text: str):
-    (num, _) = extractor(text)
-    return cls(num)
 
 
 class SkillType(Enum):
@@ -61,14 +45,6 @@ class Magatsuhi(Enum):
     # Or empty for not
     Player = 1
     Enemy = 0
-
-
-T = TypeVar("T", bound=Enum)
-
-
-def extract_from_str(cls: Type[T], text: str) -> T:
-    (num, _) = extractor(text)
-    return cls(num)
 
 
 @dataclass

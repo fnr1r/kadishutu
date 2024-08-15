@@ -6,7 +6,7 @@ from typing import Optional, Tuple
 
 from .alignment import AlignmentManager
 from .dlc import DlcEditor
-from .demons import DemonEditor
+from .demons import DemonManager
 from .essences import EssenceManager
 from .file_handling import BaseMasterEditor, BaseStaticEditor, structproperty
 from .items import ItemManager
@@ -39,7 +39,7 @@ class TeamEditor(BaseStaticEditor):
         for i in old_demon_list:
             if i is None:
                 continue
-            demon = save.demon(i)
+            demon = save.demon.of_number(i)
             print(demon.name, demon.is_summoned)
             demon.is_summoned = 0
             print(demon.name, demon.is_summoned)
@@ -49,7 +49,7 @@ class TeamEditor(BaseStaticEditor):
             if iv is None:
                 demon_list[i] = self.NO_DEMON
             else:
-                save.demon(iv).is_summoned = 1
+                save.demon.of_number(iv).is_summoned = 1
         pack_into(SUMMONED_DEMONS_FMT, self.data, SUMMONED_DEMONS_OFFSET, *demon_list)
     @structproperty(int, "<B")
     def player_placement(self) -> int:
@@ -159,11 +159,9 @@ class SaveEditor(BaseMasterEditor):
     def player(self) -> PlayerEditor:
         return self.dispatch(PlayerEditor)
 
-    def demon(self, id: int) -> DemonEditor:
-        if id > 23:
-            raise RuntimeWarning(f"Demon {id} data might be invalid")
-        offset = DemonEditor.id_to_offset(id)
-        return self.dispatch(DemonEditor, offset)
+    @property
+    def demon(self) -> DemonManager:
+        return self.dispatch(DemonManager)
 
     #MACCA = Struct("<I")
     #@property

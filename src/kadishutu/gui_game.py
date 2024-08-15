@@ -7,6 +7,7 @@ from PySide6.QtWidgets import (
     QPushButton, QScrollArea, QSpinBox, QTabWidget, QVBoxLayout, QWidget,
 )
 
+from .data.affinity import AFFINITY_MAP, Affinity
 from .data.alignment import ALIGNMENT_DATA, AlignmentBit
 from .data.demons import DEMON_ID_MAP, DEMON_NAME_MAP
 from .data.element_icons import Element
@@ -16,7 +17,7 @@ from .data.items import (
 )
 from .data.skills import SKILL_ID_MAP, SKILL_NAME_MAP
 from .demons import (
-    AFFINITY_MAP, AFFINITY_NAMES, STATS_NAMES, Affinity, AffinityEditor,
+    AFFINITY_NAMES, STATS_NAMES, AffinityEditor,
     DemonEditor, HealableEditor, PType, PotentialEditor, StatsEditor
 )
 from .dlc import DLCS, DlcBitflags
@@ -462,9 +463,12 @@ class PlayerEditorScreen(QWidget, GameScreenMixin):
 
 
 class DemonIdnWidget(QWidget, ModifiedMixin):
-    def __init__(self, demon: DemonEditor, *args, **kwargs):
+    def __init__(self, demon: DemonEditor, graphic_refresh, *args, **kwargs):
         super().__init__(*args, **kwargs)
         ModifiedMixin.__init__(self)
+        self.demon = demon.meta
+        self.graphic_refresh = graphic_refresh
+
         self.l = QVBoxLayout(self)
         self.l.setContentsMargins(0, 0, 0, 0)
 
@@ -483,18 +487,26 @@ class DemonIdnWidget(QWidget, ModifiedMixin):
         self.l.addLayout(hboxed(self.name_label, self.name_box))
 
     def get_value(self) -> int:
-        return self.id_box.value()
+        return self.demon.id
 
     def id_changed(self, id: int):
         self.set_modified(True)
         try:
-            self.name_box.setCurrentText(DEMON_ID_MAP[id]["name"])
+            self.demon = DEMON_ID_MAP[id]
         except KeyError:
-            pass
+            return
+        self.name_box.blockSignals(True)
+        self.name_box.setCurrentText(self.demon.name)
+        self.name_box.blockSignals(False)
+        self.graphic_refresh()
 
     def name_changed(self, name: str):
         self.set_modified(True)
-        self.id_box.setValue(DEMON_NAME_MAP[name]["id"])
+        self.demon = DEMON_NAME_MAP[name]
+        self.id_box.blockSignals(True)
+        self.id_box.setValue(self.demon.id)
+        self.id_box.blockSignals(False)
+        self.graphic_refresh()
 
 
 class DemonEditorScreen(QWidget, GameScreenMixin, AppliableWidget):
@@ -508,7 +520,11 @@ class DemonEditorScreen(QWidget, GameScreenMixin, AppliableWidget):
         self.l = QVBoxLayout(self.side_panel_widget)
         self.parent_layout.addWidget(self.side_panel_widget)
 
-        self.demon_idn_widget = DemonIdnWidget(demon, self.side_panel_widget)
+        self.demon_idn_widget = DemonIdnWidget(
+            demon,
+            self.graphic_refresh,
+            self.side_panel_widget
+        )
 
         self.side_panel_widgets: List[QWidget] = [
             self.demon_idn_widget
@@ -539,9 +555,10 @@ class DemonEditorScreen(QWidget, GameScreenMixin, AppliableWidget):
         self.demon_graphic = QLabel()
         self.parent_layout.addWidget(self.demon_graphic)
 
-    def stack_refresh(self):
+    def graphic_refresh(self):
         try:
-            icon = ICON_LOADER.loading_character_icon(self.demon.demon_id)
+            id = self.demon_idn_widget.demon.id
+            icon = ICON_LOADER.loading_character_icon(id)
         except FileNotFoundError:
             self.demon_graphic.hide()
         else:
@@ -551,6 +568,9 @@ class DemonEditorScreen(QWidget, GameScreenMixin, AppliableWidget):
             self.demon_graphic.setFixedSize(size)
             self.demon_graphic.show()
 
+    def stack_refresh(self):
+        self.graphic_refresh()
+
     def on_apply_changes(self):
         self.demon_idn_widget.setattr_if_modified(self.demon, "demon_id")
 
@@ -558,7 +578,8 @@ class DemonEditorScreen(QWidget, GameScreenMixin, AppliableWidget):
 class DemonSelectorScreen(QWidget, GameScreenMixin):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.demons: List[QPushButton] = []
+        self.demons = self.save.demon
+        self.widgets: List[QPushButton] = []
 
         self.l = QGridLayout(self)
         for demon_number in range(24):
@@ -568,10 +589,10 @@ class DemonSelectorScreen(QWidget, GameScreenMixin):
             row = demon_number // COLUMNS
             column = demon_number % COLUMNS
             self.l.addWidget(sel, row, column)
-            self.demons.append(sel)
+            self.widgets.append(sel)
 
     def demon_button_refresh(self, demon_number: int, button: QPushButton):
-        demon = self.save.demon(demon_number)
+        demon = self.demons.of_number(demon_number)
         if demon.demon_id == 0xffff:
             demon_txt = "None"
             button.setEnabled(False)
@@ -581,7 +602,7 @@ class DemonSelectorScreen(QWidget, GameScreenMixin):
             except KeyError:
                 demon_txt = f"Unknown ({demon.demon_id})"
             try:
-                icon = ICON_LOADER.mini_character_icon(demon.demon_id)
+                icon = ICON_LOADER.mini_character_icon(demon.meta.id)
             except Exception as e:
                 print("Failed to load demon icon:", e)
             else:
@@ -590,11 +611,11 @@ class DemonSelectorScreen(QWidget, GameScreenMixin):
         button.setText(f"Demon {demon_number}: {demon_txt}")
 
     def stack_refresh(self):
-        for demon_number, button in enumerate(self.demons):
+        for demon_number, button in enumerate(self.widgets):
             self.demon_button_refresh(demon_number, button)
 
     def demon_editor(self, demon_number: int):
-        demon = self.save.demon(demon_number)
+        demon = self.demons.of_number(demon_number)
         return lambda: self.stack_add(
             DemonEditorScreen(demon, self)
         )

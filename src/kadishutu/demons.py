@@ -1,8 +1,9 @@
 from enum import Enum, auto
-from struct import calcsize, pack_into, unpack_from
+from struct import calcsize
 
-from .data.demons import DEMON_ID_MAP
-from .file_handling import BaseDynamicEditor, BaseStructAsFieldEditor, structproperty
+from .data.affinity import Affinity
+from .data.demons import DEMON_ID_MAP, Demon
+from .file_handling import BaseDynamicEditor, BaseStaticEditor, BaseStructAsFieldEditor, structproperty
 from .skills import SkillEditor, SkillManager
 
 
@@ -109,25 +110,6 @@ class HealableEditor(BaseDynamicEditor, BaseStructAsFieldEditor):
 #    @property
 #    def name_table(self) -> Dict[int, str]:
 #        return DEMONS
-
-
-class Affinity(Enum):
-    Weak = 125
-    Neutral = 100
-    Resist = 50
-    Null = 0
-    Repel = 999
-    Drain = 1000
-
-
-def affinity_as_map() -> dict[str, Affinity]:
-    res = {}
-    for i in Affinity:
-        res[Affinity(i).name] = Affinity(i)
-    return res
-
-
-AFFINITY_MAP = affinity_as_map()
 
 
 def affinityprop(fmt):
@@ -259,9 +241,9 @@ class PotentialEditor(BaseDynamicEditor, BaseStructAsFieldEditor):
 
 
 class DemonEditor(BaseDynamicEditor):
-    @classmethod
-    def id_to_offset(cls, id: int) -> int:
-        return DEMON_TABLE_OFFSET + DEMON_ENTRY_SIZE * id
+    @property
+    def meta(self) -> Demon:
+        return DEMON_ID_MAP[self.demon_id]
 
     @property
     def stats(self) -> StatsEditor:
@@ -311,4 +293,18 @@ class DemonEditor(BaseDynamicEditor):
 
     @property
     def name(self) -> str:
-        return DEMON_ID_MAP[self.demon_id]["name"]
+        return self.meta.name
+
+
+class DemonManager(BaseStaticEditor):
+    offset = DEMON_TABLE_OFFSET
+
+    def at_offset(self, offset: int, *args, **kwargs) -> DemonEditor:
+        return self.dispatch(DemonEditor, offset, *args, **kwargs)
+
+    def of_number(self, id: int, *args, **kwargs) -> DemonEditor:
+        return self.at_offset(
+            self.relative_as_absolute_offset(DEMON_ENTRY_SIZE * id),
+            *args,
+            **kwargs
+        )
