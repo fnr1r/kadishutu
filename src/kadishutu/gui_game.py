@@ -232,14 +232,21 @@ class AbstractStrIntMap(QWidget, ModifiedMixin):
 
 
 class SkillBox(AbstractStrIntMap, ModifiedMixin):
+    NO_VALUE_INT = 0
+    NO_VALUE_STR = "NONE"
+
     def __init__(self, skill: SkillEditor, *args, **kwargs):
         super().__init__(*args, **kwargs)
+        self.str_box.insertItem(0, self.NO_VALUE_STR)
         ModifiedMixin.__init__(self)
         self.skill = skill
         self.int_box.setMaximum(U16_MAX)
 
     def refresh(self):
         self.int_box.setValue(self.skill.id)
+        if self.skill.id == self.NO_VALUE_INT:
+            self.str_box.setCurrentIndex(0)
+            return
         self.str_box.setCurrentText(self.skill.name)
 
     def apply_changes(self):
@@ -248,9 +255,13 @@ class SkillBox(AbstractStrIntMap, ModifiedMixin):
             self.set_modified(False)
 
     def int_to_str(self, value: int) -> str:
+        if value == self.NO_VALUE_INT:
+            return self.NO_VALUE_STR
         return SKILL_ID_MAP[value].name
 
     def str_to_int(self, value: str) -> int:
+        if value == self.NO_VALUE_STR:
+            return self.NO_VALUE_INT
         return SKILL_NAME_MAP[value].id
 
 
@@ -299,6 +310,13 @@ class SkillEditorScreen(QWidget, GameScreenMixin, AppliableWidget):
         icon: QLabel,
         mp_cost: QLabel,
     ):
+        if skill_id == SkillBox.NO_VALUE_INT:
+            mp_cost.hide()
+            icon.hide()
+            return
+        else:
+            mp_cost.show()
+            icon.show()
         skill_meta = SKILL_ID_MAP[skill_id]
         element = skill_meta.icon
         if element == Element.Passive:
