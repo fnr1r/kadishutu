@@ -82,6 +82,14 @@ class StatsEditor(BaseDynamicEditor, BaseStructAsFieldEditor):
             changes.__setattr__(stat, inc)
             current.__setattr__(stat, target)
 
+    def recalculate(self):
+        # TODO: Take skills into account
+        for stat in STATS_NAMES:
+            stat = stat.lower()
+            base = self.base.__getattribute__(stat)
+            changes = self.changes.__getattribute__(stat)
+            self.current.__setattr__(stat, base + changes)
+
 
 #class FriendshipEditor(BaseStructEditor):
 #    fmt = "<L"
@@ -197,7 +205,7 @@ class PType(Enum):
     Ailment = auto()
     Support = auto()
     Recovery = auto()
-    _UNKNOWN = auto()
+    #_UNKNOWN = auto()
 
 
 def gsproperty(p: PType):
@@ -237,7 +245,7 @@ class PotentialEditor(BaseDynamicEditor, BaseStructAsFieldEditor):
     ailment = gsproperty(PType.Ailment)
     support = gsproperty(PType.Support)
     recovery = gsproperty(PType.Recovery)
-    _unknown = gsproperty(PType._UNKNOWN)
+    #_unknown = gsproperty(PType._UNKNOWN)
 
 
 class DemonEditor(BaseDynamicEditor):
@@ -295,16 +303,76 @@ class DemonEditor(BaseDynamicEditor):
     def name(self) -> str:
         return self.meta.name
 
+    @property
+    def is_free(self) -> bool:
+        return self.demon_id == 0xffff
+
+    @property
+    def slot(self) -> int:
+        dtoff = self.offset - DEMON_TABLE_OFFSET
+        assert not dtoff % DEMON_ENTRY_SIZE, "Misaligned demon entry"
+        return dtoff // DEMON_ENTRY_SIZE
+
+    @property
+    def raw(self) -> bytearray:
+        end = self.offset + DEMON_ENTRY_SIZE
+        return self.data[self.offset:end]
+
 
 class DemonManager(BaseStaticEditor):
     offset = DEMON_TABLE_OFFSET
+    DEMON_STORAGE = 24
 
     def at_offset(self, offset: int, *args, **kwargs) -> DemonEditor:
         return self.dispatch(DemonEditor, offset, *args, **kwargs)
 
-    def of_number(self, id: int, *args, **kwargs) -> DemonEditor:
+    def in_slot(self, id: int, *args, **kwargs) -> DemonEditor:
         return self.at_offset(
             self.relative_as_absolute_offset(DEMON_ENTRY_SIZE * id),
             *args,
             **kwargs
         )
+
+    def __iter__(self):
+        for i in range(self.DEMON_STORAGE):
+            yield self.in_slot(i)
+
+    def enumerate(self):
+        for i in range(self.DEMON_STORAGE):
+            yield (i, self.in_slot(i))
+
+    def real(self):
+        for demon in self:
+            if not demon.is_free:
+                yield demon
+
+    def _find_free_slot(self) -> DemonEditor:
+        for demon in self:
+            if demon.is_free:
+                return demon
+        raise RuntimeError
+
+    def new_from_initial(self, meta: Demon) -> DemonEditor:
+        print("USING EXPERIMENTAL METHOD new_from_initial")
+        demon = self._find_free_slot()
+        demon.demon_id = meta.id
+        demon.level = meta.level
+        stats = demon.stats
+        for stat in STATS_NAMES:
+            stat = stat.lower()
+            stats.base.__setattr__(stat, meta.stats.__getattribute__(stat))
+        stats.recalculate()
+        for i, skill in enumerate(meta.skills):
+            demon.skills.slot(i).id = skill.id
+        demon.innate_skill.id = meta.innate_skill.id
+        affinities = demon.affinities
+        for i in AFFINITY_NAMES:
+            i = i.lower()
+            affinities.__setattr__(i, meta.affinities.__getattribute__(i))
+        potentials = demon.potentials
+        for i in PType:
+            potentials.set(i, meta.potentials.__getattribute__(i.name.lower()))
+        return demon
+
+    #def new_from_compendium(self, meta) -> DemonEditor:
+    #    raise NotImplementedError

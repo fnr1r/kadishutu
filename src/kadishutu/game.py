@@ -39,7 +39,7 @@ class TeamEditor(BaseStaticEditor):
         for i in old_demon_list:
             if i is None:
                 continue
-            demon = save.demon.of_number(i)
+            demon = save.demons.in_slot(i)
             print(demon.name, demon.is_summoned)
             demon.is_summoned = 0
             print(demon.name, demon.is_summoned)
@@ -49,7 +49,7 @@ class TeamEditor(BaseStaticEditor):
             if iv is None:
                 demon_list[i] = self.NO_DEMON
             else:
-                save.demon.of_number(iv).is_summoned = 1
+                save.demons.in_slot(iv).is_summoned = 1
         pack_into(SUMMONED_DEMONS_FMT, self.data, SUMMONED_DEMONS_OFFSET, *demon_list)
     @structproperty(int, "<B")
     def player_placement(self) -> int:
@@ -160,7 +160,7 @@ class SaveEditor(BaseMasterEditor):
         return self.dispatch(PlayerEditor)
 
     @property
-    def demon(self) -> DemonManager:
+    def demons(self) -> DemonManager:
         return self.dispatch(DemonManager)
 
     #MACCA = Struct("<I")

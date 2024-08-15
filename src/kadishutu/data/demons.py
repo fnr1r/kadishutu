@@ -13,47 +13,57 @@ DEMON_DATA_PATH = TABLES_PATH / "SMT5V NKM Base Table_Navi Devil Data - Players.
 
 
 @dataclass
+class DemonStats:
+    hp: int
+    mp: int
+    strength: int
+    vitality: int
+    magic: int
+    agility: int
+    luck: int
+
+    @classmethod
+    def from_data(cls, data: Dict[str, str]) -> Self:
+        NAMES = [
+            "HP", "MP", "Strength", "Vitality", "Magic", "Agility", "Luck",
+        ]
+        stats = [
+            int(data[i])
+            for i in NAMES
+        ]
+        return cls(*stats)
+
+
+@dataclass
 class LearnedSkill:
     skill: Skill
     level: int
 
-
-def d_to_skills(data: Dict[str, str]) -> List[Skill]:
-    skills = []
-    for i in range(12):
-        i += 1
-        skill_k = f"Skill {i}"
-        skill_txt = data[skill_k]
-        if not skill_txt:
-            continue
-        (_, skill_id) = reverse_extractor(skill_txt)
-        skill = SKILL_ID_MAP[skill_id]
-        skills.append(skill)
-    return []
-
-
-def d_to_learned_skills(data: Dict[str, str]) -> List[LearnedSkill]:
-    learned_skills = []
-    for i in range(12):
-        i += 1
+    @classmethod
+    def from_data(cls, data: Dict[str, str], i: int) -> Optional[Self]:
         skill_level_k = f"Skill Level {i}"
         skill_at_level_k = f"Skill at Skill Level {i}"
         try:
             skill_level = int(data[skill_level_k])
         except ValueError:
-            continue
+            return None
         skill_id = int(data[skill_at_level_k])
-        learned_skill = LearnedSkill(
+        learned_skill = cls(
             SKILL_ID_MAP[skill_id], skill_level
         )
-        learned_skills.append(learned_skill)
-    return learned_skills
+        return learned_skill
 
-
-def d_to_innate_skill(data: Dict[str, str]) -> Skill:
-    innate_skill_txt = data["Innate Skill"]
-    (_, skill_id) = reverse_extractor(innate_skill_txt)
-    return SKILL_ID_MAP[skill_id]
+    @classmethod
+    def list_from_data(cls, data: Dict[str, str]) -> List[Self]:
+        learned_skills = [
+            cls.from_data(data, i + 1)
+            for i in range(12)
+        ]
+        return [
+            i
+            for i in learned_skills
+            if i is not None
+        ]
 
 
 @dataclass
@@ -67,8 +77,18 @@ class DemonAffinities:
     dark: Affinity
     almighty: Affinity
     poison: Affinity
-    vertigo: Affinity
+    _: Affinity
     confusion: Affinity
+    charm: Affinity
+    sleep: Affinity
+    seal: Affinity
+    _: Affinity
+    _: Affinity
+    _: Affinity
+    _: Affinity
+    _: Affinity
+    _: Affinity
+    mirage: Affinity
 
     @classmethod
     def from_data(cls, data: Dict[str, str]) -> Self:
@@ -97,15 +117,65 @@ class DemonAffinities:
 
 
 @dataclass
+class DemonPotentials:
+    physical: int
+    fire: int
+    ice: int
+    electric: int
+    force: int
+    light: int
+    dark: int
+    almighty: int
+    ailment: int
+    support: int
+    recovery: int
+
+    @classmethod
+    def from_data(cls, data: Dict[str, str]) -> Self:
+        NAMES = [
+            "PotPhys", "PotFire", "PotIce", "PotElec", "PotForce", "PotLight",
+            "PotDark", "PotAlmighty", "PotAilment", "PotSupport", "PotHeal",
+        ]
+        stats = [
+            int(data[i])
+            for i in NAMES
+        ]
+        return cls(*stats)
+
+
+def d_to_skills(data: Dict[str, str]) -> List[Skill]:
+    skills = []
+    for i in range(12):
+        i += 1
+        skill_k = f"Skill {i}"
+        skill_txt = data[skill_k]
+        if not skill_txt:
+            continue
+        (_, skill_id) = reverse_extractor(skill_txt)
+        skill = SKILL_ID_MAP[skill_id]
+        skills.append(skill)
+    return skills
+
+
+def d_to_innate_skill(data: Dict[str, str]) -> Skill:
+    innate_skill_txt = data["Innate Skill"]
+    (_, skill_id) = reverse_extractor(innate_skill_txt)
+    return SKILL_ID_MAP[skill_id]
+
+
+@dataclass
 class DemonDataTab(FromCsv):
     id: int
     name_id: int
     name: str
     race: DemonRace
+    level: int
+    stats: DemonStats
     skills: List[Skill]
     learned_skills: List[LearnedSkill]
     innate_skill: Skill
     affinities: DemonAffinities
+    potentials: DemonPotentials
 
     @classmethod
     def filter_data(cls, item: Dict[str, str]) -> bool:
@@ -127,17 +197,26 @@ class DemonDataTab(FromCsv):
                 "field_name": "Race",
                 "converter": extract_from_str,
             },
+            "level": {
+                "field_name": "Level",
+            },
+            "stats": {
+                "eval": DemonStats.from_data,
+            },
             "skills": {
                 "eval": d_to_skills,
             },
             "learned_skills": {
-                "eval": d_to_learned_skills,
+                "eval": LearnedSkill.list_from_data,
             },
             "innate_skill": {
                 "eval": d_to_innate_skill,
             },
             "affinities": {
                 "eval": DemonAffinities.from_data,
+            },
+            "potentials": {
+                "eval": DemonPotentials.from_data,
             },
         }
 
@@ -174,11 +253,25 @@ DEMONS_OLD_PARSED = [
 class Demon:
     id: int
     name: str
+    level: int
+    stats: DemonStats
+    skills: List[Skill]
+    innate_skill: Skill
+    affinities: DemonAffinities
+    potentials: DemonPotentials
     lore: Optional[str] = None
 
     @classmethod
     def from_new(cls, demon: DemonDataTab) -> Self:
-        return cls(demon.id, demon.name)
+        return cls(
+            demon.id, demon.name,
+            demon.level,
+            demon.stats,
+            demon.skills,
+            demon.innate_skill,
+            demon.affinities,
+            demon.potentials,
+        )
 
     def override(self, demon: OldDemonData):
         if demon.name:

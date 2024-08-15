@@ -596,7 +596,7 @@ class DemonEditorScreen(QWidget, GameScreenMixin, AppliableWidget):
 class DemonSelectorScreen(QWidget, GameScreenMixin):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.demons = self.save.demon
+        self.demons = self.save.demons
         self.widgets: List[QPushButton] = []
 
         self.l = QGridLayout(self)
@@ -610,7 +610,7 @@ class DemonSelectorScreen(QWidget, GameScreenMixin):
             self.widgets.append(sel)
 
     def demon_button_refresh(self, demon_number: int, button: QPushButton):
-        demon = self.demons.of_number(demon_number)
+        demon = self.demons.in_slot(demon_number)
         if demon.demon_id == 0xffff:
             demon_txt = "None"
             button.setEnabled(False)
@@ -633,7 +633,7 @@ class DemonSelectorScreen(QWidget, GameScreenMixin):
             self.demon_button_refresh(demon_number, button)
 
     def demon_editor(self, demon_number: int):
-        demon = self.demons.of_number(demon_number)
+        demon = self.demons.in_slot(demon_number)
         return lambda: self.stack_add(
             DemonEditorScreen(demon, self)
         )
