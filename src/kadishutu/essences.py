@@ -32,11 +32,7 @@ class EssenceEditor(ItemEditor):
     def metadata_offset(self) -> int:
         return self.offset + 0x380
 
-    @property
-    def name(self) -> str:
-        raise NotImplementedError
-
-    owned = property(lambda x: bool(x.amount), lambda x, y: x.set(int(y)))
+    owned = property(lambda x: bool(x.get_amount()), lambda x, y: x.set_amount(int(y)))
 
     @property
     def metadata(self):

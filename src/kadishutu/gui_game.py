@@ -12,8 +12,8 @@ from .data.alignment import ALIGNMENT_DATA, AlignmentBit
 from .data.demons import DEMON_ID_MAP, DEMON_NAME_MAP
 from .data.element_icons import Element
 from .data.items import (
-    CONSUMABLES_RANGE, KEY_ITEMS_RANGE, RELICS_RANGE_1, RELICS_RANGE_2,
-    Item, items_from
+    CONSUMABLES_RANGE, ESSENCES_RANGE, KEY_ITEMS_RANGE, RELICS_RANGE_1,
+    RELICS_RANGE_2, Item, items_from
 )
 from .data.skills import SKILL_ID_MAP, SKILL_NAME_MAP
 from .demons import (
@@ -21,11 +21,12 @@ from .demons import (
     DemonEditor, HealableEditor, PType, PotentialEditor, StatsEditor
 )
 from .dlc import DLCS, DlcBitflags
+from .essences import EssenceEditor
 from .file_handling import DecryptedSave
 from .game import Difficulty, SaveEditor
 from .gui_common import (
-    QU16, QU32, QU8, U16_MAX, AppliableWidget, MComboBox, SaveScreenMixin,
-    ScreenMixin, ModifiedMixin, hboxed
+    QU16, QU32, QU8, U16_MAX, AppliableWidget, MCheckBox, MComboBox,
+    SaveScreenMixin, ScreenMixin, ModifiedMixin, hboxed
 )
 from .gui_icons import ICON_LOADER
 from .items import ItemEditor
@@ -711,6 +712,50 @@ class ItemEditorScreen(QTabWidget, GameScreenMixin, AppliableWidget):
             tab.on_apply_changes()
 
 
+class EssenceEditorScreen(QScrollArea, GameScreenMixin, AppliableWidget):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.essences: List[Tuple[EssenceEditor, QLabel, MCheckBox, QU16]] = []
+
+        self.setWidgetResizable(True)
+        self.inner = QWidget()
+        self.setWidget(self.inner)
+        self.l = QGridLayout(self.inner)
+
+        items = items_from(ESSENCES_RANGE)
+
+        for i, meta in enumerate(items):
+            essence = self.save.essences.from_meta(meta)
+            assert isinstance(essence, EssenceEditor)
+            label = QLabel(essence.name)
+            self.l.addWidget(label, i, 1)
+            try:
+                pak = ICON_LOADER.element_icon(Element.Pass)
+            except Exception as e:
+                print("Failed to load element icon:", e)
+            else:
+                pix = pak.pixmap.scaled(pak.size_div(2))
+                icon = QLabel()
+                icon.setFixedSize(pix.size())
+                icon.setPixmap(pix)
+                self.l.addWidget(icon, i, 0)
+            owned_box = MCheckBox()
+            self.l.addWidget(owned_box, i, 2)
+            meta_box = QU16()
+            self.l.addWidget(meta_box, i, 3)
+            self.essences.append((essence, label, owned_box, meta_box))
+
+    def stack_refresh(self):
+        for essence, _, owned_box, meta_box in self.essences:
+            owned_box.setChecked(essence.owned)
+            meta_box.setValue(essence.metadata)
+
+    def on_apply_changes(self):
+        for essence, _, owned_box, meta_box in self.essences:
+            owned_box.setattr_if_modified(essence, "owned")
+            meta_box.setattr_if_modified(essence, "metadata")
+
+
 @dataclass
 class AlignmentPacked:
     outer: QScrollArea
@@ -833,6 +878,7 @@ class GameSaveEditorScreen(SaveScreenMixin, QWidget, AppliableWidget):
             ("Player", PlayerEditorScreen),
             ("Demons", DemonSelectorScreen),
             ("Items", ItemEditorScreen),
+            ("Essences", EssenceEditorScreen),
             ("Alignment", AlignmentEditorScreen),
             ("Settings", SettingsEditorScreen),
         ]:

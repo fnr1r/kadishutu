@@ -1,7 +1,10 @@
 from typing import Dict, Optional
 
 from .data.items import ITEM_ID_MAP, ITEM_NAME_MAP, ITEM_TABLE_OFFSET, Item
-from .file_handling import BaseDynamicEditor, BaseStaticEditor, BaseStructAsSingularValueEditor
+from .file_handling import (
+    BaseDynamicEditor, BaseStaticEditor,
+    BaseStructAsSingularValueEditor
+)
 
 
 class ItemEditor(BaseDynamicEditor, BaseStructAsSingularValueEditor):
@@ -25,7 +28,13 @@ class ItemEditor(BaseDynamicEditor, BaseStructAsSingularValueEditor):
     def name(self) -> str:
         return self.meta.name
 
-    amount = property(lambda x: x.value, lambda x, y: x.struct_pack(0, y))
+    def get_amount(self) -> int:
+        return self.value
+
+    def set_amount(self, v: int):
+        self.value = v
+
+    amount = property(get_amount, set_amount)
 
     @property
     def limit(self) -> int:

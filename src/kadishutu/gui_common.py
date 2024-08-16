@@ -3,7 +3,7 @@ from enum import Enum, auto
 from pathlib import Path
 from typing import Any, Callable, TypeVar
 from PySide6.QtWidgets import (
-    QBoxLayout, QComboBox, QHBoxLayout, QSpinBox, QWidget
+    QBoxLayout, QCheckBox, QComboBox, QHBoxLayout, QSpinBox, QWidget
 )
 
 from .file_handling import DecryptedSave
@@ -82,6 +82,15 @@ class QU32(QSpinBox, ModifiedMixin):
 
     def get_value(self) -> int:
         return self.value()
+
+
+class MCheckBox(QCheckBox, ModifiedMixin):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.checkStateChanged.connect(self.flag_as_modified)
+
+    def get_value(self) -> bool:
+        return self.isChecked()
 
 
 class MComboBox(QComboBox, ModifiedMixin):
