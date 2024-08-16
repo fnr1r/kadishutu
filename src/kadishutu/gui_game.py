@@ -25,8 +25,8 @@ from .essences import EssenceEditor
 from .file_handling import DecryptedSave
 from .game import Difficulty, SaveEditor
 from .gui_common import (
-    QU16, QU32, QU8, U16_MAX, AppliableWidget, MCheckBox, MComboBox,
-    SaveScreenMixin, ScreenMixin, ModifiedMixin, hboxed
+    QU16, QU32, QU8, SHIBOKEN_MAX, U16_MAX, AppliableWidget, MCheckBox,
+    MComboBox, SaveScreenMixin, ScreenMixin, ModifiedMixin, hboxed
 )
 from .gui_icons import ICON_LOADER
 from .items import ItemEditor
@@ -241,7 +241,7 @@ class SkillBox(AbstractStrIntMap, ModifiedMixin):
         self.str_box.insertItem(0, self.NO_VALUE_STR)
         ModifiedMixin.__init__(self)
         self.skill = skill
-        self.int_box.setMaximum(U16_MAX)
+        self.int_box.setMaximum(SHIBOKEN_MAX)
 
     def refresh(self):
         self.int_box.setValue(self.skill.id)
@@ -276,7 +276,7 @@ class SkillEditorScreen(QWidget, GameScreenMixin, AppliableWidget):
     ):
         super().__init__(*args, **kwargs)
         self.skills = skills
-        self.widgets: List[Tuple[SkillBox, QU16]] = []
+        self.widgets: List[Tuple[SkillBox, QU32]] = []
 
         self.l = QGridLayout(self)
 
@@ -292,7 +292,7 @@ class SkillEditorScreen(QWidget, GameScreenMixin, AppliableWidget):
             self.l.addWidget(label, i, 0)
             skill_box = SkillBox(skill, all_skills)
             self.l.addWidget(skill_box, i, 2)
-            mystery_box = QU16()
+            mystery_box = QU32()
             self.l.addWidget(mystery_box, i, 4)
             icon = QLabel()
             self.l.addWidget(icon, i, 1)
