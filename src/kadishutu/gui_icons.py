@@ -92,6 +92,10 @@ class IconLoader:
     def __init__(self) -> None:
         if not UMODEL_EXPORT_PATH.exists():
             self.disabled = True
+            print(
+                "{} does not exist. The image loader is disabled."
+                .format(UMODEL_EXPORT_PATH)
+            )
             return
         self.disabled = False
         self.paths = IconLoaderPaths()
