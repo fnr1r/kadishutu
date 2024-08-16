@@ -84,13 +84,25 @@ class IconLoaderPaths:
         return UMODEL_EXPORT_PATH / self.LOADING_CHARACTER_ICON.format(id=id)
 
 
+class DisabledError(Exception):
+    pass
+
+
 class IconLoader:
     def __init__(self) -> None:
+        if not UMODEL_EXPORT_PATH.exists():
+            self.disabled = True
+            return
+        self.disabled = False
         self.paths = IconLoaderPaths()
         self.char_icon_map: Dict[int, ImagePak] = {}
         self.mini_char_icon_map: Dict[int, ImagePak] = {}
         self.element_icon_map: Dict[Element, ImagePak] = {}
         self.loading_char_icon_map: Dict[int, ImagePak] = {}
+
+    def assert_not_disabled(self):
+        if self.disabled:
+            raise DisabledError("The icon loader is disabled")
 
     @staticmethod
     def assert_is_a_demon(id: int):
@@ -98,6 +110,7 @@ class IconLoader:
             raise ValueError
 
     def character_icon(self, id: int) -> ImagePak:
+        self.assert_not_disabled()
         self.assert_is_a_demon(id)
         try:
             return self.char_icon_map[id]
@@ -114,6 +127,7 @@ class IconLoader:
         return pak
 
     def mini_character_icon(self, id: int) -> ImagePak:
+        self.assert_not_disabled()
         self.assert_is_a_demon(id)
         try:
             return self.mini_char_icon_map[id]
@@ -139,6 +153,7 @@ class IconLoader:
         return pak
 
     def element_icon(self, element: Element) -> ImagePak:
+        self.assert_not_disabled()
         try:
             return self.element_icon_map[element]
         except KeyError:
@@ -163,6 +178,7 @@ class IconLoader:
         return pak
 
     def loading_character_icon(self, id: int) -> ImagePak:
+        self.assert_not_disabled()
         self.assert_is_a_demon(id)
         try:
             return self.loading_char_icon_map[id]
@@ -175,3 +191,13 @@ class IconLoader:
 
 
 ICON_LOADER = IconLoader()
+
+
+def print_icon_loading_error(
+    e: Exception,
+    msg: str = "Failed to load image"
+):
+    if isinstance(e, DisabledError):
+        return
+    else:
+        print(msg + ":", e)

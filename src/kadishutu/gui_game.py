@@ -28,7 +28,7 @@ from .gui_common import (
     QU16, QU32, QU8, SHIBOKEN_MAX, U16_MAX, AppliableWidget, MCheckBox,
     MComboBox, SaveScreenMixin, ScreenMixin, ModifiedMixin, hboxed
 )
-from .gui_icons import ICON_LOADER
+from .gui_icons import ICON_LOADER, DisabledError, print_icon_loading_error
 from .items import ItemEditor
 from .player import NameEdit, NameManager
 from .skills import SkillEditor, SkillManager
@@ -327,7 +327,7 @@ class SkillEditorScreen(QWidget, GameScreenMixin, AppliableWidget):
         try:
             pak = ICON_LOADER.element_icon(element)
         except Exception as e:
-            print("Failed to load element icon:", e)
+            print_icon_loading_error(e, "Failed to load element icon:")
         else:
             pix = pak.pixmap.scaled(pak.size_div(2))
             icon.setFixedSize(pix.size())
@@ -375,7 +375,7 @@ class AffinityEditorScreen(QWidget, GameScreenMixin, AppliableWidget):
             try:
                 pak = ICON_LOADER.element_icon(Element[name])
             except Exception as e:
-                print("Failed to load element icon:", e)
+                print_icon_loading_error(e, "Failed to load element icon:")
             else:
                 pix = pak.pixmap.scaled(pak.size_div(2))
                 icon = QLabel()
@@ -431,7 +431,7 @@ class PotentialEditorScreen(QWidget, GameScreenMixin, AppliableWidget):
                     elname = Element[ptype.name]
                 pak = ICON_LOADER.element_icon(elname)
             except Exception as e:
-                print("Failed to load element icon:", e)
+                print_icon_loading_error(e, "Failed to load element icon:")
             else:
                 pix = pak.pixmap.scaled(pak.size_div(2))
                 icon = QLabel()
@@ -578,8 +578,10 @@ class DemonEditorScreen(QWidget, GameScreenMixin, AppliableWidget):
         try:
             id = self.demon_idn_widget.demon.id
             icon = ICON_LOADER.loading_character_icon(id)
-        except FileNotFoundError:
-            self.demon_graphic.hide()
+        except Exception as e:
+            print_icon_loading_error(e, "Failed to demon grapic:")
+            if isinstance(e, FileNotFoundError) or isinstance(e, DisabledError):
+                self.demon_graphic.hide()
         else:
             size = icon.size_div(2)
             self.demon_graphic_pix = icon.pixmap.scaled(size)
@@ -623,7 +625,7 @@ class DemonSelectorScreen(QWidget, GameScreenMixin):
             try:
                 icon = ICON_LOADER.mini_character_icon(demon.meta.id)
             except Exception as e:
-                print("Failed to load demon icon:", e)
+                print_icon_loading_error(e, "Failed to load demon icon:")
             else:
                 button.setIcon(icon.icon)
                 button.setIconSize(icon.size_div(2))
@@ -660,7 +662,7 @@ class ItemEditorWidget(QScrollArea, GameScreenMixin, AppliableWidget):
             try:
                 pak = ICON_LOADER.element_icon(item.meta.icon)
             except Exception as e:
-                print("Failed to load element icon:", e)
+                print_icon_loading_error(e, "Failed to load element icon:")
             else:
                 pix = pak.pixmap.scaled(pak.size_div(2))
                 icon = QLabel()
@@ -732,7 +734,7 @@ class EssenceEditorScreen(QScrollArea, GameScreenMixin, AppliableWidget):
             try:
                 pak = ICON_LOADER.element_icon(Element.Pass)
             except Exception as e:
-                print("Failed to load element icon:", e)
+                print_icon_loading_error(e, "Failed to load element icon:")
             else:
                 pix = pak.pixmap.scaled(pak.size_div(2))
                 icon = QLabel()
