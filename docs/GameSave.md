@@ -27,6 +27,9 @@ KEY = bytes([0x30, 0x31, 0x32, 0x33, 0x34, 0x35, 0x36, 0x37,
 - 0x4f4 - 0x4fc - [Time of Saving](#time-of-saving-info)  
   (an unsigned long long / u64 (8 bytes))
 - 0x4fc - 0x4fd - [Difficulty](#difficulty-values)
+- 0x4fd - 0x4fe - ????
+- 0x4fe - 0x500 - ????
+- 0x500 - 0x502 - ????
 - 0x502 - 0x503 - [Cycles](#cycles-value)  
   (an unsigned char / u8 (1 byte))
 - 0x503 - 0x504 - [Endings](#endings-value)  
@@ -39,6 +42,7 @@ KEY = bytes([0x30, 0x31, 0x32, 0x33, 0x34, 0x35, 0x36, 0x37,
   (an unsigned char / u8 (1 byte))
 - 0x5d0 - 0x5d4 - Play Time (in seconds)  
   (I'm guessing it's an unsigned int / u32 (4 bytes))
+- 0x5d4 - 0x5d5 - Moon phase
 - 0x618 - 0x61a - Player [level](#level-info)?  
   (maybe... not really... maybe it's a gui thing)  
   (an unsigned short / u16 (2 bytes))
@@ -696,3 +700,26 @@ Assuming Eisheth (ID 394) is the last registerable demon, the table ends at
 Data about alignment values is in a different doc (for now).
 
 [Here's a copy.](cheatroom_blog_post_translation.md)
+
+## Notes
+
+0x80a3 stores info on layline founts.
+
+0x08 - Tamachi
+0x10 - Mita
+0x80 - Tokyo Tower
+
+There's probably more in different bytes.
+
+NOTE: There must also be a bit which changes the name from Netherworld to
+Da'at.
+
+Changing 0x69cdc affects the layline menu, removing options.
+
+Changing 0x69cdd from 0x60 back to 0x6b removed button prompts from the
+bottom-left hand corner of the screen.
+
+Changing 0x69ced affects the X menu.
+
+Changing 0x69cef from 0x10 back to 0x00 makes the game grant the player the dlc
+items again.
