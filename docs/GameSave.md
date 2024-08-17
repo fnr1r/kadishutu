@@ -63,6 +63,9 @@ KEY = bytes([0x30, 0x31, 0x32, 0x33, 0x34, 0x35, 0x36, 0x37,
 - 0xb50 - 0xb52 - Player [innate skill](#innate-skill-id)  
   (an unsigned short / u16 (2 bytes))
 - 0xb60 - 0x3d10 - [Demon table](#demon-info)
+- 0x3d10 - 0x3d13 - Summoned Demons (TODO)  
+  (with indices of the demon table; from first to last)  
+  (3 unsigned chars / u8s (3 bytes))
 - 0x3d2e - 0x3d31 - Summoned Demons (TODO)  
   (with indices of the demon table; from first to last)  
   (3 unsigned chars / u8s (3 bytes))
@@ -472,7 +475,7 @@ Here's the structure:
 - 0x150 - 0x151 - something (0x01)
 - 0x154 - 0x156 - something (0xffff)
 - 0x158 - 0x160 - something (0x0100 times 4)
-- 0x160 - 0x162 - something (level copy)
+- 0x160 - 0x162 - something (fight counter)
 - 0x180 - 0x198 - [Potentials](#potential-block)  
   (24 bytes)
 - 0x198 - 0x19c - [Innate skill](#innate-skill-id)  
@@ -546,7 +549,30 @@ NOTE: This might be a bitflag.
 ### Miracle block
 
 - 0x3d5b - Forestall
+- 0x3d6e - Art of Essences I
+- 0x3d69 - Hand of God
+- 0x3d7f - Empowering Cheer
+- 0x3d81 - Demon Proficiency I
+- 0x3d82 - Demon Proficiency II (?)
+- 0x3d83 - Demon Proficiency III (?)
+- 0x3d84 - Demon Proficiency IV (?)
+- 0x3d85 - Divine Garrison I
+- 0x3d8b - Divine Proficiency I
+- 0x3d99 - Fire Mastery I
+- 0x3d9e - Ice Mastery I
+- 0x3da3 - Elec Mastery I
+- 0x3da8 - Force Mastery I
+- 0x3dad - Light
+- 0x3db2 - Dark
+- 0x3db7 - Support Mastery I
+- 0x3db8 - Support Mastery II
+- 0x3db9 - Support Mastery III
+- 0x3dba - Recovery Mastery I
+- 0x3dbb - Recovery Mastery II
+- 0x3dbc - Recovery Mastery III
 - 0x3ddf - Level Violation
+
+- 0x67a3 - bit 1 - First one
 
 ## Item info
 
