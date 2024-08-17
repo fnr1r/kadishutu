@@ -453,6 +453,7 @@ Here's the structure:
   (an unsigned short / u16 (2 bytes))
 - 0x58 - 0x5c - is_summoned  
   (an unsigned int / u32 (4 bytes))
+- 0x60 - 0x64 - something
 - 0x64 - 0x68 - [Healable stats](#healable-stats)  
   (an unsigned int / u32 (4 bytes))
 - 0x68 - 0x70 - Experience  
@@ -465,12 +466,18 @@ Here's the structure:
   (64 bytes)
 - 0xd8 - 0xe8 - [Affinities](#affinity-block)  
   (16 bytes)
-- 0x108 - 0x178 - [Affinities](#affinity-block)  
-  (112 bytes)
+- 0x108 - 0x148 - [Affinities](#affinity-block)  
+  (64 bytes)
+- 0x148 - 0x14a - something (0xfeff)
+- 0x150 - 0x151 - something (0x01)
+- 0x154 - 0x156 - something (0xffff)
+- 0x158 - 0x160 - something (0x0100 times 4)
+- 0x160 - 0x162 - something (level copy)
 - 0x180 - 0x198 - [Potentials](#potential-block)  
   (24 bytes)
 - 0x198 - 0x19c - [Innate skill](#innate-skill-id)  
   (an unsigned int / u32 (4 bytes))
+- 0x19c - 0x19d - something (0x01)
 
 <!--
 add_dat("x_magic_number", 64, "<l")
@@ -515,16 +522,31 @@ Table end offsets per table size:
 
 ### Miracle enum
 
+It's an unsigned char / u8 (1 byte).
+
+```txt
+0x00000000
+  01234567
+```
+
+- 0x01 - bit 0 - Bought
+- 0x02 - bit 1 - Seen
+- 0x04 - bit 2 - Enabled
+
+Based on:
+
 - 00 - NONE
 - 02 - Seen
 - 07 - Learned
+- 03 - Shows up sometimes
+- 01, 04, 05, 06 - NEVER APPEARS
 
 NOTE: This might be a bitflag.
 
 ### Miracle block
 
-- 0x3d58 - Forestall
-- 0x3ddc - Level Violation
+- 0x3d5b - Forestall
+- 0x3ddf - Level Violation
 
 ## Item info
 
