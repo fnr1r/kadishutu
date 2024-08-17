@@ -19,14 +19,14 @@ KEY = bytes([0x30, 0x31, 0x32, 0x33, 0x34, 0x35, 0x36, 0x37,
 
 - 0x0 - 0x14 - SHA1 Hash of the rest of the file  
   (20 bytes)
-- 0x28 - 0x2c - [Difficulty?](#difficulty-values)
+- 0x28 - 0x2c - [Difficulty-related?](#difficulty-values)
   (an unsigned int / u32 (4 bytes))
 - 0x4d8 - 0x4e8 - [Save name](#name-info)
 - 0x4f0 - 0x4f4 - [???](#time-of-saving-info)  
   (4 bytes)
 - 0x4f4 - 0x4fc - [Time of Saving](#time-of-saving-info)  
   (an unsigned long long / u64 (8 bytes))
-- 0x4fc - 0x4fd - [Difficulty?](#difficulty-values)
+- 0x4fc - 0x4fd - [Difficulty](#difficulty-values)
 - 0x502 - 0x503 - [Cycles](#cycles-value)  
   (an unsigned char / u8 (1 byte))
 - 0x503 - 0x504 - [Endings](#endings-value)  
@@ -42,13 +42,15 @@ KEY = bytes([0x30, 0x31, 0x32, 0x33, 0x34, 0x35, 0x36, 0x37,
 - 0x618 - 0x61a - Player [level](#level-info)?  
   (maybe... not really... maybe it's a gui thing)  
   (an unsigned short / u16 (2 bytes))
-- 0x9d0 - 0x9e0 - [First name](#name-info)
 - 0x988 - 0x9b8 - Player [stats block](#stat-block)  
   (48 bytes)
 - 0x9bc - 0x9c0 - Player [healable stats](#healable-stats)  
   (4 bytes)
-- 0x9c8 - 0x9c9 - Player [level](#level-info)  
+- 0x9c0 - 0x9c8 - Player Experience  
+  (an unsigned long long / u64 (8 bytes))
+- 0x9c8 - 0x9ca - Player [level](#level-info)  
   (an unsigned short / u16 (2 bytes))
+- 0x9d0 - 0x9e0 - [First name](#name-info)
 - 0x9e8 - 0x9f8 - [Last name](#name-info)
 - 0x9fc - 0xa0c - [First name again](#name-info)
 - 0xa10 - 0xa38 - [Combined name](#name-info)
@@ -61,26 +63,27 @@ KEY = bytes([0x30, 0x31, 0x32, 0x33, 0x34, 0x35, 0x36, 0x37,
 - 0xb50 - 0xb52 - Player [innate skill](#innate-skill-id)  
   (an unsigned short / u16 (2 bytes))
 - 0xb60 - 0x3d10 - [Demon table](#demon-info)
-- 0x3d32 - 0x3d36 - Macca  
-  (an unsigned int / u32 (4 bytes))
-- 0x3d4a - 0x3d4e - Glory  
-  (an unsigned int / u32 (4 bytes))
 - 0x3d2e - 0x3d31 - Summoned Demons (TODO)  
   (with indices of the demon table; from first to last)  
   (3 unsigned chars / u8s (3 bytes))
 - 0x3d31 - 0x3d32 - Max Demon Stock  
   (an unsigned char / u8 (1 byte))
+- 0x3d32 - 0x3d36 - Macca  
+  (an unsigned int / u32 (4 bytes))
 - 0x3d45 - 0x3d46 - Player placement  
   (which slot the player is in, from 0 to 2; other values break it)  
   (an unsigned char / u8 (1 byte))
+- 0x3d4a - 0x3d4e - Glory  
+  (an unsigned int / u32 (4 bytes))
+- 0x3d57 - 0x3de0 - [Miracle Block](#miracle-info)
 - 0x3ece - 0x3ed0 - Magatsuhi Gauge  
   (from 0% - 100% value)  
   (an unsigned short / u16 (2 bytes))
 - 0x4c72 - 0x4f11 - [Item Table](#item-table)
 - 0x5129 - 0x523c - [Essence Metadata Table](#essence-info)
-- 0x567e - 0x5680 - [Map ID 1](#map-ids)  
-  (an unsigned short / u16 (2 bytes))
-- 0x5680 - 0x5682 - [Map ID 2](#map-ids)  
+- 0x567e - 0x5682 - [Map ID 1](#map-ids)  
+  (an unsigned int / u32 (4 bytes))
+- 0x5682 - 0x5686 - [Map ID 2](#map-ids)  
   (an unsigned int / u32 (4 bytes))
 - 0x568e - 0x56a2 - [Coordinates](#coordinate-info)  
   (3 floats / f32 (12 bytes))
@@ -91,9 +94,12 @@ KEY = bytes([0x30, 0x31, 0x32, 0x33, 0x34, 0x35, 0x36, 0x37,
 - 0x7dc0 - 0x7de0 - Demon haunt data
 - 0x1375e - ??????? - [Tracking](#tracking-info)
 - 0x18282 - 0x2db42 - [Demon Compendium](#demon-compendium)
+- 0x5a760 - 0x5b0a0 - Quest data????
+- 0x69a82 - 0x69a?? - [NEW](#new-flag-info)
 - 0x69a90 - ??????? - Settings????
 - 0x69a91 - ??????? - Mitama Settings????  
   (an unsigned char / u8 (1 byte))
+- 0x69ca4 - 0x69ca4 - Story progress data?
 - 0x69cf7 - 0x69cf8 - [Alignment (Vengeance)](#canon-of-vengeance)
 - 0x6a07f - ??????? - DLC Flags
   (0 when no dlc, 0x18 when all dlcs)
@@ -505,6 +511,21 @@ Table end offsets per table size:
 - 24 - 0x3320
 - 30 - 0x3d10
 
+## Miracle info
+
+### Miracle enum
+
+- 00 - NONE
+- 02 - Seen
+- 07 - Learned
+
+NOTE: This might be a bitflag.
+
+### Miracle block
+
+- 0x3d58 - Forestall
+- 0x3ddc - Level Violation
+
 ## Item info
 
 ### Item amount
@@ -601,6 +622,24 @@ Each entry has a size of 0xe0 consists of:
 
 Assuming Eisheth (ID 394) is the last registerable demon, the table ends at
 0xdb42.
+
+## NEW flag info
+
+- 0x69a82 - Skills NEW flag  
+  (bool)
+- 0x69a83 - Items NEW flag  
+  (bool)
+- 0x69a85 - Party NEW flag  
+  (bool)
+- 0x69a8e - bit 1 - Dashing popup?
+- 0x69a8e - bit 3 - Magatsuhi crystal popup?
+- 0x69a8e - bit 5 - Jumping popup?
+- 0x69a8e - bit 7 - Climbing points popup?
+- 0x69a90 - bit 3 - Treasure boxes popup?
+- 0x69a90 - bit 1 - Quest info popup?
+- 0x69a8f - bit 1 - Battle info popup?
+
+- 0x69ca2 - Student talk data
 
 ## Alignment info
 
