@@ -4,6 +4,8 @@ from enum import Enum, auto
 from struct import Struct, pack_into, unpack_from
 from typing import Optional, Tuple
 
+from kadishutu.miracles import MiracleManager
+
 from .alignment import AlignmentManager
 from .dlc import DlcEditor
 from .demons import DemonManager
@@ -181,6 +183,10 @@ class SaveEditor(BaseMasterEditor):
     @property
     def team(self) -> TeamEditor:
         return self.dispatch(TeamEditor)
+
+    @property
+    def miracles(self) -> MiracleManager:
+        return self.dispatch(MiracleManager)
 
     @structproperty(int, "<H")
     def magatsuhi_gauge(self) -> int:

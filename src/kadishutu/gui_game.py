@@ -1,11 +1,13 @@
 from abc import abstractmethod
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Dict, List, Tuple
+from typing import Callable, Dict, List, Tuple
 from PySide6.QtWidgets import (
     QCheckBox, QComboBox, QGridLayout, QHBoxLayout, QLabel, QLineEdit,
     QPushButton, QScrollArea, QSpinBox, QTabWidget, QVBoxLayout, QWidget,
 )
+
+from kadishutu.miracles import MiracleEditor, MiracleState
 
 from .data.affinity import AFFINITY_MAP, Affinity
 from .data.alignment import ALIGNMENT_DATA, AlignmentBit
@@ -15,6 +17,7 @@ from .data.items import (
     CONSUMABLES_RANGE, ESSENCES_RANGE, KEY_ITEMS_RANGE, RELICS_RANGE_1,
     RELICS_RANGE_2, Item, items_from
 )
+from .data.miracles import MIRACLE_DATA, Miracle
 from .data.skills import SKILL_ID_MAP, SKILL_NAME_MAP
 from .demons import (
     AFFINITY_NAMES, STATS_NAMES, AffinityEditor,
@@ -642,6 +645,118 @@ class DemonSelectorScreen(QWidget, GameScreenMixin):
         )
 
 
+class MiracleCheckboxes:
+    def __init__(self, miracle: MiracleEditor, i: int, layout: QGridLayout):
+        self.miracle = miracle
+
+        self.seen_box = MCheckBox()
+        self.seen_box.clicked.connect(self.boxes_refresh)
+        layout.addWidget(self.seen_box, i, 2)
+        self.bought_box = MCheckBox()
+        self.bought_box.clicked.connect(self.boxes_refresh)
+        layout.addWidget(self.bought_box, i, 3)
+        self.enabled_box = MCheckBox()
+        layout.addWidget(self.enabled_box, i, 4)
+
+    @property
+    def boxes(self):
+        return [self.bought_box,self.seen_box,self.enabled_box]
+
+    def boxes_refresh(self):
+        seen = self.seen_box.isChecked()
+        bought = self.bought_box.isChecked()
+        self.bought_box.setEnabled(seen)
+        self.enabled_box.setEnabled(seen & bought)
+
+    def refresh(self):
+        state = self.miracle.state
+        for state_i, box in zip(MiracleState.all(), self.boxes):
+            value = bool(state & state_i)
+            box.setChecked(value)
+            box.set_modified(False)
+        self.boxes_refresh()
+
+    def apply_changes(self):
+        if not (self.seen_box.get_modified() or
+            self.bought_box.get_modified() or
+            self.enabled_box.get_modified()):
+            return
+        state = MiracleState.none()
+        for state_i, box in zip(MiracleState.all(), self.boxes):
+            if box.isEnabled() & box.isChecked():
+                state |= state_i
+            box.set_modified(False)
+        self.miracle.state = state
+
+
+class MiracleEditorWidget(QScrollArea, GameScreenMixin, AppliableWidget):
+    def __init__(self, miracles: List[Miracle], *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.widgets: List[MiracleCheckboxes] = []
+
+        self.setWidgetResizable(True)
+        self.inner = QWidget()
+        self.setWidget(self.inner)
+        self.l = QGridLayout(self.inner)
+
+        self.l.addWidget(QLabel("Seen"), 0, 2)
+        self.l.addWidget(QLabel("Bought"), 0, 3)
+        self.l.addWidget(QLabel("Enabled"), 0, 4)
+
+        for i, meta in enumerate(miracles, 1):
+            miracle = self.save.miracles.from_meta(meta)
+            label = QLabel(miracle.name)
+            desc = miracle.meta.desc
+            if desc is not None:
+                label.setToolTip(desc)
+            self.l.addWidget(label, i, 1)
+            try:
+                pak = ICON_LOADER.element_icon(Element.PressTurn)
+            except Exception as e:
+                print_icon_loading_error(e, "Failed to load element icon:")
+            else:
+                pix = pak.pixmap.scaled(pak.size_div(2))
+                icon = QLabel()
+                icon.setFixedSize(pix.size())
+                icon.setPixmap(pix)
+                if desc is not None:
+                    icon.setToolTip(desc)
+                self.l.addWidget(icon, i, 0)
+            boxes = MiracleCheckboxes(miracle, i, self.l)
+            self.widgets.append(boxes)
+
+    def stack_refresh(self):
+        for boxes in self.widgets:
+            boxes.refresh()
+
+    def on_apply_changes(self):
+        for boxes in self.widgets:
+            boxes.apply_changes()
+
+
+class MiracleEditorScreen(QTabWidget, GameScreenMixin, AppliableWidget):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.tabs: List[MiracleEditorWidget] = []
+
+        for name, miracles in [
+            ("In-Game", MIRACLE_DATA),
+            ("Categories", []),
+            ("Here", [])
+        ]:
+            widget = MiracleEditorWidget(miracles)
+            self.tabs.append(widget)
+            self.addTab(widget, name)
+
+    def stack_refresh(self):
+        for tab in self.tabs:
+            tab.stack_refresh()
+
+    def on_apply_changes(self):
+        for tab in self.tabs:
+            tab.on_apply_changes()
+
+
 class ItemEditorWidget(QScrollArea, GameScreenMixin, AppliableWidget):
     def __init__(self, items: List[Item], *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -879,6 +994,7 @@ class GameSaveEditorScreen(SaveScreenMixin, QWidget, AppliableWidget):
             ("DLC", DlcEditorScreen),
             ("Player", PlayerEditorScreen),
             ("Demons", DemonSelectorScreen),
+            ("Miracles", MiracleEditorScreen),
             ("Items", ItemEditorScreen),
             ("Essences", EssenceEditorScreen),
             ("Alignment", AlignmentEditorScreen),

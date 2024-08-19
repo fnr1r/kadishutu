@@ -552,29 +552,7 @@ NOTE: This might be a bitflag.
 
 ### Miracle block
 
-- 0x3d5b - Forestall
-- 0x3d6e - Art of Essences I
-- 0x3d69 - Hand of God
-- 0x3d7f - Empowering Cheer
-- 0x3d81 - Demon Proficiency I
-- 0x3d82 - Demon Proficiency II (?)
-- 0x3d83 - Demon Proficiency III (?)
-- 0x3d84 - Demon Proficiency IV (?)
-- 0x3d85 - Divine Garrison I
-- 0x3d8b - Divine Proficiency I
-- 0x3d99 - Fire Mastery I
-- 0x3d9e - Ice Mastery I
-- 0x3da3 - Elec Mastery I
-- 0x3da8 - Force Mastery I
-- 0x3dad - Light
-- 0x3db2 - Dark
-- 0x3db7 - Support Mastery I
-- 0x3db8 - Support Mastery II
-- 0x3db9 - Support Mastery III
-- 0x3dba - Recovery Mastery I
-- 0x3dbb - Recovery Mastery II
-- 0x3dbc - Recovery Mastery III
-- 0x3ddf - Level Violation
+An array of miracle values of unknown size.
 
 - 0x67a3 - bit 1 - First one
 
