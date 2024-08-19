@@ -46,9 +46,8 @@ class MiracleEditor(BaseDynamicEditor, BaseStructAsSingularValueEditor):
         return self.meta.name
 
 
-class MiracleManager(BaseStaticEditor, BaseStructAsFieldEditor):
+class MiracleManager(BaseStaticEditor):
     offset = 0
-    struct = "<II"
 
     def at_offset(self, offset: int, *args, **kwargs):
         return self.dispatch(MiracleEditor, offset, *args, **kwargs)
