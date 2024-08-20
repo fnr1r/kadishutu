@@ -610,8 +610,7 @@ class DemonSelectorScreen(QWidget, GameScreenMixin):
             sel = QPushButton(self)
             sel.clicked.connect(self.demon_editor(demon_number))
             COLUMNS = 4
-            row = demon_number // COLUMNS
-            column = demon_number % COLUMNS
+            (row, column) = divmod(demon_number, COLUMNS)
             self.l.addWidget(sel, row, column)
             self.widgets.append(sel)
 
