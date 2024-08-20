@@ -96,9 +96,11 @@ KEY = bytes([0x30, 0x31, 0x32, 0x33, 0x34, 0x35, 0x36, 0x37,
   (3 floats / f32 (12 bytes))
 - 0x56a6 - 0x56ae - [Rotation](#coordinate-info)  
   (2 floats / f32 (8 bytes))
+- 0x67a3 - 0x67f6 - [Miracle unlock data](#miracle-unlocks)
 - 0x68c5 - 0x68c6 - [Last used layline fount ID](#layline-fount-info)  
   (an unsigned char / u8 (1 byte))
 - 0x7dc0 - 0x7de0 - Demon haunt data
+- 0x80a2 - 0x80d2 (?) - Layline unlock data
 - 0x1375e - ??????? - [Tracking](#tracking-info)
 - 0x18282 - 0x2db42 - [Demon Compendium](#demon-compendium)
 - 0x5a760 - 0x5b0a0 - Quest data????
@@ -556,6 +558,39 @@ An array of miracle values of unknown size.
 
 - 0x67a3 - bit 1 - First one
 
+### Miracle unlocks
+
+It's packed bools.
+
+Da'at: Minato???: 0x67a3 - 0x67a9  
+Da'at: Shinagawa???: 0x67b7 - 0x67bc  
+Da'at: Shinjuku???: 0x67df - 0x67e5  
+Da'at: Taito???: 0x67e8 - 0x67ef  
+Special: 0x67f3 - 0x67f6
+
+Supremacy, Doctrine, Awakening, Cosmos
+
+- 0x67a3
+  - Art of Essences I
+  - Demon Proficiency I
+  - Divine Proficiency I
+  - Divine Garrison I
+  - Recover
+  - Support
+- 0x67a4
+  - Divine Amalgamation
+  - Divine Garrison II
+  - Light
+  - Dark
+  - Ailment
+- 0x67f3
+  - Inheritance Violation
+- 0x67f4
+  - Rank Violation
+- 0x67f5
+  - Moral Transcendence
+    (NOTE: requires bit 4 of byte 0x69ce6 to be set to 1)
+
 ## Item info
 
 ### Item amount
@@ -698,6 +733,9 @@ Save locations:
 - 0x01 - Empyrean
 - 0x05 - Terminal Room
 - 0x07 - Temple of Eternity 1F
+- 0x21 - Tamachi
+- 0x22 - Mita
+- 0x23 - Shiba
 - 0x41 - North Shinagawa
 - 0x44 - Ginza
 - 0x46 - Sukiyabashi
@@ -735,3 +773,17 @@ Save location: 0x01
     "rotation": "1b29343fc2df353f"
 },
 ```
+
+Analyze data regex: `\+0005[def][0-9a-f]{3}`
+
+## Ignore list
+
+- 0x7e28 - 0x7e2a
+- 0x8162 - 0x8166
+<!-- - 0x8d7a - 0x8d7c -->
+- 0x8d70 - 0x8dd0
+- 0x11df0
+- 0x11e08
+- 0x11e20
+- 0x11e4c - 0x11e4e
+- 0x11e70 - 0x11e71
