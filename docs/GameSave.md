@@ -82,7 +82,7 @@ KEY = bytes([0x30, 0x31, 0x32, 0x33, 0x34, 0x35, 0x36, 0x37,
   (an unsigned char / u8 (1 byte))
 - 0x3d4a - 0x3d4e - Glory  
   (an unsigned int / u32 (4 bytes))
-- 0x3d57 - 0x3de0 - [Miracle Block](#miracle-info)
+- 0x3d4e - 0x3de0 - [Miracle Block](#miracle-info)
 - 0x3ece - 0x3ed0 - Magatsuhi Gauge  
   (from 0% - 100% value)  
   (an unsigned short / u16 (2 bytes))

@@ -1,8 +1,8 @@
 from enum import IntFlag, auto
 from typing import Optional
 
-from .data.miracles import MIRACLE_ID_MAP, MIRACLE_NAME_MAP, Miracle
-from .file_handling import BaseDynamicEditor, BaseStaticEditor, BaseStructAsFieldEditor, BaseStructAsSingularValueEditor, structproperty
+from .data.miracles import MIRACLE_ID_MAP, MIRACLE_NAME_MAP, MIRACLE_TABLE_OFFSET, Miracle
+from .file_handling import BaseDynamicEditor, BaseStaticEditor, BaseStructAsSingularValueEditor
 
 
 class MiracleState(IntFlag):
@@ -51,6 +51,9 @@ class MiracleManager(BaseStaticEditor):
 
     def at_offset(self, offset: int, *args, **kwargs):
         return self.dispatch(MiracleEditor, offset, *args, **kwargs)
+
+    def from_id(self, id: int):
+        return self.at_offset(MIRACLE_TABLE_OFFSET + id)
 
     def from_meta(self, meta: Miracle):
         return self.at_offset(meta.offset, meta=meta)
