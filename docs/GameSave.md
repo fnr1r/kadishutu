@@ -681,16 +681,7 @@ Data about alignment values is in a different doc (for now).
 
 ## Notes
 
-0x80a3 stores info on layline founts.
-
-0x08 - Tamachi
-0x10 - Mita
-0x80 - Tokyo Tower
-
-There's probably more in different bytes.
-
-NOTE: There must also be a bit which changes the name from Netherworld to
-Da'at.
+There must be a bit which changes the name from Netherworld to Da'at.
 
 Changing 0x69cdc affects the layline menu, removing options.
 
@@ -701,3 +692,46 @@ Changing 0x69ced affects the X menu.
 
 Changing 0x69cef from 0x10 back to 0x00 makes the game grant the player the dlc
 items again.
+
+Save locations:
+
+- 0x01 - Empyrean
+- 0x05 - Terminal Room
+- 0x07 - Temple of Eternity 1F
+- 0x41 - North Shinagawa
+- 0x44 - Ginza
+- 0x46 - Sukiyabashi
+- 0x48 - Nihonbashi
+- 0x4c - Awajicho
+- 0x4d - Akihabara
+- 0x4f - Mansei Bridge
+- 0x50 - Akihabara Electric Town
+- 0x52 - Ochanomizu
+- 0x53 - Kanda-no-yashiro
+- 0x55 - Otemachi
+- 0x57 - Tokyo Station
+- 0x59 - Ueno
+- 0x5a - Ueno Park
+- 0x5b - Shinobazu Pond
+- 0x5f - Asakusa
+- 0x61 - Komagata
+- 0x64 - Umayabashi
+- 0x6e - Jouin High School Gates
+- 0x74 - Asakusa Main Street
+- 0x75 - Hall of Chaos
+- 0x79 - Empyrean Throne Room
+- 0x8b - Shakan: 4th Stratum
+
+Maria alignment test data:
+
+```txt
+Save location: 0x01
+{
+    "id": "0x2",
+    "name": "Empyrean - Maria",
+    "map_upper": "0x00000010",
+    "map_lower": "0x00000000",
+    "coordinates": "52ec6d450f2e06c700302345",
+    "rotation": "1b29343fc2df353f"
+},
+```

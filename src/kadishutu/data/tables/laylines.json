@@ -3,23 +3,31 @@
         "id": "0xb",
         "name": "Da'at: Minato - Tamachi",
         "map_upper": "0x0000003d",
-        "map_lower": "0x0000",
+        "map_lower": "0x00000000",
         "coordinates": "f75144c54fc26647109c8844",
-        "rotation": "89f67fbfc0368b3c"
-    },    
+        "rotation": "89f67fbfc0368b3c",
+        "unlock": {
+            "offset": "0x80a3",
+            "bit": 3
+        }
+    },
     {
         "id": "0xc",
         "name": "Da'at: Minato - Mita",
         "map_upper": "0x0000003d",
-        "map_lower": "0x0000",
+        "map_lower": "0x00000000",
         "coordinates": "4e6dd946af61a0468f64ff43",
-        "rotation": "1e2459bf1498073f"
+        "rotation": "1e2459bf1498073f",
+        "unlock": {
+            "offset": "0x80a3",
+            "bit": 4
+        }
     },
     {
         "id": "0xd",
         "name": "Da'at: Minato - Shiba",
         "map_upper": "0x0000003d",
-        "map_lower": "0x0000",
+        "map_lower": "0x00000000",
         "coordinates": "a0a78247439a8bc52c4f2d44",
         "rotation": "f2c3ebbe5f3e633f"
     },
@@ -27,7 +35,7 @@
         "id": "0xe",
         "name": "Da'at: Minato - Hamamatsucho",
         "map_upper": "0x0000003d",
-        "map_lower": "0x0000",
+        "map_lower": "0x00000000",
         "coordinates": "62265c476f4562c7fd936a45",
         "rotation": "5aea7fbfe08bd23c"
     },
@@ -35,23 +43,31 @@
         "id": "0xf",
         "name": "Da'at: Minato - Tokyo Tower",
         "map_upper": "0x0000003d",
-        "map_lower": "0x0000",
+        "map_lower": "0x00000000",
         "coordinates": "88002d46f69950c77bfd6746",
-        "rotation": "edf17fbf40c9a93c"
+        "rotation": "edf17fbf40c9a93c",
+        "unlock": {
+            "offset": "0x80a3",
+            "bit": 7
+        }
     },
     {
         "id": "0x10",
         "name": "Da'at: Minato - Kamiyacho",
         "map_upper": "0x0000003d",
-        "map_lower": "0x0000",
+        "map_lower": "0x00000000",
         "coordinates": "ffcb9e46c425ddc76a71d545",
-        "rotation": "31897fbff085763d"
+        "rotation": "31897fbff085763d",
+        "unlock": {
+            "offset": "0x80a4",
+            "bit": 0
+        }
     },
     {
         "id": "0x11",
         "name": "Da'at: Minato - Onarimon",
         "map_upper": "0x0000003d",
-        "map_lower": "0x0000",
+        "map_lower": "0x00000000",
         "coordinates": "625e1547f7b1a0c7c0139a46",
         "rotation": "defd7fbfc017043c"
     },
@@ -59,7 +75,7 @@
         "id": "0x12",
         "name": "Da'at: Minato - Nagatacho",
         "map_upper": "0x0000003d",
-        "map_lower": "0x0000",
+        "map_lower": "0x00000000",
         "coordinates": "98d606c7a051fdc77ce19e45",
         "rotation": "000000000000803f"
     },
@@ -67,15 +83,23 @@
         "id": "0x13",
         "name": "Da'at: Minato - Odaiba",
         "map_upper": "0x0000003d",
-        "map_lower": "0x0000",
+        "map_lower": "0x00000000",
         "coordinates": "25b5d6475d5f164676df3845",
         "rotation": "e1965cbe53fd793f"
+    },
+    {
+        "id": "0x30",
+        "name": "Jouin High School",
+        "map_upper": "0x00000065",
+        "map_lower": "0x00000000",
+        "coordinates": "a0158045f5f08ec400004842",
+        "rotation": "99bd373fac41323f"
     },
     {
         "id": "0x14",
         "name": "Da'at: Shinagawa - Tennozu Isle",
         "map_upper": "0x0000003e",
-        "map_lower": "0x0000",
+        "map_lower": "0x00000000",
         "coordinates": "6f4242476af8ad459dc89645",
         "rotation": "6214e73d7e5d7e3f"
     },
@@ -83,7 +107,7 @@
         "id": "0x15",
         "name": "Da'at: Shinagawa - Tennozu",
         "map_upper": "0x0000003e",
-        "map_lower": "0x0000",
+        "map_lower": "0x00000000",
         "coordinates": "1b0bf8462129bc4620992543",
         "rotation": "faad743f2892963e"
     },
@@ -91,7 +115,7 @@
         "id": "0x16",
         "name": "Da'at: Shinagawa - Shinagawa Pier",
         "map_upper": "0x0000003e",
-        "map_lower": "0x0000",
+        "map_lower": "0x00000000",
         "coordinates": "5e1296477a087346a0fa8843",
         "rotation": "4a171f3d8cce7f3f"
     },
@@ -99,7 +123,7 @@
         "id": "0x17",
         "name": "Da'at: Shinagawa - Container Yard",
         "map_upper": "0x0000003e",
-        "map_lower": "0x0000",
+        "map_lower": "0x00000000",
         "coordinates": "efedaa47935b904570372945",
         "rotation": "6727d0bcd7ea7f3f"
     },
@@ -107,7 +131,7 @@
         "id": "0x18",
         "name": "Da'at: Shinagawa - Konan 3rd Block",
         "map_upper": "0x0000003e",
-        "map_lower": "0x0000",
+        "map_lower": "0x00000000",
         "coordinates": "37ce534736e72dc728cfd844",
         "rotation": "4bbc1dbed1f17c3f"
     },
@@ -115,7 +139,7 @@
         "id": "0x19",
         "name": "Da'at: Shinagawa - Mitatebashi",
         "map_upper": "0x0000003e",
-        "map_lower": "0x0000",
+        "map_lower": "0x00000000",
         "coordinates": "5b3cba468c8503c7281abd43",
         "rotation": "f004353ff604353f"
     },
@@ -123,7 +147,7 @@
         "id": "0x1a",
         "name": "Da'at: Shinagawa - Konan 2nd Block",
         "map_upper": "0x0000003e",
-        "map_lower": "0x0000",
+        "map_lower": "0x00000000",
         "coordinates": "435622c60b3b09c71177a445",
         "rotation": "a4407ebf98e2ee3d"
     },
@@ -131,7 +155,7 @@
         "id": "0x1c",
         "name": "Da'at: Shinagawa - Fairy Village",
         "map_upper": "0x0000003e",
-        "map_lower": "0x0000",
+        "map_lower": "0x00000000",
         "coordinates": "4c0375c77e7d1e47f0a15244",
         "rotation": "0053343f38b6353f"
     },
@@ -139,7 +163,7 @@
         "id": "0x1d",
         "name": "Da'at: Shinagawa - North Shinagawa",
         "map_upper": "0x0000003e",
-        "map_lower": "0x0000",
+        "map_lower": "0x00000000",
         "coordinates": "ba20dd44d50742471272a843",
         "rotation": "eabf7ebf302aca3d"
     },
@@ -147,47 +171,215 @@
         "id": "0x1b",
         "name": "Da'at: Shinagawa - Shinagawa Station",
         "map_upper": "0x0000003e",
-        "map_lower": "0x0000",
+        "map_lower": "0x00000000",
         "coordinates": "41e6edc61ca723c767f61546",
         "rotation": "c9f727bfe830413f"
-    },    
+    },
+    {
+        "id": "0x1e",
+        "name": "Da'at: Chiyoda - Ginza",
+        "map_upper": "0x0000003f",
+        "map_lower": "0x00000000",
+        "coordinates": "9ebf02c6e39cbd46b0ac0645",
+        "rotation": "5bfd0ebf0d58543f"
+    },
+    {
+        "id": "0x1f",
+        "name": "Da'at: Chiyoda - Sukiyabashi",
+        "map_upper": "0x0000003f",
+        "map_lower": "0x00000000",
+        "coordinates": "904d9ac6e0855346d5031c45",
+        "rotation": "20ed6fbfb090b23e"
+    },
+    {
+        "id": "0x20",
+        "name": "Da'at: Chiyoda - Nihonbashi",
+        "map_upper": "0x0000003f",
+        "map_lower": "0x00000000",
+        "coordinates": "51909b46564c6bc5c1fe4045",
+        "rotation": "c63f563f721e0c3f"
+    },
+    {
+        "id": "0x21",
+        "name": "Da'at: Chiyoda - Awajicho",
+        "map_upper": "0x0000003f",
+        "map_lower": "0x00000000",
+        "coordinates": "89a29d4611400fc7a942ff44",
+        "rotation": "2d04673fc69cdc3e"
+    },
+    {
+        "id": "0x22",
+        "name": "Da'at: Chiyoda - Akihabara",
+        "map_upper": "0x0000003f",
+        "map_lower": "0x00000000",
+        "coordinates": "61f83947d9a6c1c63e0b4845",
+        "rotation": "225052bfdcf5113f"
+    },
+    {
+        "id": "0x23",
+        "name": "Da'at: Chiyoda - Mansei Bridge",
+        "map_upper": "0x0000003f",
+        "map_lower": "0x00000000",
+        "coordinates": "17cf384756fc05c7e29c1a45",
+        "rotation": "41ee353f781a343f"
+    },
+    {
+        "id": "0x24",
+        "name": "Da'at: Chiyoda - Akihabara Electric Town",
+        "map_upper": "0x0000003f",
+        "map_lower": "0x00000000",
+        "coordinates": "63eb2b47e90561c738db2144",
+        "rotation": "e08f85bedd22773f"
+    },
+    {
+        "id": "0x25",
+        "name": "Da'at: Chiyoda - Kanda-no-yashiro",
+        "map_upper": "0x0000003f",
+        "map_lower": "0x00000000",
+        "coordinates": "9e0fc9464a898cc7a6ff2145",
+        "rotation": "fa2080bd9e7f7f3f"
+    },
+    {
+        "id": "0x26",
+        "name": "Da'at: Chiyoda - Otemachi",
+        "map_upper": "0x0000003f",
+        "map_lower": "0x00000000",
+        "coordinates": "1e0867c661766ac708a12d45",
+        "rotation": "0a7a793fd8b0653e"
+    },
+    {
+        "id": "0x27",
+        "name": "Da'at: Chiyoda - Ochanomizu",
+        "map_upper": "0x0000003f",
+        "map_lower": "0x00000000",
+        "coordinates": "ac7141c5e27596c732cb7145",
+        "rotation": "87a950bf8c4f143f"
+    },
+    {
+        "id": "0x28",
+        "name": "Da'at: Chiyoda - Tokyo Station",
+        "map_upper": "0x0000003f",
+        "map_lower": "0x00000000",
+        "coordinates": "1356a4c6fc8c4cc70c44de44",
+        "rotation": "8aa667bfa0efd93e"
+    },
+    {
+        "id": "0x29",
+        "name": "Da'at: Taito - Ueno",
+        "map_upper": "0x0000003c",
+        "map_lower": "0x00000000",
+        "coordinates": "a7163e46a4b0e5c6b55d7645",
+        "rotation": "ee57363f78af333f"
+    },
+    {
+        "id": "0x2a",
+        "name": "Da'at: Taito - Ueno Park",
+        "map_upper": "0x0000003c",
+        "map_lower": "0x00000000",
+        "coordinates": "b13361c64bd583c760388145",
+        "rotation": "a3fa35bff40d343f"
+    },
+    {
+        "id": "0x2b",
+        "name": "Da'at: Taito - Shinobazu Pond",
+        "map_upper": "0x0000003c",
+        "map_lower": "0x00000000",
+        "coordinates": "19ae0fc7b24fffc6c2b81c45",
+        "rotation": "abe37f3f60d7f03c"
+    },
+    {
+        "id": "0x2c",
+        "name": "Da'at: Taito - Umayabashi",
+        "map_upper": "0x0000003c",
+        "map_lower": "0x00000000",
+        "coordinates": "9b7503c70936ab4680196042",
+        "rotation": "a5fe333fc709363f"
+    },
+    {
+        "id": "0x2d",
+        "name": "Da'at: Taito - Komagata",
+        "map_upper": "0x0000003c",
+        "map_lower": "0x00000000",
+        "coordinates": "9fa5e4c5a7b877450060fe45",
+        "rotation": "1638c6bd51cc7e3f"
+    },
+    {
+        "id": "0x2e",
+        "name": "Da'at: Taito - Asakusa Main Street",
+        "map_upper": "0x0000003c",
+        "map_lower": "0x00000000",
+        "coordinates": "480d5846e9ae4a46b3b89f43",
+        "rotation": "b6904c3f98e9193f"
+    },
+    {
+        "id": "0x2f",
+        "name": "Da'at: Taito - Asakusa",
+        "map_upper": "0x0000003c",
+        "map_lower": "0x00000000",
+        "coordinates": "0b458d47fae623c62c522b45",
+        "rotation": "2f4c91bcb1f57f3f"
+    },
     {
         "id": "0x31",
         "name": "Tokyo Diet Building",
         "map_upper": "0x0000001e",
-        "map_lower": "0x0000",
+        "map_lower": "0x0000000a",
         "coordinates": "8eb0993fc186d443207592c8",
-        "rotation": "086835bfa8a1343f"
+        "rotation": "086835bfa8a1343f",
+        "unlock": {
+            "offset": "0x80a8",
+            "bit": 1
+        }
     },
     {
         "id": "0x32",
         "name": "Tokyo - Medical Research Lab",
         "map_upper": "0x00000055",
-        "map_lower": "0x0000",
+        "map_lower": "0x00000000",
         "coordinates": "5462c0435c06a243f0ff5b42",
         "rotation": "f05f70bfd222b03e"
+    },
+    {
+        "id": "0x01",
+        "name": "Empyrean - Atrium",
+        "map_upper": "0x00000010",
+        "map_lower": "0x00000000",
+        "coordinates": "2f45bcc46ab969c4f8ffefc2",
+        "rotation": "3baba93cf1f17f3f"
+    },
+    {
+        "id": "0x02",
+        "name": "Empyrean - Path to the Throne",
+        "map_upper": "0x00000010",
+        "map_lower": "0x00000000",
+        "coordinates": "02561e45f96661c700c04145",
+        "rotation": "9fff7fbf00cc5e3b"    
     },
     {
         "id": "0x3b",
         "name": "Empyrean - Throne Room",
         "map_upper": "0x0000005e",
-        "map_lower": "0x0000",
+        "map_lower": "0x00000000",
         "coordinates": "c29cb74377afb345dd0e0cc4",
         "rotation": "7efe7f3f8077de3b"
-    },    
+    },
     {
         "id": "0x45",
         "name": "Da'at: Shinjuku - Shinjuku Gyoen",
         "map_upper": "0x00000040",
-        "map_lower": "0x0000",
+        "map_lower": "0x00000000",
         "coordinates": "230ce8471f0866479c9777c5",
-        "rotation": "000000000000803f"
+        "rotation": "000000000000803f",
+        "unlock": {
+            "offset": "0x80aa",
+            "bit": 5
+        }
     },
     {
         "id": "0x49",
         "name": "Da'at: Shinjuku - Jingu Naien",
         "map_upper": "0x00000040",
-        "map_lower": "0x0000",
+        "map_lower": "0x00000000",
         "coordinates": "25de6e4611e6ef476dd811c5",
         "rotation": "6afe7fbf00d5e33b"
     },
@@ -195,7 +387,7 @@
         "id": "0x4a",
         "name": "Da'at: Shinjuku - Yoyogi",
         "map_upper": "0x00000040",
-        "map_lower": "0x0000",
+        "map_lower": "0x00000000",
         "coordinates": "f3ed9244d51c9c473cf50145",
         "rotation": "ab7e5c3fc211023f"
     },
@@ -203,7 +395,7 @@
         "id": "0x46",
         "name": "Da'at: Shinjuku - Shinjuku 1st Block",
         "map_upper": "0x00000040",
-        "map_lower": "0x0000",
+        "map_lower": "0x00000000",
         "coordinates": "6f32fb47691bddc6cc389e46",
         "rotation": "d22c7fbfc846a43d"
     },
@@ -211,7 +403,7 @@
         "id": "0x47",
         "name": "Da'at: Shinjuku - Shinjuku 3rd Block",
         "map_upper": "0x00000040",
-        "map_lower": "0x0000",
+        "map_lower": "0x00000000",
         "coordinates": "c2630b4731af86c61f81b243",
         "rotation": "65f708bf3047583f"
     },
@@ -219,7 +411,7 @@
         "id": "0x48",
         "name": "Da'at: Shinjuku - Kabukicho",
         "map_upper": "0x00000040",
-        "map_lower": "0x0000",
+        "map_lower": "0x00000000",
         "coordinates": "a57662c56a9040c74b460345",
         "rotation": "50833cbfaa332d3f"
     },
@@ -227,7 +419,7 @@
         "id": "0x4b",
         "name": "Da'at: Shinjuku - West Shinjuku 1st Block",
         "map_upper": "0x00000040",
-        "map_lower": "0x0000",
+        "map_lower": "0x00000000",
         "coordinates": "dd48fec6e4b06d4663d0dd45",
         "rotation": "f404353ff204353f"
     },
@@ -235,7 +427,7 @@
         "id": "0x50",
         "name": "Da'at: Shinjuku - West Shinjuku 2nd Block",
         "map_upper": "0x00000040",
-        "map_lower": "0x0000",
+        "map_lower": "0x00000000",
         "coordinates": "1efc48c707ed15c725a0e045",
         "rotation": "166ef03dd23a7e3f"
     },
@@ -243,7 +435,7 @@
         "id": "0x4c",
         "name": "Da'at: Shinjuku - Government Building 1",
         "map_upper": "0x00000040",
-        "map_lower": "0x0000",
+        "map_lower": "0x00000000",
         "coordinates": "cfaf8cc7194b54c5e8d33c46",
         "rotation": "428f34bf587a353f"
     },
@@ -251,15 +443,31 @@
         "id": "0x3c",
         "name": "Shakan - 1st Stratum Foyer",
         "map_upper": "0x00000026",
-        "map_lower": "0x0000",
+        "map_lower": "0x00000000",
         "coordinates": "6e3213c62fb9fa4420002042",
         "rotation": "ffff7fbf0000c034"
-    },    
+    },
+    {
+        "id": "0x44",
+        "name": "Shakan - Hall of the Wheel",
+        "map_upper": "0x00000026",
+        "map_lower": "0x00000004",
+        "coordinates": "304a7d442487194500008244",
+        "rotation": "f004353ff604353f"
+    },
+    {
+        "id": "0x34",
+        "name": "Temple of Eternity - 1F Inside",
+        "map_upper": "0x00000023",
+        "map_lower": "0x00000001",
+        "coordinates": "f8ff7944d43df1c5fdff5144",
+        "rotation": "f004353ff604353f"
+    },
     {
         "id": "0x4e",
         "name": "Da'at: Minato - Bethel Egypt Approach",
         "map_upper": "0x0000003d",
-        "map_lower": "0x0000",
+        "map_lower": "0x00000000",
         "coordinates": "2ddf0748f04fa046887c1a45",
         "rotation": "cc73dabe6887673f"
     },
@@ -267,7 +475,7 @@
         "id": "0x4f",
         "name": "Tokyo - Dorm Room",
         "map_upper": "0x00000073",
-        "map_lower": "0x0000",
+        "map_lower": "0x00000000",
         "coordinates": "265d1bc391cb84c100002042",
         "rotation": "2b7b7e3f08c3de3d"
     },
@@ -275,8 +483,16 @@
         "id": "0x51",
         "name": "Serpent's Grave - Altar",
         "map_upper": "0x000000cb",
-        "map_lower": "0x0000",
+        "map_lower": "0x00000000",
         "coordinates": "a7ffa94372e3cb44a0d57fc2",
         "rotation": "000000000000803f"
-    }    
+    },
+    {
+        "id": "0x33",
+        "name": "Hall of Chaos",
+        "map_upper": "0x0000006b",
+        "map_lower": "0x00000000",
+        "coordinates": "0000000000e0ab4600409745",
+        "rotation": "f20435bff404353f"
+    }
 ]

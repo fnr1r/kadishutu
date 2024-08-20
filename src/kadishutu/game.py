@@ -4,14 +4,14 @@ from enum import Enum, auto
 from struct import Struct, pack_into, unpack_from
 from typing import Optional, Tuple
 
-from kadishutu.miracles import MiracleManager
-
 from .alignment import AlignmentManager
+from .data.laylines import Layline
 from .dlc import DlcEditor
 from .demons import DemonManager
 from .essences import EssenceManager
 from .file_handling import BaseMasterEditor, BaseStaticEditor, structproperty
 from .items import ItemManager
+from .miracles import MiracleManager
 from .player import PlayerEditor
 
 
@@ -79,9 +79,9 @@ class PositionEditor(BaseStaticEditor):
     def current_map_upper(self) -> int:
         return 0x567e
 
-    @structproperty(int, "<H")
+    @structproperty(int, "<I")
     def current_map_lower(self) -> int:
-        return 0x5680
+        return 0x5682
 
     @property
     def raw_coordinates(self) -> bytes:
@@ -120,6 +120,19 @@ class PositionEditor(BaseStaticEditor):
     @structproperty(int, "<B")
     def last_layline_fount(self) -> int:
         return 0x68c5
+
+    def layline_unlock(self, layline: Layline):
+        (offset, bit) = layline.unlock_data
+        self.data[offset] |= 1 << bit
+
+    def layline_teleport(self, layline: Layline, unlock: bool = True):
+        self.raw_coordinates = layline.coordinates
+        self.raw_rotation = layline.rotation
+        self.current_map_upper = layline.map_upper
+        self.current_map_lower = layline.map_lower
+        self.last_layline_fount = layline.id
+        if unlock:
+            self.layline_unlock(layline)
 
 
 class Difficulty(Enum):
