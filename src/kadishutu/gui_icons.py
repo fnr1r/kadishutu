@@ -145,7 +145,7 @@ class IconLoader:
         width = 80
         height = 64
         MINI_CHAR_COLUMNS = 25
-        (row, column) = divmod(id, MINI_CHAR_COLUMNS)
+        (column, row) = divmod(id, MINI_CHAR_COLUMNS)
         x1 = width * row
         x2 = x1 + width
         y1 = height * column
@@ -169,7 +169,7 @@ class IconLoader:
         width = height = 84
         id = element.value
         ELEMENT_CHAR_COLUMNS = 12
-        (row, column) = divmod(id, ELEMENT_CHAR_COLUMNS)
+        (column, row) = divmod(id, ELEMENT_CHAR_COLUMNS)
         x1 = width * row
         x2 = x1 + width
         y1 = height * column
