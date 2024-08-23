@@ -1,13 +1,12 @@
 from abc import abstractmethod
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Callable, Dict, List, Tuple
+from typing import Dict, List, Tuple
 from PySide6.QtWidgets import (
     QCheckBox, QComboBox, QGridLayout, QHBoxLayout, QLabel, QLineEdit,
-    QPushButton, QScrollArea, QSpinBox, QTabWidget, QVBoxLayout, QWidget,
+    QListWidget, QPushButton, QScrollArea, QSpinBox, QTabWidget, QVBoxLayout,
+    QWidget,
 )
-
-from kadishutu.miracles import MiracleEditor, MiracleState
 
 from .data.affinity import AFFINITY_MAP, Affinity
 from .data.alignment import ALIGNMENT_DATA, AlignmentBit
@@ -17,7 +16,8 @@ from .data.items import (
     CONSUMABLES_RANGE, ESSENCES_RANGE, KEY_ITEMS_RANGE, RELICS_RANGE_1,
     RELICS_RANGE_2, Item, items_from
 )
-from .data.miracles import MIRACLE_DATA, Miracle
+from .data.miracles import MIRACLE_DATA, MIRACLES, Miracle, MiracleCategory
+from .data.miracle_unlocks import MIRACLE_UNLOCKS
 from .data.skills import SKILL_ID_MAP, SKILL_NAME_MAP
 from .demons import (
     AFFINITY_NAMES, STATS_NAMES, AffinityEditor,
@@ -33,6 +33,8 @@ from .gui_common import (
 )
 from .gui_icons import ICON_LOADER, DisabledError, print_icon_loading_error
 from .items import ItemEditor
+from .miracles import MiracleEditor, MiracleState
+from .miracle_unlocks import MiracleUnlockEditor
 from .player import NameEdit, NameManager
 from .skills import SkillEditor, SkillManager
 
@@ -655,6 +657,9 @@ class MiracleCheckboxes:
         self.bought_box.clicked.connect(self.boxes_refresh)
         layout.addWidget(self.bought_box, i, 3)
         self.enabled_box = MCheckBox()
+        #toggleable = miracle.meta.toggleable
+        #if toggleable is not None and not toggleable:
+        #    self.enabled_box.hide()
         layout.addWidget(self.enabled_box, i, 4)
 
     @property
@@ -688,7 +693,7 @@ class MiracleCheckboxes:
         self.miracle.state = state
 
 
-class MiracleEditorWidget(QScrollArea, GameScreenMixin, AppliableWidget):
+class MiracleEditorWidget(QScrollArea, GameScreenMixin):
     def __init__(self, miracles: List[Miracle], *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.widgets: List[MiracleCheckboxes] = []
@@ -701,6 +706,14 @@ class MiracleEditorWidget(QScrollArea, GameScreenMixin, AppliableWidget):
         self.l.addWidget(QLabel("Seen"), 0, 2)
         self.l.addWidget(QLabel("Bought"), 0, 3)
         self.l.addWidget(QLabel("Enabled"), 0, 4)
+
+        def try_to_sort_by_ord_id(mir: Miracle):
+            if mir.order_id is not None:
+                return mir.order_id
+            else:
+                return mir.id
+
+        miracles.sort(key=try_to_sort_by_ord_id)
 
         for i, meta in enumerate(miracles, 1):
             miracle = self.save.miracles.from_meta(meta)
@@ -728,32 +741,85 @@ class MiracleEditorWidget(QScrollArea, GameScreenMixin, AppliableWidget):
         for boxes in self.widgets:
             boxes.refresh()
 
-    def on_apply_changes(self):
+    def apply_changes(self):
         for boxes in self.widgets:
             boxes.apply_changes()
+
+
+class MiracleUnlockerWidget(QScrollArea, GameScreenMixin):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.widgets: List[Tuple[MiracleUnlockEditor, MCheckBox]] = []
+
+        self.setWidgetResizable(True)
+        self.inner = QWidget()
+        self.setWidget(self.inner)
+        self.l = QVBoxLayout(self.inner)
+
+        mgr = self.save.miracle_unlocks
+
+        for i, unlock in enumerate(MIRACLE_UNLOCKS):
+            editor = mgr.from_meta(unlock)
+            layout = QVBoxLayout()
+            sublayout = QHBoxLayout()
+            layout.addLayout(sublayout)
+            unlock_box = MCheckBox()
+            sublayout.addWidget(unlock_box)
+            label = QLabel(unlock.name)
+            sublayout.addWidget(label)
+            lst = QListWidget()
+            for i in unlock.miracles:
+                lst.addItem(i)
+            layout.addWidget(lst)
+            self.l.addLayout(layout)
+            self.widgets.append((editor, unlock_box))
+
+    def stack_refresh(self):
+        for editor, unlock_box in self.widgets:
+            unlock_box.setChecked(editor.state)
+
+    def apply_changes(self):
+        for editor, unlock_box in self.widgets:
+            unlock_box.setattr_if_modified(editor, "state")
 
 
 class MiracleEditorScreen(QTabWidget, GameScreenMixin, AppliableWidget):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.tabs: List[MiracleEditorWidget] = []
+        self.miracle_tabs: List[MiracleEditorWidget] = []
 
-        for name, miracles in [
-            ("In-Game", MIRACLE_DATA),
-            ("Categories", []),
-            ("Here", [])
-        ]:
-            widget = MiracleEditorWidget(miracles)
-            self.tabs.append(widget)
-            self.addTab(widget, name)
+        if MIRACLE_DATA:
+            categorized_miracles = [
+                (i, [
+                    j
+                    for j in MIRACLES
+                    if j.category == i
+                ])
+                for i in MiracleCategory
+                if i != MiracleCategory.NoCategory
+            ]
+
+            for category, miracles in categorized_miracles:
+                widget = MiracleEditorWidget(miracles)
+                self.miracle_tabs.append(widget)
+                self.addTab(widget, category.name)
+        else:
+            widget = MiracleEditorWidget(MIRACLES)
+            self.miracle_tabs.append(widget)
+            self.addTab(widget, "Miracles (uncategorized)")
+
+        self.unlocks_widget = MiracleUnlockerWidget()
+        self.addTab(self.unlocks_widget, "★Unlocks")
 
     def stack_refresh(self):
-        for tab in self.tabs:
+        for tab in self.miracle_tabs:
             tab.stack_refresh()
+        self.unlocks_widget.stack_refresh()
 
     def on_apply_changes(self):
-        for tab in self.tabs:
-            tab.on_apply_changes()
+        for tab in self.miracle_tabs:
+            tab.apply_changes()
+        self.unlocks_widget.apply_changes()
 
 
 class ItemEditorWidget(QScrollArea, GameScreenMixin, AppliableWidget):

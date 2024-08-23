@@ -30,7 +30,7 @@ class MiracleEditor(BaseDynamicEditor, BaseStructAsSingularValueEditor):
     @property
     def meta(self) -> Miracle:
         if not self._meta:
-            self._meta = MIRACLE_ID_MAP[self.offset]
+            self._meta = MIRACLE_ID_MAP[self.offset - MIRACLE_TABLE_OFFSET]
         return self._meta
 
     @property
@@ -47,13 +47,13 @@ class MiracleEditor(BaseDynamicEditor, BaseStructAsSingularValueEditor):
 
 
 class MiracleManager(BaseStaticEditor):
-    offset = 0
+    offset = MIRACLE_TABLE_OFFSET
 
     def at_offset(self, offset: int, *args, **kwargs):
         return self.dispatch(MiracleEditor, offset, *args, **kwargs)
 
     def from_id(self, id: int):
-        return self.at_offset(MIRACLE_TABLE_OFFSET + id)
+        return self.at_offset(self.relative_as_absolute_offset(id))
 
     def from_meta(self, meta: Miracle):
         return self.at_offset(meta.offset, meta=meta)

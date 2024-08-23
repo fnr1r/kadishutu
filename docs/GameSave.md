@@ -718,6 +718,10 @@ Data about alignment values is in a different doc (for now).
 
 There must be a bit which changes the name from Netherworld to Da'at.
 
+0x69c87 - 0x69c88 seems to be a turn counter?
+
+0x69c88 seems to contain beaten bosses.
+
 Changing 0x69cdc affects the layline menu, removing options.
 
 Changing 0x69cdd from 0x60 back to 0x6b removed button prompts from the

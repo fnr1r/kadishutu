@@ -1,0 +1,364 @@
+[
+    {
+        "id": "0x67a3",
+        "name": "Minato - Mita",
+        "miracles": [
+            "Art of Essences I",
+            "Divine Garrison I",
+            "Demon Proficiency I",
+            "Recover Mastery I",
+            "Support Mastery I"
+        ]
+    },
+    {
+        "id": "0x67a4",
+        "name": "Minato - Hamamatsucho",
+        "miracles": [
+            "Divine Garrison II",
+            "Divine Amalgamation",
+            "Light Mastery I",
+            "Dark Mastery I",
+            "Ailment Mastery I"
+        ]
+    },
+    {
+        "id": "0x67a5",
+        "name": "Minato - Shiba Park",
+        "miracles": [
+            "Magatsuhi Wellspring",
+            "Vengeful Opportunist",
+            "Fell Swoop",
+            "Counter Incentive: Resist",
+            "Counter Incentive: Null",
+            "Divine Garrison III"
+        ]
+    },
+    {
+        "id": "0x67a6",
+        "name": "Minato - West Shinbashi",
+        "miracles": [
+            "Unyielding Will",
+            "Vengeance",
+            "Deathly Aura I",
+            "Unforgotten Memories",
+            "Panoptes"
+        ]
+    },
+    {
+        "id": "0x67a7",
+        "name": "Minato - Onarimon",
+        "miracles": [
+            "Kindred Favor",
+            "Estoma Field I",
+            "Portent of Peril",
+            "Divine Garrison IV"
+        ]
+    },
+    {
+        "id": "0x67a8",
+        "name": "Minato - Toranomn",
+        "miracles": [
+            "Warrior's Conception",
+            "Skill Manifestation",
+            "Almighty Mastery I",
+            "Physical Mastery I",
+            "Frugal Soul I"
+        ]
+    },
+    {
+        "id": "0x67b7",
+        "name": "Shinagawa - Tennozu Isle",
+        "miracles": [
+            "Demonic Discipline",
+            "Fire Mastery II",
+            "Ice Mastery II",
+            "Electric Mastery II",
+            "Force Mastery II"
+        ]
+    },
+    {
+        "id": "0x67b8",
+        "name": "Shinagawa - Container Yard",
+        "miracles": [
+            "Magatsuhi Dispersion",
+            "Merchant's Hospitality I",
+            "Deathly Aura II",
+            "Divine Garrison V",
+            "Inspiring Covenant I",
+            "Gathering Mastery"
+        ]
+    },
+    {
+        "id": "0x67b9",
+        "name": "Shinagawa - Konan 4th Block",
+        "miracles": [
+            "Demon Proficiency II",
+            "Divine Proficiency II",
+            "Recover Mastery II",
+            "Support Mastery II",
+            "Ailment Mastery II",
+            "Summoner's Hospitality I"
+        ]
+    },
+    {
+        "id": "0x67ba",
+        "name": "Shinagawa - Konan 2nd Block",
+        "miracles": [
+            "Invigorating Defense",
+            "Divine Garrison VI",
+            "Light Mastery II",
+            "Dark Mastery II",
+            "Art of Essences II",
+            "Old World's Blessing"
+        ]
+    },
+    {
+        "id": "0x67bb",
+        "name": "Shinagawa - North Shinagawa",
+        "miracles": [
+            "Race Transcendence",
+            "Constant Vigilance",
+            "Healer's Hospitality I",
+            "Empowering Cheer II",
+            "Timeless Alliance"
+        ]
+    },
+    {
+        "id": "0x67cc",
+        "name": "Chiyoda - Miyuki Street",
+        "miracles": [
+            "Demon Proficiency III",
+            "Divine Proficiency III",
+            "Almighty Mastery II",
+            "Physical Mastery II"
+        ]
+    },
+    {
+        "id": "0x67cd",
+        "name": "Chiyoda - Nihonbashi",
+        "miracles": [
+            "Divine Garrison VII",
+            "Light Mastery III",
+            "Dark Mastery III",
+            "Ailment Mastery III",
+            "Pacification"
+        ]
+    },
+    {
+        "id": "0x67ce",
+        "name": "Chiyoda - Kanda",
+        "miracles": [
+            "Enhanced Summon",
+            "Summoner's Hospitality II",
+            "Knowledge of Tools",
+            "Inspiring Covenant II"
+        ]
+    },
+    {
+        "id": "0x67cf",
+        "name": "Chiyoda - Yurakucho",
+        "miracles": [
+            "Fire Mastery III",
+            "Ice Mastery III",
+            "Electric Mastery III",
+            "Force Mastery III",
+            "Mutative Element"
+        ]
+    },
+    {
+        "id": "0x67d0",
+        "name": "Chiyoda - Sotokanda",
+        "miracles": [
+            "Deathly Aura III",
+            "Art of Intervention",
+            "Almighty Mastery III",
+            "Physical Mastery III"
+        ]
+    },
+    {
+        "id": "0x67d1",
+        "name": "Chiyoda - Akihabara Electric Town",
+        "miracles": [
+            "Embolden",
+            "Divine Garrison VIII",
+            "Light Mastery IV",
+            "Dark Mastery IV",
+            "Ailment Mastery IV"
+        ]
+    },
+    {
+        "id": "0x67d2",
+        "name": "Chiyoda - Otemachi",
+        "miracles": [
+            "Frugal Soul II",
+            "Fire Mastery IV",
+            "Ice Mastery IV",
+            "Electric Mastery IV",
+            "Force Mastery IV",
+            "Estoma Field II"
+        ]
+    },
+    {
+        "id": "0x67df",
+        "name": "Taito - Ueno Park",
+        "miracles": [
+            "Divine Garrison IX",
+            "Fire Mastery V",
+            "Ice Mastery V",
+            "Electric Mastery V",
+            "Force Mastery V",
+            "Majestic Aura"
+        ]
+    },
+    {
+        "id": "0x67e0",
+        "name": "Taito - Shinobazu Pond",
+        "miracles": [
+            "Prayer of Agility",
+            "Prayer of Luck",
+            "Light Mastery V",
+            "Dark Mastery V",
+            "Ailment Mastery V"
+        ]
+    },
+    {
+        "id": "0x67e1",
+        "name": "Taito - Kuramae",
+        "miracles": [
+            "Deathly Aura IV",
+            "Healer's Hospitality II",
+            "Almighty Mastery IV",
+            "Physical Mastery IV",
+            "Art of Essences III"
+        ]
+    },
+    {
+        "id": "0x67e2",
+        "name": "Taito - Motoasakusa",
+        "miracles": [
+            "Skillful Conservation",
+            "Dread",
+            "Summoner's Hospitality III",
+            "Prayer of Vitality"
+        ]
+    },
+    {
+        "id": "0x67e3",
+        "name": "Taito - Asakusa Main Street",
+        "miracles": [
+            "Demon Proficiency IV",
+            "Divine Proficiency IV",
+            "Almighty Mastery V",
+            "Physical Mastery V"
+        ]
+    },
+    {
+        "id": "0x67e4",
+        "name": "Taito - Asakusa",
+        "miracles": [
+            "Merchant's Hospitality II",
+            "Recover Mastery III",
+            "Support Mastery III",
+            "Prayer of Strength",
+            "Prayer of Magic"
+        ]
+    },
+    {
+        "id": "0x67e8",
+        "name": "Shinjuku - Shinjuku Gyoen",
+        "miracles": [
+            "Demon Proficiency III",
+            "Divine Proficiency III",
+            "Almighty Mastery II",
+            "Physical Mastery II"
+        ]
+    },
+    {
+        "id": "0x67e9",
+        "name": "Shinjuku - Sendagaya",
+        "miracles": [
+            "Fire Mastery III",
+            "Ice Mastery III",
+            "Electric Mastery III",
+            "Force Mastery III",
+            "Mutative Element"
+        ]
+    },
+    {
+        "id": "0x67ea",
+        "name": "Shinjuku - Yoyogi",
+        "miracles": [
+            "Divine Garrison VII",
+            "Light Mastery III",
+            "Dark Mastery III",
+            "Ailment Mastery III",
+            "Pacification"
+        ]
+    },
+    {
+        "id": "0x67eb",
+        "name": "Shinjuku - Yotsuya",
+        "miracles": [
+            "Enhanced Summon",
+            "Summoner's Hospitality II",
+            "Knowledge of Tools",
+            "Inspiring Covenant II"
+        ]
+    },
+    {
+        "id": "0x67ec",
+        "name":"Shinjuku - Shinjuku 3rd Block",
+        "miracles": [
+            "Deathly Aura III",
+            "Art of Intervention",
+            "Almighty Mastery III",
+            "Physical Mastery III"
+        ]
+    },
+    {
+        "id": "0x67ed",
+        "name": "Shinjuku - Kabukicho",
+        "miracles": [
+            "Embolden",
+            "Divine Garrison VIII",
+            "Light Mastery IV",
+            "Dark Mastery IV",
+            "Ailment Mastery IV"
+        ]
+    },
+    {
+        "id": "0x67ee",
+        "name": "Shinjuku - Shinjuku Central Park",
+        "miracles": [
+            "Frugal Soul II",
+            "Fire Mastery IV",
+            "Ice Mastery IV",
+            "Electric Mastery IV",
+            "Force Mastery IV",
+            "Estoma Field II"
+        ]
+    },
+    {
+        "id": "0x67f3",
+        "name": "Special: Inheritance Violation",
+        "miracles": [
+            "Inheritance Violation"
+        ]
+    },
+    {
+        "id": "0x67f4",
+        "name": "Special: Rank Violation",
+        "miracles": [
+            "Rank Violation"
+        ]
+    },
+    {
+        "id": "0x67f5",
+        "name": "Special: Moral Transcendence",
+        "miracles": [
+            "Moral Transcendence",
+            "NOTE: This is a TODO since it requires an additional change.",
+            "i.e. data[0x69ce4] |= 0x10"
+        ]
+    }
+]

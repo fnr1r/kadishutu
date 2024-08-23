@@ -12,6 +12,7 @@ from .essences import EssenceManager
 from .file_handling import BaseMasterEditor, BaseStaticEditor, structproperty
 from .items import ItemManager
 from .miracles import MiracleManager
+from .miracle_unlocks import MiracleUnlockManager
 from .player import PlayerEditor
 
 
@@ -216,6 +217,10 @@ class SaveEditor(BaseMasterEditor):
     @property
     def position(self) -> PositionEditor:
         return self.dispatch(PositionEditor)
+    
+    @property
+    def miracle_unlocks(self) -> MiracleUnlockManager:
+        return self.dispatch(MiracleUnlockManager)
 
     @property
     def alignment(self) -> AlignmentManager:
