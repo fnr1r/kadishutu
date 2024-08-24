@@ -38,6 +38,8 @@ KEY = bytes([0x30, 0x31, 0x32, 0x33, 0x34, 0x35, 0x36, 0x37,
   (32 bytes)
 - 0x524 - 0x528 - [Save location](#save-location)  
   (an unsigned int / u32 (4 bytes))
+- 0x528 - 0x529 - Clear flag  
+  (a padded bool (1 byte))
 - 0x529 - 0x52a - [DLC Flags](#dlc-info)  
   (an unsigned char / u8 (1 byte))
 - 0x5d0 - 0x5d4 - Play Time (in seconds)  
@@ -67,9 +69,9 @@ KEY = bytes([0x30, 0x31, 0x32, 0x33, 0x34, 0x35, 0x36, 0x37,
 - 0xb50 - 0xb52 - Player [innate skill](#innate-skill-id)  
   (an unsigned short / u16 (2 bytes))
 - 0xb60 - 0x3d10 - [Demon table](#demon-info)
-- 0x3d10 - 0x3d13 - Summoned Demons (TODO)  
+- 0x3d10 - 0x3d13 - Party menu demon order  
   (with indices of the demon table; from first to last)  
-  (3 unsigned chars / u8s (3 bytes))
+  (30 unsigned chars / u8s (30 bytes))
 - 0x3d2e - 0x3d31 - Summoned Demons (TODO)  
   (with indices of the demon table; from first to last)  
   (3 unsigned chars / u8s (3 bytes))
@@ -86,6 +88,8 @@ KEY = bytes([0x30, 0x31, 0x32, 0x33, 0x34, 0x35, 0x36, 0x37,
 - 0x3ece - 0x3ed0 - Magatsuhi Gauge  
   (from 0% - 100% value)  
   (an unsigned short / u16 (2 bytes))
+- 0x49d8 - 0x4c20 - Demon data???
+- 0x4c5a - 0x4c5c - Yoko + Tao registered???
 - 0x4c72 - 0x4f11 - [Item Table](#item-table)
 - 0x5129 - 0x523c - [Essence Metadata Table](#essence-info)
 - 0x567e - 0x5682 - [Map ID 1](#map-ids)  
@@ -99,6 +103,7 @@ KEY = bytes([0x30, 0x31, 0x32, 0x33, 0x34, 0x35, 0x36, 0x37,
 - 0x67a3 - 0x67f6 - [Miracle unlock data](#miracle-unlocks)
 - 0x68c5 - 0x68c6 - [Last used layline fount ID](#layline-fount-info)  
   (an unsigned char / u8 (1 byte))
+- 0x72ca - 0x72cb - ????
 - 0x7dc0 - 0x7de0 - Demon haunt data
 - 0x80a2 - 0x80d2 (?) - Layline unlock data
 - 0x1375e - ??????? - [Tracking](#tracking-info)
@@ -113,6 +118,12 @@ KEY = bytes([0x30, 0x31, 0x32, 0x33, 0x34, 0x35, 0x36, 0x37,
 - 0x6a07f - ??????? - DLC Flags
   (0 when no dlc, 0x18 when all dlcs)
   (an unsigned char / u8 (1 byte))
+- 0x6a08a - 0x6a08b - [Cycles](#cycles-value)  
+  (an unsigned char / u8 (1 byte))
+- 0x6a08b - 0x6a08c - [Endings](#endings-value)  
+  (an unsigned char / u8 (1 byte))
+- 0x6a08d - 0x6a08e - NewGame+ Flag???  
+  (a padded bool (1 byte))
 
 <!--
 a("difficulty", 0x54c, "H"),
