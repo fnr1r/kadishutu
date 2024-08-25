@@ -1,8 +1,8 @@
 from enum import Enum, auto
+from kadishutu.data.affinity import Affinity
+from kadishutu.data.demons import DEMON_ID_MAP, Demon
 
-from .data.affinity import Affinity
-from .data.demons import DEMON_ID_MAP, Demon
-from .file_handling import (
+from ..shared.file_handling import (
     BaseDynamicEditor, BaseStaticEditor, BaseStructAsFieldEditor, U16Editor,
     U32Editor, U64Editor, U8Editor, structproperty,
 )

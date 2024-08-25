@@ -1,13 +1,9 @@
 from argparse import Namespace
+from kadishutu.core.shared.file_handling import DecryptedSave
+from kadishutu.core.game_save import GameSaveEditor
 from pathlib import Path
 import sys
 from typing import List, Optional
-
-try:
-    from PySide6 import __version__
-except ImportError:
-    from .gui_prompt_install import handle_no_qt
-    sys.exit(handle_no_qt())
 
 from PySide6.QtGui import QCloseEvent
 from PySide6.QtWidgets import (
@@ -18,11 +14,12 @@ from PySide6.QtWidgets import (
 # NOTE: I wish Python had a better tool for this
 # Like (for example) rustfmt
 
-from .file_handling import DecryptedSave
-from .game import SaveEditor
-from .gui_common import AppliableWidget, OnStackRemovedHook, SaveScreenMixin, SaveType, ScreenMixin
-from .gui_game import GameSaveEditorScreen
-from .gui_sys import SysSaveEditorScreen
+from .shared import (
+    AppliableWidget, OnStackRemovedHook, SaveScreenMixin, SaveType,
+    ScreenMixin,
+)
+from .game_save import GameSaveEditorScreen
+from .sys_save import SysSaveEditorScreen
 
 
 MAIN_WINDOW: "MainWindow"
@@ -84,7 +81,7 @@ class FileSelectorPreview(QWidget):
         self.play_time.setText("Play Time: N/A")
         self.date.setText("Date: N/A")
 
-    def update(self, save: SaveEditor):
+    def update(self, save: GameSaveEditor):
         self.name.setText("Name: " + save.player.names.save_name.get())
         self.difficulty.setText("Difficulty: " + save.difficulty.name)
         self.play_time.setText("Play Time: " + str(save.play_time))
@@ -134,7 +131,7 @@ class FileSelectorMenu(QWidget):
             self.file_type.setDisabled(True)
             self.ty = SaveType.GameSave
             self.file_type.setCurrentText(self.ty.name)
-            save = SaveEditor(raw)
+            save = GameSaveEditor(raw)
             self.file_preview.update(save)
         else:
             self.file_type.setDisabled(False)

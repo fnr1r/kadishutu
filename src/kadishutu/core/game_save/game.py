@@ -1,17 +1,17 @@
 from dataclasses import dataclass
 from enum import Enum, auto
+from kadishutu.data.laylines import Layline
 from struct import Struct, pack_into, unpack_from
 from typing import List, Optional, Tuple
 
+from ..shared.file_handling import (
+    BaseMasterEditor, BaseStaticEditor, EnumEditor, TimeDeltaEditor, U16Editor,
+    U32Editor, U8Editor, UnrealTimeEditor,
+)
 from .alignment import AlignmentManager
-from .data.laylines import Layline
 from .dlc import DlcEditor
 from .demons import DemonManager
 from .essences import EssenceManager
-from .file_handling import (
-    BaseMasterEditor, BaseStaticEditor, EnumEditor, TimeDeltaEditor, U16Editor,
-    U32Editor, U8Editor, UnrealTimeEditor
-)
 from .items import ItemManager
 from .miracles import MiracleManager
 from .miracle_unlocks import MiracleUnlockManager
@@ -36,7 +36,7 @@ class TeamEditor(BaseStaticEditor):
         return tuple(demons)
     @summoned_demons.setter
     def summoned_demons(self, demons: TEAM_TUPLE):
-        assert isinstance(self.master, SaveEditor)
+        assert isinstance(self.master, GameSaveEditor)
         demon_mgr = self.master.demons
         old_demon_list = list(self.summoned_demons)
         for i in old_demon_list:
@@ -139,7 +139,7 @@ class Difficulty(Enum):
     Hard = auto()
 
 
-class SaveEditor(BaseMasterEditor):
+class GameSaveEditor(BaseMasterEditor):
     time_of_saving = UnrealTimeEditor(0x4f4)
     difficulty = EnumEditor(0x4fc, Difficulty)
     dlc = DlcEditor.disp()

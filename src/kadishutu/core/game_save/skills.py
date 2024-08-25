@@ -1,7 +1,9 @@
+from kadishutu.data.skills import SKILL_ID_MAP, Skill
 from typing import Optional, Tuple, Union
 
-from .data.skills import SKILL_ID_MAP, Skill
-from .file_handling import BaseDynamicEditor, BaseStructAsFieldEditor, structproperty
+from ..shared.file_handling import (
+    BaseDynamicEditor, BaseStructAsFieldEditor, structproperty,
+)
 
 
 class SkillEditor(BaseDynamicEditor, BaseStructAsFieldEditor):

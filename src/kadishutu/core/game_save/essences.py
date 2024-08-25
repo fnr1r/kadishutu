@@ -1,6 +1,6 @@
 from enum import Enum
+from kadishutu.data.items import ESSENCES_RANGE, ITEM_TABLE_OFFSET
 
-from .data.items import ESSENCES_RANGE, ITEM_TABLE_OFFSET
 from .items import ItemEditor, ItemManager
 
 

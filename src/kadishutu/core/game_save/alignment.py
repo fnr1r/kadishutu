@@ -1,7 +1,7 @@
+from kadishutu.data.alignment import ALIGNMENT_OFFSET_MAP, AlignmentByte
 from typing import Optional, Union
 
-from .data.alignment import ALIGNMENT_OFFSET_MAP, AlignmentByte
-from .file_handling import BaseDynamicEditor, BaseStaticEditor
+from ..shared.file_handling import BaseDynamicEditor, BaseStaticEditor
 
 
 class AlignmentEditor(BaseDynamicEditor):

@@ -8,35 +8,39 @@ from PySide6.QtWidgets import (
     QWidget,
 )
 
-from .data.affinity import AFFINITY_MAP, Affinity
-from .data.alignment import ALIGNMENT_DATA, AlignmentBit
-from .data.demons import DEMON_ID_MAP, DEMON_NAME_MAP
-from .data.element_icons import Element
-from .data.items import (
-    CONSUMABLES_RANGE, ESSENCES_RANGE, KEY_ITEMS_RANGE, RELICS_RANGE_1,
-    RELICS_RANGE_2, Item, items_from
-)
-from .data.miracles import MIRACLE_DATA, MIRACLES, Miracle, MiracleCategory
-from .data.miracle_unlocks import MIRACLE_UNLOCKS
-from .data.skills import SKILL_ID_MAP, SKILL_NAME_MAP
-from .demons import (
+from kadishutu.core.game_save import GameSaveEditor
+from kadishutu.core.game_save.demons import (
     AFFINITY_NAMES, STATS_NAMES, AffinityEditor,
-    DemonEditor, HealableEditor, PType, PotentialEditor, StatsEditor
+    DemonEditor, HealableEditor, PType, PotentialEditor, StatsEditor,
 )
-from .dlc import DLCS, DlcBitflags
-from .essences import EssenceEditor
-from .file_handling import DecryptedSave
-from .game import Difficulty, SaveEditor
-from .gui_common import (
+from kadishutu.core.game_save.dlc import DLCS, DlcBitflags
+from kadishutu.core.game_save.essences import EssenceEditor
+from kadishutu.core.game_save.game import Difficulty
+from kadishutu.core.game_save.items import ItemEditor
+from kadishutu.core.game_save.miracles import MiracleEditor, MiracleState
+from kadishutu.core.game_save.miracle_unlocks import MiracleUnlockEditor
+from kadishutu.core.game_save.player import NameEdit, NameManager
+from kadishutu.core.game_save.skills import SkillEditor, SkillManager
+from kadishutu.core.shared.file_handling import DecryptedSave
+from kadishutu.data.affinity import AFFINITY_MAP, Affinity
+from kadishutu.data.alignment import ALIGNMENT_DATA, AlignmentBit
+from kadishutu.data.demons import DEMON_ID_MAP, DEMON_NAME_MAP
+from kadishutu.data.element_icons import Element
+from kadishutu.data.items import (
+    CONSUMABLES_RANGE, ESSENCES_RANGE, KEY_ITEMS_RANGE, RELICS_RANGE_1,
+    RELICS_RANGE_2, Item, items_from,
+)
+from kadishutu.data.miracles import (
+    MIRACLE_DATA, MIRACLES, Miracle, MiracleCategory,
+)
+from kadishutu.data.miracle_unlocks import MIRACLE_UNLOCKS
+from kadishutu.data.skills import SKILL_ID_MAP, SKILL_NAME_MAP
+
+from ..shared import (
     QU16, QU32, QU8, SHIBOKEN_MAX, U16_MAX, AppliableWidget, MCheckBox,
-    MComboBox, SaveScreenMixin, ScreenMixin, ModifiedMixin, hboxed
+    MComboBox, SaveScreenMixin, ScreenMixin, ModifiedMixin, hboxed,
 )
-from .gui_icons import ICON_LOADER, DisabledError, print_icon_loading_error
-from .items import ItemEditor
-from .miracles import MiracleEditor, MiracleState
-from .miracle_unlocks import MiracleUnlockEditor
-from .player import NameEdit, NameManager
-from .skills import SkillEditor, SkillManager
+from ..iconloader import ICON_LOADER, DisabledError, print_icon_loading_error
 
 
 OVERWRITTEN_WARN = "WARNING: This is overwritten with \"First name\" when saving"
@@ -1048,7 +1052,7 @@ class SettingsEditorScreen(QWidget, GameScreenMixin, AppliableWidget):
 class GameSaveEditorScreen(SaveScreenMixin, QWidget, AppliableWidget):
     path: Path
     raw_save: DecryptedSave
-    save: SaveEditor
+    save: GameSaveEditor
     modified: bool
 
     def __init__(
@@ -1057,7 +1061,7 @@ class GameSaveEditorScreen(SaveScreenMixin, QWidget, AppliableWidget):
         **kwargs
     ):
         super().__init__(*args, **kwargs)
-        self.save = SaveEditor(self.raw_save)
+        self.save = GameSaveEditor(self.raw_save)
 
         self.l = QVBoxLayout(self)
         self.macca = QU32()

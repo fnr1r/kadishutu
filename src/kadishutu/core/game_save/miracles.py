@@ -1,8 +1,10 @@
 from enum import IntFlag, auto
+from kadishutu.data.miracles import (
+    MIRACLE_ID_MAP, MIRACLE_NAME_MAP, MIRACLE_TABLE_OFFSET, Miracle,
+)
 from typing import Optional
 
-from .data.miracles import MIRACLE_ID_MAP, MIRACLE_NAME_MAP, MIRACLE_TABLE_OFFSET, Miracle
-from .file_handling import BaseDynamicEditor, BaseStaticEditor, BaseStructAsSingularValueEditor
+from ..shared.file_handling import BaseDynamicEditor, BaseStaticEditor, BaseStructAsSingularValueEditor
 
 
 class MiracleState(IntFlag):

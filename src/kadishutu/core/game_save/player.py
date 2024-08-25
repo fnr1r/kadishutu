@@ -1,8 +1,10 @@
 from struct import unpack_from
 
-from .demons import AffinityEditor, HealableEditor, PotentialEditor, StatsEditor
-from .file_handling import (
-    BaseDynamicEditor, BaseStaticEditor, BaseStructEditor, U8Editor
+from ..shared.file_handling import (
+    BaseDynamicEditor, BaseStaticEditor, BaseStructEditor, U8Editor,
+)
+from .demons import (
+    AffinityEditor, HealableEditor, PotentialEditor, StatsEditor,
 )
 from .skills import SkillEditor, SkillManager
 

@@ -3,10 +3,10 @@ from enum import Enum, auto
 from pathlib import Path
 from typing import Any, Callable, TypeVar
 from PySide6.QtWidgets import (
-    QBoxLayout, QCheckBox, QComboBox, QHBoxLayout, QSpinBox, QWidget
+    QBoxLayout, QCheckBox, QComboBox, QHBoxLayout, QSpinBox, QWidget,
 )
 
-from .file_handling import DecryptedSave
+from kadishutu.core.shared.file_handling import DecryptedSave
 
 
 U16_MAX = 2 ** 16 - 1
@@ -130,7 +130,7 @@ class ScreenMixin:
         self.mixin()
 
     def mixin(self):
-        from .gui import MAIN_WINDOW
+        from .mainwindow import MAIN_WINDOW
         self.stack_add = MAIN_WINDOW.stack_add
         self.stack_remove = MAIN_WINDOW.stack_remove
 
@@ -145,12 +145,12 @@ class ScreenMixin:
 
     @property
     def editor_widget_on_stack(self) -> bool:
-        from .gui import MAIN_WINDOW
+        from .mainwindow import MAIN_WINDOW
         return len(MAIN_WINDOW.inner.widget_stack) > 1
 
     @property
     def some_save_editor_widget(self) -> QWidget:
-        from .gui import MAIN_WINDOW
+        from .mainwindow import MAIN_WINDOW
         widget = MAIN_WINDOW.inner.widget_stack[1]
         return widget
 

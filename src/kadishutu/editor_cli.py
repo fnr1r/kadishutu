@@ -3,9 +3,12 @@ from math import floor
 from pathlib import Path
 from typing import Optional
 
-from .dlc import DlcBitflags
-from .file_handling import DecryptedSave, EncryptedSave, is_save_decrypted
-from .game import DlcEditor, SaveEditor
+from kadishutu.core.game_save import GameSaveEditor
+from kadishutu.core.game_save.dlc import DlcBitflags
+from kadishutu.core.game_save.game import DlcEditor
+from kadishutu.core.shared.file_handling import (
+    DecryptedSave, EncryptedSave, is_save_decrypted
+)
 
 
 def dlc_clear(_: Namespace, dlc: DlcEditor):
@@ -21,11 +24,11 @@ def dlc_remove(args: Namespace, dlc: DlcEditor):
     dlc.flags = dlc.flags & ~DlcBitflags.from_str(name)
 
 
-def edit_dlc(args: Namespace, game: SaveEditor):
+def edit_dlc(args: Namespace, game: GameSaveEditor):
     args.func_y(args, game.dlc)
 
 
-def edit_glory(args: Namespace, game: SaveEditor):
+def edit_glory(args: Namespace, game: GameSaveEditor):
     value: Optional[int] = args.value
     if value is not None:
         game.glory = value
@@ -33,7 +36,7 @@ def edit_glory(args: Namespace, game: SaveEditor):
         print("Glory:", game.glory)
 
 
-def edit_play_time(_: Namespace, game: SaveEditor):
+def edit_play_time(_: Namespace, game: GameSaveEditor):
     from datetime import timedelta
     time: timedelta = game.play_time
     seconds = int(time.total_seconds())
@@ -45,7 +48,7 @@ def edit_play_time(_: Namespace, game: SaveEditor):
     print("Play time:", game_display, "or", game.play_time)
 
 
-def edit_macca(args: Namespace, game: SaveEditor):
+def edit_macca(args: Namespace, game: GameSaveEditor):
     value: Optional[int] = args.value
     if value is not None:
         game.macca = value
@@ -62,7 +65,7 @@ def cmd_edit(args: Namespace):
         file = EncryptedSave(data).decrypt()
     else:
         file = DecryptedSave(data)
-    game = SaveEditor(file)
+    game = GameSaveEditor(file)
     args.func_x(args, game)
     file.hash_update()
     if reencrypt:

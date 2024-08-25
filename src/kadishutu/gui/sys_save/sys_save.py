@@ -1,6 +1,6 @@
 from PySide6.QtWidgets import QLabel, QVBoxLayout, QWidget
 
-from .gui_common import SaveScreenMixin
+from ..shared import SaveScreenMixin
 
 
 class SysSaveEditorScreen(SaveScreenMixin, QWidget):

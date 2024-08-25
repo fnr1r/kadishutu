@@ -5,8 +5,8 @@ from pathlib import Path
 from types import FunctionType, MethodType
 from typing import Any
 
-from .file_handling import DecryptedSave, EncryptedSave
-from .game import SaveEditor
+from kadishutu.core.shared.file_handling import DecryptedSave, EncryptedSave
+from kadishutu.core.game_save import GameSaveEditor
 
 
 def cmd_decrypt(args):
@@ -49,7 +49,7 @@ def cmd_encrypt(args):
 def cmd_inspect(args):
     path = args.file
     savefile = DecryptedSave.auto_open(path)
-    game = SaveEditor(savefile)
+    game = GameSaveEditor(savefile)
     this = game
     skip = 0
     # JaNkTaStIc!

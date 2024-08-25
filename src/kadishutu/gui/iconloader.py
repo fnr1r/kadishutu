@@ -8,7 +8,7 @@ from PIL.ImageQt import ImageQt
 from PySide6.QtCore import QSize
 from PySide6.QtGui import QIcon, QPixmap
 
-from .data.element_icons import Element
+from kadishutu.data.element_icons import Element
 
 
 UMODEL_EXPORT_PATH = APPDIRS.data_path / "game_data_export"
