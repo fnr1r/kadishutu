@@ -9,7 +9,7 @@ from .data.laylines import Layline
 from .dlc import DlcEditor
 from .demons import DemonManager
 from .essences import EssenceManager
-from .file_handling import BaseMasterEditor, BaseStaticEditor, structproperty
+from .file_handling import BaseMasterEditor, BaseStaticEditor, EditorGetter, structproperty
 from .items import ItemManager
 from .miracles import MiracleManager
 from .miracle_unlocks import MiracleUnlockManager
@@ -146,11 +146,17 @@ class Difficulty(Enum):
     Hard = auto()
 
 
+def unreal_to_python_datetime(ticks: int) -> datetime:
+    return datetime.min + timedelta(microseconds=ticks/10)
+
+
+def python_to_unreal_datetime(time: datetime) -> int:
+    return int((time - datetime.min).total_seconds() * (10 ** 7))
+
+
 class SaveEditor(BaseMasterEditor):
     @structproperty(
-        datetime, "<Q",
-        lambda u: datetime.min + timedelta(microseconds=u/10),
-        lambda t: int((t - datetime.min).total_seconds() * (10 ** 7))
+        datetime, "<Q", unreal_to_python_datetime, python_to_unreal_datetime,
     )
     def time_of_saving(self) -> int:
         return 0x4f4
