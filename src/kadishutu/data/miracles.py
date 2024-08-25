@@ -1,8 +1,8 @@
 from dataclasses import dataclass, field
 from enum import Enum
-from kadishutu.tools.eprint import eprint
+from kadishutu.paths import APPDIRS
+from kadishutu.tools.eprint import printexcept
 from kadishutu.tools.tbbreader import Tbcr
-import os
 from struct import Struct
 from dataclasses_json import DataClassJsonMixin, config
 from pathlib import Path
@@ -11,6 +11,7 @@ from typing import List, Optional, Self, Union
 from .csvutils import TABLES_PATH, is_unused, make_maps
 
 
+UMODEL_SAVED_PATH = APPDIRS.data_path / "game_data_saved"
 MIRACLE_DATA_PATH = TABLES_PATH / "miracles.json"
 
 
@@ -54,11 +55,10 @@ class MiracleData(Destructable):
 
 
 try:
-    datadir = Path(os.environ["HOME"]) / ".local/share/kadishutu/game_data_saved"
-    tcx = Tbcr.from_path(datadir / "Game/Blueprints/Gamedata/BinTable/GodParameter/Table/GodParameterDataTable.uexp")
+    tcx = Tbcr.from_path(UMODEL_SAVED_PATH / "Game/Blueprints/Gamedata/BinTable/GodParameter/Table/GodParameterDataTable.uexp")
     MIRACLE_DATA = MiracleData.from_array_of_bytes(tcx.tables[0].rows)
 except Exception as e:
-    eprint("Failed to load miracle data:", e.__repr__())
+    printexcept("Failed to load miracle data", e)
     MIRACLE_DATA = []
 
 

@@ -11,3 +11,11 @@ def eprint(*args, **kwargs):
 
 def eprintf(txt: str, *args, **kwargs):
     print(txt.format(*args), file=sys.stderr, **kwargs)
+
+
+def printexcept(msg: str, e: Exception, *args: object, **kwargs: object):
+    eprint(
+        msg.format(*args, **kwargs) + ":",
+        e.__repr__(),
+        sep="\n",
+    )

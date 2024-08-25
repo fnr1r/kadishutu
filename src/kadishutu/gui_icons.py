@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-import os
+from kadishutu.paths import APPDIRS
 from pathlib import Path
 from typing import Dict
 from typing_extensions import Self
@@ -11,27 +11,7 @@ from PySide6.QtGui import QIcon, QPixmap
 from .data.element_icons import Element
 
 
-def app_data_path() -> Path:
-    from xdg import xdg_data_home
-    try:
-        return xdg_data_home() / "kadishutu"
-    except Exception as e:
-        print("Failed to get XDG path:", e)
-    return Path()
-
-
-APP_DATA_PATH = app_data_path()
-
-
-def umodel_export_path() -> Path:
-    try:
-        return Path(os.environ["SMTVV_UMODEL_EXPORT"])
-    except KeyError:
-        pass
-    return APP_DATA_PATH / "game_data_export"
-
-
-UMODEL_EXPORT_PATH = umodel_export_path()
+UMODEL_EXPORT_PATH = APPDIRS.data_path / "game_data_export"
 
 
 @dataclass

@@ -12,13 +12,16 @@ dataclasses-json = "^0.6.7"
 pycryptodome = "^3.20.0"
 typing-extensions = "^4.12.2"
 
+[tool.poetry.dependencies.xdg]
+version = "^6.0.0"
+markers = "sys_platform == 'linux'"
+
 [tool.poetry.scripts]
 kadishutu = "kadishutu:main"
 
 [tool.poetry.group.gui.dependencies]
 pillow = "^10.4.0"
 pyside6 = "^6.7.2"
-xdg = "^6.0.0"
 
 [tool.poetry.group.dev.dependencies]
 mypy = "^1.11.1"
