@@ -136,12 +136,8 @@ class BaseEditor(AbstractEditor, ABC):
         return cls(self.master, *args, **kwargs)
 
     @classmethod
-    def disp(cls, *args, **kwargs) -> Self:
-        # NOTE: This is fine, since when accessed as an attribute Python will
-        # run __get__ on dispatcher, returning the actual Self.
-        # It's better than what I had before.
-        # TODO: Fix this mess
-        return Dispatcher(cls, *args, **kwargs) # type: ignore
+    def disp(cls, *args, **kwargs):
+        return Dispatcher(cls, *args, **kwargs)
 
 
 TBaseDynamicEditor = TypeVar("TBaseDynamicEditor", bound="BaseDynamicEditor")
@@ -300,11 +296,11 @@ class EditorGetter(Generic[T, E], ABC):
         self._editor = None
 
 
-K = TypeVar("K", bound=BaseEditor)
+T = TypeVar("T", bound=BaseEditor)
 
 
-class Dispatcher(EditorGetter):
-    def __init__(self, ed_cls: Type[K], *args, **kwargs):
+class Dispatcher(EditorGetter, Generic[T]):
+    def __init__(self, ed_cls: Type[T], *args, **kwargs):
         self.ed_cls = ed_cls
         self.args = args
         self.kwargs = kwargs
@@ -318,6 +314,9 @@ class Dispatcher(EditorGetter):
 
     def write(self, _):
         raise AttributeError("dispatchers are read-only")
+    
+    def __get__(self, instance, _) -> T:
+        return super().__get__(instance, _)
 
     def __set__(self, _, v):
         self.write(v)
