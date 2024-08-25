@@ -356,9 +356,7 @@
         "id": "0x67f5",
         "name": "Special: Moral Transcendence",
         "miracles": [
-            "Moral Transcendence",
-            "NOTE: This is a TODO since it requires an additional change.",
-            "i.e. data[0x69ce4] |= 0x10"
+            "Moral Transcendence"
         ]
     }
 ]

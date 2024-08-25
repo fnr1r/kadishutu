@@ -1,7 +1,10 @@
 from typing import Optional
 
 from .data.miracle_unlocks import MIRACLE_UNLOCK_NAME_MAP, MiracleUnlock
-from .file_handling import BaseDynamicEditor, BaseStaticEditor, BaseStructAsSingularValueEditor
+from .file_handling import (
+    BaseDynamicEditor, BaseStaticEditor, BaseStructAsSingularValueEditor,
+    BitEditor,
+)
 
 
 class MiracleUnlockEditor(BaseDynamicEditor, BaseStructAsSingularValueEditor):
@@ -27,8 +30,17 @@ class MiracleUnlockEditor(BaseDynamicEditor, BaseStructAsSingularValueEditor):
         self.value = int(value)
 
 
+class ExtraMiracleUnlock(BaseStaticEditor):
+    offset = 0
+    satan_beaten = BitEditor(0x69ce4, 4)
+
+
 class MiracleUnlockManager(BaseStaticEditor):
     offset = 0
+
+    @property
+    def extras(self) -> ExtraMiracleUnlock:
+        return self.dispatch(ExtraMiracleUnlock)
 
     def at_offset(self, offset: int, *args, **kwargs):
         return self.dispatch(MiracleUnlockEditor, offset, *args, **kwargs)

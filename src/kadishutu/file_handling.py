@@ -1,9 +1,11 @@
-from abc import ABC
+from abc import ABC, abstractmethod
 from dataclasses import dataclass
 from hashlib import sha1
 from pathlib import Path
 from struct import Struct, pack_into, unpack_from
-from typing import Any, ClassVar, Callable, Optional, Type, TypeVar, Union
+from typing import (
+    Any, ClassVar, Callable, Generic, Optional, Type, TypeVar, Union
+)
 from typing_extensions import Self
 
 from .encryption import decrypt, encrypt
@@ -220,6 +222,54 @@ class BaseStructAsSingularValueEditor(BaseStructEditor, ABC):
     @value.setter
     def value(self, v: Any):
         self.struct_pack(0, v)
+
+
+T = TypeVar("T")
+
+
+class EditorGetter(Generic[T], ABC):
+    @abstractmethod
+    def read(self, editor: BaseEditor) -> T:
+        raise NotImplementedError
+
+    @abstractmethod
+    def write(self, editor: BaseEditor, value: T):
+        raise NotImplementedError
+
+    def __get__(self, instance, _) -> T:
+        assert instance is not None
+        assert isinstance(instance, BaseEditor)
+        return self.read(instance)
+
+    def __set__(self, instance, value: T):
+        assert instance is not None
+        assert isinstance(instance, BaseEditor)
+        self.write(instance, value)
+
+
+@dataclass
+class BitEditor(EditorGetter):
+    offset: int
+    bit: int
+
+    @property
+    def bit_value(self) -> int:
+        return 1 << self.bit
+
+    @property
+    def inverse_bit_value(self) -> int:
+        return 0xff - self.bit_value
+
+    def read(self, editor: BaseEditor) -> bool:
+        return bool(editor.data[self.offset] & self.bit_value)
+
+    def write(self, editor: BaseEditor, value: bool):
+        raw = editor.data[self.offset]
+        if value:
+            res = raw | self.bit_value
+        else:
+            res = raw & self.inverse_bit_value
+        editor.data[self.offset] = res
 
 
 T = TypeVar("T")
