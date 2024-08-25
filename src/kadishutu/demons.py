@@ -270,7 +270,7 @@ class DemonEditor(BaseDynamicEditor):
         return self.relative_as_absolute_offset(74)
     @structproperty(int, "<I")
     def is_summoned(self):
-        return self.relative_as_absolute_offset(88)
+        return self.relative_as_absolute_offset(96)
     @property
     def healable(self) -> HealableEditor:
         return self.relative_dispatch(HealableEditor, 100)

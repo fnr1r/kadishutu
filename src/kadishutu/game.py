@@ -2,7 +2,7 @@ from dataclasses import dataclass
 from datetime import datetime, timedelta
 from enum import Enum, auto
 from struct import Struct, pack_into, unpack_from
-from typing import Optional, Tuple
+from typing import List, Optional, Tuple
 
 from .alignment import AlignmentManager
 from .data.laylines import Layline
@@ -34,26 +34,29 @@ class TeamEditor(BaseStaticEditor):
         return tuple(demons)
     @summoned_demons.setter
     def summoned_demons(self, demons: TEAM_TUPLE):
-        save = self.master
-        assert isinstance(save, SaveEditor)
-        # Unset is_summoned flag
+        assert isinstance(self.master, SaveEditor)
+        demon_mgr = self.master.demons
         old_demon_list = list(self.summoned_demons)
-        print(old_demon_list)
         for i in old_demon_list:
             if i is None:
                 continue
-            demon = save.demons.in_slot(i)
-            print(demon.name, demon.is_summoned)
+            demon = demon_mgr.in_slot(i)
             demon.is_summoned = 0
-            print(demon.name, demon.is_summoned)
-        demon_list = list(demons)
-        for i in range(len(demon_list)):
-            iv = demon_list[i]
-            if iv is None:
-                demon_list[i] = self.NO_DEMON
-            else:
-                save.demons.in_slot(iv).is_summoned = 1
+
+        demon_list: List[int] = []
+        #demon_icons: List[Tuple[int, int]] = []
+        for i in demons:
+            if i is None:
+                demon_list.append(self.NO_DEMON)
+                #demon_icons.append((self.NO_DEMON, 0))
+                continue
+            demon = demon_mgr.in_slot(i)
+            demon.is_summoned = 6
+            demon_list.append(demon.slot)
+            #demon_icons.append((i.demon_id, i.level))
         pack_into(SUMMONED_DEMONS_FMT, self.data, SUMMONED_DEMONS_OFFSET, *demon_list)
+        #demon_icons.insert(self.player_placement, (1, 99))
+
     @structproperty(int, "<B")
     def player_placement(self) -> int:
         return 0x3d45

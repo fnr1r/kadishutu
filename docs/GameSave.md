@@ -471,9 +471,10 @@ Here's the structure:
 - 0x4a - 0x4c - dh_talks  
   (something related to the demon haunt)  
   (an unsigned short / u16 (2 bytes))
-- 0x58 - 0x5c - is_summoned  
+- 0x58 - 0x5c - old_is_summoned  
   (an unsigned int / u32 (4 bytes))
-- 0x60 - 0x64 - something
+- 0x60 - 0x61 - is_summoned
+  (0x00 for not summoned, 0x06 for summoned)
 - 0x64 - 0x68 - [Healable stats](#healable-stats)  
   (an unsigned int / u32 (4 bytes))
 - 0x68 - 0x70 - Experience  
