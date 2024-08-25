@@ -1,7 +1,9 @@
-from struct import calcsize, unpack_from
+from struct import unpack_from
 
 from .demons import AffinityEditor, HealableEditor, PotentialEditor, StatsEditor
-from .file_handling import BaseDynamicEditor, BaseStaticEditor, BaseStructEditor, U8Editor, structproperty
+from .file_handling import (
+    BaseDynamicEditor, BaseStaticEditor, BaseStructEditor, U8Editor
+)
 from .skills import SkillEditor, SkillManager
 
 
