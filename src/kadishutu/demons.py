@@ -1,9 +1,11 @@
 from enum import Enum, auto
-from struct import calcsize
 
 from .data.affinity import Affinity
 from .data.demons import DEMON_ID_MAP, Demon
-from .file_handling import BaseDynamicEditor, BaseStaticEditor, BaseStructAsFieldEditor, structproperty
+from .file_handling import (
+    BaseDynamicEditor, BaseStaticEditor, BaseStructAsFieldEditor, U16Editor,
+    U32Editor, U64Editor, U8Editor, structproperty,
+)
 from .skills import SkillEditor, SkillManager
 
 
@@ -253,51 +255,20 @@ class DemonEditor(BaseDynamicEditor):
     def meta(self) -> Demon:
         return DEMON_ID_MAP[self.demon_id]
 
-    @property
-    def stats(self) -> StatsEditor:
-        return self.relative_dispatch(StatsEditor, 0)
-    #@property
-    #def friendship(self) -> FriendshipEditor:
-    #    return self.at_offset(FriendshipEditor, 68)
-    @structproperty(int, "<L")
-    def friendship(self) -> int:
-        return self.relative_as_absolute_offset(68)
-    #@structproperty(int, "<H") # , lambda u: bool(u), lambda t: int(t)
-    #def is_summoned(self):
-    #    return self.relative_offset(72)
+    stats = StatsEditor.disp(0)
+    friendship = U32Editor(0x44)
     @structproperty(int, "<H")
     def dh_talks(self):
         return self.relative_as_absolute_offset(74)
-    @structproperty(int, "<I")
-    def is_summoned(self):
-        return self.relative_as_absolute_offset(96)
-    @property
-    def healable(self) -> HealableEditor:
-        return self.relative_dispatch(HealableEditor, 100)
-    @structproperty(int, "<Q")
-    def exp(self) -> int:
-        return self.relative_as_absolute_offset(104)
-    @structproperty(int, "<B")
-    def level(self):
-        return self.relative_as_absolute_offset(112)
-    #@property
-    #def demon_id(self) -> DemonIdEditor:
-    #    return self.at_offset(DemonIdEditor, 114)
-    @structproperty(int, "<H")
-    def demon_id(self):
-        return self.relative_as_absolute_offset(114)
-    @property
-    def skills(self) -> SkillManager:
-        return self.relative_dispatch(SkillManager, 120)
-    @property
-    def affinities(self) -> AffinityEditor:
-        return self.relative_dispatch(AffinityEditor, 216)
-    @property
-    def potentials(self) -> PotentialEditor:
-        return self.relative_dispatch(PotentialEditor, 384)
-    @property
-    def innate_skill(self) -> SkillEditor:
-        return self.relative_dispatch(SkillEditor, 408 - calcsize("<I"))
+    is_summoned = U32Editor(0x60)
+    healable = HealableEditor.disp(0x64)
+    exp = U64Editor(0x68)
+    level = U8Editor(0x70)
+    demon_id = U16Editor(0x72)
+    skills = SkillManager.disp(0x78)
+    affinities = AffinityEditor.disp(0xd8)
+    potentials = PotentialEditor.disp(0x180)
+    innate_skill = SkillEditor.disp(0x194)
 
     @property
     def name(self) -> str:

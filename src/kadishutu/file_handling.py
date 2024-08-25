@@ -1,6 +1,7 @@
 from abc import ABC, abstractmethod
 from dataclasses import dataclass
 from datetime import datetime, timedelta
+from enum import Enum
 from hashlib import sha1
 from kadishutu.tools.fdatetime import (
     python_to_unreal_datetime, unreal_to_python_datetime
@@ -285,7 +286,7 @@ class EditorGetter(Generic[T, E], ABC):
         assert isinstance(instance, AbstractEditor)
         self._editor = instance # type: ignore
         res = self.read()
-        #self._editor = None
+        self._editor = None
         return res
 
     def __set__(self, instance, value: T):
@@ -314,7 +315,7 @@ class Dispatcher(EditorGetter, Generic[T]):
 
     def write(self, _):
         raise AttributeError("dispatchers are read-only")
-    
+
     def __get__(self, instance, _) -> T:
         return super().__get__(instance, _)
 
@@ -349,8 +350,11 @@ class BitEditor(EditorGetter):
         self.data[self.offset] = res
 
 
+STRUCT_FMT = Union[str, bytes]
+
+
 class StructEditor(EditorGetter):
-    fmt: Union[str, bytes] = NotImplemented
+    fmt: STRUCT_FMT = NotImplemented
 
     @property
     def struct_obj(self) -> Struct:
@@ -393,6 +397,22 @@ class U32Editor(IntEditor):
 
 class U64Editor(IntEditor):
     fmt = "<Q"
+
+
+E = TypeVar("E", bound=Enum)
+
+
+class EnumEditor(SingularStructEditor, Generic[E]):
+    def __init__(self, offset: int, enum: Type[E], fmt: STRUCT_FMT = "<B"):
+        super().__init__(offset)
+        self.fmt = fmt
+        self.enum = enum
+
+    def read(self) -> E:
+        return self.enum(super().read())
+    
+    def write(self, v: E):
+        super().write(v.value)
 
 
 class TimeDeltaEditor(U32Editor):

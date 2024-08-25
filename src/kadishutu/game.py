@@ -1,5 +1,4 @@
 from dataclasses import dataclass
-from datetime import timedelta
 from enum import Enum, auto
 from struct import Struct, pack_into, unpack_from
 from typing import List, Optional, Tuple
@@ -9,7 +8,10 @@ from .data.laylines import Layline
 from .dlc import DlcEditor
 from .demons import DemonManager
 from .essences import EssenceManager
-from .file_handling import BaseMasterEditor, BaseStaticEditor, Dispatcher, TimeDeltaEditor, U16Editor, U32Editor, UnrealTimeEditor, structproperty
+from .file_handling import (
+    BaseMasterEditor, BaseStaticEditor, EnumEditor, TimeDeltaEditor, U16Editor,
+    U32Editor, U8Editor, UnrealTimeEditor
+)
 from .items import ItemManager
 from .miracles import MiracleManager
 from .miracle_unlocks import MiracleUnlockManager
@@ -57,9 +59,7 @@ class TeamEditor(BaseStaticEditor):
         pack_into(SUMMONED_DEMONS_FMT, self.data, SUMMONED_DEMONS_OFFSET, *demon_list)
         #demon_icons.insert(self.player_placement, (1, 99))
 
-    @structproperty(int, "<B")
-    def player_placement(self) -> int:
-        return 0x3d45
+    player_placement = U8Editor(0x3d45)
 
 
 @dataclass
@@ -79,13 +79,8 @@ class PositionEditor(BaseStaticEditor):
     ROT_OFFSET = 0x56a6
     ROT_STRUCT = Struct("<ff")
 
-    @structproperty(int, "<I")
-    def current_map_upper(self) -> int:
-        return 0x567e
-
-    @structproperty(int, "<I")
-    def current_map_lower(self) -> int:
-        return 0x5682
+    current_map_upper = U32Editor(0x567e)
+    current_map_lower = U32Editor(0x5682)
 
     @property
     def raw_coordinates(self) -> bytes:
@@ -121,9 +116,7 @@ class PositionEditor(BaseStaticEditor):
     def rotation(self, pitch: int, yaw: int):
         self.raw_rotation = self.ROT_STRUCT.pack(pitch, yaw)
 
-    @structproperty(int, "<B")
-    def last_layline_fount(self) -> int:
-        return 0x68c5
+    last_layline_fount = U8Editor(0x68c5)
 
     def layline_unlock(self, layline: Layline):
         (offset, bit) = layline.unlock_data
@@ -148,15 +141,7 @@ class Difficulty(Enum):
 
 class SaveEditor(BaseMasterEditor):
     time_of_saving = UnrealTimeEditor(0x4f4)
-
-    @structproperty(
-        Difficulty, "<B",
-        lambda u: Difficulty(u),
-        lambda t: t.value
-    )
-    def difficulty(self) -> int:
-        return 0x4fc
-
+    difficulty = EnumEditor(0x4fc, Difficulty)
     dlc = DlcEditor.disp()
     play_time = TimeDeltaEditor(0x5d0)
     player = PlayerEditor.disp()
