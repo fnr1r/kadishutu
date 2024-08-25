@@ -1,7 +1,7 @@
 from struct import calcsize, unpack_from
 
 from .demons import AffinityEditor, HealableEditor, PotentialEditor, StatsEditor
-from .file_handling import BaseDynamicEditor, BaseStaticEditor, BaseStructEditor, structproperty
+from .file_handling import BaseDynamicEditor, BaseStaticEditor, BaseStructEditor, U8Editor, structproperty
 from .skills import SkillEditor, SkillManager
 
 
@@ -84,27 +84,11 @@ class NameManager(BaseStaticEditor):
 class PlayerEditor(BaseStaticEditor):
     offset = 0
 
-    @property
-    def names(self) -> NameManager:
-        return self.dispatch(NameManager)
-    @property
-    def stats(self) -> StatsEditor:
-        return self.dispatch(StatsEditor, 0x988)
-    @property
-    def healable(self) -> HealableEditor:
-        return self.dispatch(HealableEditor, 0x9bc)
-    @structproperty(int, "<B")
-    def level(self) -> int:
-        return 0x9c8
-    @property
-    def skills(self) -> SkillManager:
-        return self.dispatch(SkillManager, 0xa38)
-    @property
-    def affinities(self) -> AffinityEditor:
-        return self.dispatch(AffinityEditor, 0xa98)
-    @property
-    def potentials(self) -> PotentialEditor:
-        return self.dispatch(PotentialEditor, 0xb38)
-    @property
-    def innate_skill(self) -> SkillEditor:
-        return self.dispatch(SkillEditor, 0xb50 - calcsize("<I"))
+    names = NameManager.disp()
+    stats = StatsEditor.disp(0x988)
+    healable = HealableEditor.disp(0x9bc)
+    level = U8Editor(0x9c8)
+    skills = SkillManager.disp(0xa38)
+    affinities = AffinityEditor.disp(0xa98)
+    potentials = PotentialEditor.disp(0xb38)
+    innate_skill = SkillEditor.disp(0xb4c)

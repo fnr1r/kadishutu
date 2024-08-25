@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-from datetime import datetime, timedelta
+from datetime import timedelta
 from enum import Enum, auto
 from struct import Struct, pack_into, unpack_from
 from typing import List, Optional, Tuple
@@ -9,7 +9,7 @@ from .data.laylines import Layline
 from .dlc import DlcEditor
 from .demons import DemonManager
 from .essences import EssenceManager
-from .file_handling import BaseMasterEditor, BaseStaticEditor, EditorGetter, structproperty
+from .file_handling import BaseMasterEditor, BaseStaticEditor, Dispatcher, TimeDeltaEditor, U16Editor, U32Editor, UnrealTimeEditor, structproperty
 from .items import ItemManager
 from .miracles import MiracleManager
 from .miracle_unlocks import MiracleUnlockManager
@@ -146,20 +146,8 @@ class Difficulty(Enum):
     Hard = auto()
 
 
-def unreal_to_python_datetime(ticks: int) -> datetime:
-    return datetime.min + timedelta(microseconds=ticks/10)
-
-
-def python_to_unreal_datetime(time: datetime) -> int:
-    return int((time - datetime.min).total_seconds() * (10 ** 7))
-
-
 class SaveEditor(BaseMasterEditor):
-    @structproperty(
-        datetime, "<Q", unreal_to_python_datetime, python_to_unreal_datetime,
-    )
-    def time_of_saving(self) -> int:
-        return 0x4f4
+    time_of_saving = UnrealTimeEditor(0x4f4)
 
     @structproperty(
         Difficulty, "<B",
@@ -169,68 +157,17 @@ class SaveEditor(BaseMasterEditor):
     def difficulty(self) -> int:
         return 0x4fc
 
-    @property
-    def dlc(self) -> DlcEditor:
-        return self.dispatch(DlcEditor)
-
-    @structproperty(
-        timedelta, "<L",
-        lambda u: timedelta(seconds=u),
-        lambda t: t.seconds
-    )
-    def play_time(self) -> int:
-        return 0x5d0
-    @property
-    def player(self) -> PlayerEditor:
-        return self.dispatch(PlayerEditor)
-
-    @property
-    def demons(self) -> DemonManager:
-        return self.dispatch(DemonManager)
-
-    #MACCA = Struct("<I")
-    #@property
-    #def macca(self) -> int:
-    #    return self.MACCA.unpack_from(self.savefile.data, 0x3d32)[0]
-    #@macca.setter
-    #def macca(self, value: int):
-    #    self.MACCA.pack_into(self.savefile.data, 0x3d32, value)
-    #maccaf = structproperty(int, "<I", 0x3d32)
-    @structproperty(int, "<I")
-    def macca(self) -> int:
-        return 0x3d32
-    @structproperty(int, "<I")
-    def glory(self) -> int:
-        return 0x3d4a
-
-    @property
-    def team(self) -> TeamEditor:
-        return self.dispatch(TeamEditor)
-
-    @property
-    def miracles(self) -> MiracleManager:
-        return self.dispatch(MiracleManager)
-
-    @structproperty(int, "<H")
-    def magatsuhi_gauge(self) -> int:
-        return 0x3ece
-
-    @property
-    def items(self) -> ItemManager:
-        return self.dispatch(ItemManager)
-
-    @property
-    def essences(self) -> EssenceManager:
-        return self.dispatch(EssenceManager)
-
-    @property
-    def position(self) -> PositionEditor:
-        return self.dispatch(PositionEditor)
-    
-    @property
-    def miracle_unlocks(self) -> MiracleUnlockManager:
-        return self.dispatch(MiracleUnlockManager)
-
-    @property
-    def alignment(self) -> AlignmentManager:
-        return self.dispatch(AlignmentManager)
+    dlc = DlcEditor.disp()
+    play_time = TimeDeltaEditor(0x5d0)
+    player = PlayerEditor.disp()
+    demons = DemonManager.disp()
+    team = TeamEditor.disp()
+    macca = U32Editor(0x3d32)
+    glory = U32Editor(0x3d4a)
+    miracles = MiracleManager.disp()
+    magatsuhi_gauge = U16Editor(0x3ece)
+    items = ItemManager.disp()
+    essences = EssenceManager.disp()
+    position = PositionEditor.disp()
+    miracle_unlocks = MiracleUnlockManager.disp()
+    alignment = AlignmentManager.disp()

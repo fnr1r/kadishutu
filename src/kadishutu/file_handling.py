@@ -1,10 +1,14 @@
 from abc import ABC, abstractmethod
 from dataclasses import dataclass
+from datetime import datetime, timedelta
 from hashlib import sha1
+from kadishutu.tools.fdatetime import (
+    python_to_unreal_datetime, unreal_to_python_datetime
+)
 from pathlib import Path
 from struct import Struct, pack_into, unpack_from
 from typing import (
-    Any, ClassVar, Callable, Generic, Optional, Type, TypeVar, Union
+    Any, ClassVar, Callable, Generic, Optional, Tuple, Type, TypeVar, Union
 )
 from typing_extensions import Self
 
@@ -79,8 +83,21 @@ class DecryptedSave(RawSave):
 TBaseEditor = TypeVar("TBaseEditor", bound="BaseEditor")
 
 
+class AbstractEditor(ABC):
+    data: bytearray
+
+    @abstractmethod
+    def dispatch(
+        self,
+        cls: Callable[..., TBaseEditor],
+        *args,
+        **kwargs
+    ) -> TBaseEditor:
+        raise NotImplementedError
+
+
 @dataclass
-class BaseMasterEditor(ABC):
+class BaseMasterEditor(AbstractEditor, ABC):
     save_data: DecryptedSave
 
     @property
@@ -100,7 +117,7 @@ class BaseMasterEditor(ABC):
 
 
 @dataclass
-class BaseEditor(ABC):
+class BaseEditor(AbstractEditor, ABC):
     master: BaseMasterEditor
 
     @property
@@ -117,6 +134,14 @@ class BaseEditor(ABC):
         **kwargs
     ) -> "TBaseEditor":
         return cls(self.master, *args, **kwargs)
+
+    @classmethod
+    def disp(cls, *args, **kwargs) -> Self:
+        # NOTE: This is fine, since when accessed as an attribute Python will
+        # run __get__ on dispatcher, returning the actual Self.
+        # It's better than what I had before.
+        # TODO: Fix this mess
+        return Dispatcher(cls, *args, **kwargs) # type: ignore
 
 
 TBaseDynamicEditor = TypeVar("TBaseDynamicEditor", bound="BaseDynamicEditor")
@@ -225,32 +250,85 @@ class BaseStructAsSingularValueEditor(BaseStructEditor, ABC):
 
 
 T = TypeVar("T")
+E = TypeVar("E", bound=AbstractEditor)
 
 
-class EditorGetter(Generic[T], ABC):
+class EditorGetter(Generic[T, E], ABC):
+    roffset: int
+    _editor: Optional[E]
+
+    def __init__(self, offset: int):
+        self.roffset = offset
+    
+    @property
+    def editor(self) -> E:
+        assert self._editor
+        return self._editor
+    
+    @property
+    def offset(self) -> int:
+        if isinstance(self.editor, BaseOffsetEditor):
+            return self.editor.offset + self.roffset
+        else:
+            return self.roffset
+
+    @property
+    def data(self) -> bytearray:
+        return self.editor.data
+
     @abstractmethod
-    def read(self, editor: BaseEditor) -> T:
+    def read(self) -> T:
         raise NotImplementedError
 
     @abstractmethod
-    def write(self, editor: BaseEditor, value: T):
+    def write(self, value: T):
         raise NotImplementedError
 
     def __get__(self, instance, _) -> T:
         assert instance is not None
-        assert isinstance(instance, BaseEditor)
-        return self.read(instance)
+        assert isinstance(instance, AbstractEditor)
+        self._editor = instance # type: ignore
+        res = self.read()
+        #self._editor = None
+        return res
 
     def __set__(self, instance, value: T):
         assert instance is not None
-        assert isinstance(instance, BaseEditor)
-        self.write(instance, value)
+        assert isinstance(instance, AbstractEditor)
+        self._editor = instance # type: ignore
+        self.write(value)
+        self._editor = None
 
 
-@dataclass
+K = TypeVar("K", bound=BaseEditor)
+
+
+class Dispatcher(EditorGetter):
+    def __init__(self, ed_cls: Type[K], *args, **kwargs):
+        self.ed_cls = ed_cls
+        self.args = args
+        self.kwargs = kwargs
+
+    def read(self):
+        return self.editor.dispatch(
+            self.ed_cls,
+            *self.args,
+            **self.kwargs,
+        )
+
+    def write(self, _):
+        raise AttributeError("dispatchers are read-only")
+
+    def __set__(self, _, v):
+        self.write(v)
+
+
 class BitEditor(EditorGetter):
-    offset: int
     bit: int
+
+    def __init__(self, offset: int, bit: int):
+        super().__init__(offset)
+        self.bit = bit
 
     @property
     def bit_value(self) -> int:
@@ -260,16 +338,78 @@ class BitEditor(EditorGetter):
     def inverse_bit_value(self) -> int:
         return 0xff - self.bit_value
 
-    def read(self, editor: BaseEditor) -> bool:
-        return bool(editor.data[self.offset] & self.bit_value)
+    def read(self) -> bool:
+        return bool(self.data[self.offset] & self.bit_value)
 
-    def write(self, editor: BaseEditor, value: bool):
-        raw = editor.data[self.offset]
+    def write(self, value: bool):
+        raw = self.data[self.offset]
         if value:
             res = raw | self.bit_value
         else:
             res = raw & self.inverse_bit_value
-        editor.data[self.offset] = res
+        self.data[self.offset] = res
+
+
+class StructEditor(EditorGetter):
+    fmt: Union[str, bytes] = NotImplemented
+
+    @property
+    def struct_obj(self) -> Struct:
+        return Struct(self.fmt)
+
+    def read(self) -> Tuple[Any, ...]:
+        return self.struct_obj.unpack_from(self.data, self.offset)
+    
+    def write(self, v: Tuple[Any, ...]):
+        self.struct_obj.pack_into(self.data, self.offset, *v)
+
+
+class SingularStructEditor(StructEditor):
+    def read(self) -> Any:
+        return super().read()[0]
+    
+    def write(self, v: Any):
+        super().write((v,))
+
+
+class IntEditor(SingularStructEditor):
+    def read(self) -> int:
+        return super().read()
+    
+    def write(self, v: int):
+        super().write(v)
+
+
+class U8Editor(IntEditor):
+    fmt = "<B"
+
+
+class U16Editor(IntEditor):
+    fmt = "<H"
+
+
+class U32Editor(IntEditor):
+    fmt = "<I"
+
+
+class U64Editor(IntEditor):
+    fmt = "<Q"
+
+
+class TimeDeltaEditor(U32Editor):
+    def read(self) -> timedelta:
+        return timedelta(seconds=super().read())
+    
+    def write(self, v: timedelta):
+        super().write(v.seconds)
+
+
+class UnrealTimeEditor(U64Editor):
+    def read(self) -> datetime:
+        return unreal_to_python_datetime(super().read())
+    
+    def write(self, v: datetime):
+        super().write(python_to_unreal_datetime(v))
 
 
 T = TypeVar("T")
