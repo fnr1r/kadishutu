@@ -89,7 +89,7 @@ class AbstractEditor(ABC):
     @abstractmethod
     def dispatch(
         self,
-        cls: Callable[..., TBaseEditor],
+        cls: Type[TBaseEditor],
         *args,
         **kwargs
     ) -> TBaseEditor:
@@ -109,7 +109,7 @@ class BaseMasterEditor(AbstractEditor, ABC):
 
     def dispatch(
         self,
-        cls: Callable[..., TBaseEditor],
+        cls: Type[TBaseEditor],
         *args,
         **kwargs
     ) -> TBaseEditor:
@@ -129,7 +129,7 @@ class BaseEditor(AbstractEditor, ABC):
 
     def dispatch(
         self,
-        cls: Callable[..., "TBaseEditor"],
+        cls: Type[TBaseEditor],
         *args,
         **kwargs
     ) -> "TBaseEditor":
