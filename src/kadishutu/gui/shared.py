@@ -144,14 +144,17 @@ class ScreenMixin:
         return lambda: self.stack_add(fun())
 
     @property
-    def editor_widget_on_stack(self) -> bool:
+    def main_window(self):
         from .mainwindow import MAIN_WINDOW
-        return len(MAIN_WINDOW.inner.widget_stack) > 1
+        return MAIN_WINDOW
+
+    @property
+    def editor_widget_on_stack(self) -> bool:
+        return len(self.main_window.inner.widget_stack) > 1
 
     @property
     def some_save_editor_widget(self) -> QWidget:
-        from .mainwindow import MAIN_WINDOW
-        widget = MAIN_WINDOW.inner.widget_stack[1]
+        widget = self.main_window.inner.widget_stack[1]
         return widget
 
 

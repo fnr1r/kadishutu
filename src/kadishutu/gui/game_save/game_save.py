@@ -16,6 +16,7 @@ from .items import ItemEditorScreen
 from .miracles import MiracleEditorScreen
 from .player import PlayerEditorScreen
 from .settings import SettingsEditorScreen
+from .teleport import TeleporterScreen
 
 
 class GameSaveEditorScreen(SaveScreenMixin, QWidget, AppliableWidget):
@@ -45,6 +46,7 @@ class GameSaveEditorScreen(SaveScreenMixin, QWidget, AppliableWidget):
             ("Miracles", MiracleEditorScreen),
             ("Items", ItemEditorScreen),
             ("Essences", EssenceEditorScreen),
+            ("Layline Crossing", TeleporterScreen),
             ("Alignment", AlignmentEditorScreen),
             ("Settings", SettingsEditorScreen),
         ]:
