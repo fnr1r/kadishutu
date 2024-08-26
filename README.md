@@ -26,24 +26,59 @@ pipx upgrade kadishutu
 but because they're built with pyinstaller, they might get flagged by your
 antivirus.
 
-## Usage
+### Additional setup
 
-### GUI
+Some data is not bundled with the editor. While not strictly necesary, adding
+it gives you a better experience with the editor.
 
-You can open the GUI by running `kadishutu gui $OPTIONALLY_A_SAVE_FILE` in a
-terminal.
+The files can be dumped/saved/exported with
+[umodel](https://www.gildor.org/en/projects/umodel).
 
-#### Icons and images
+(don't use the Linux version, it's outdated)
 
-If you want to have icons/images in the gui, you need to extract the following
-game files (with [umodel](https://www.gildor.org/en/projects/umodel))
-to `$HOME/.local/share/kadishutu/game_data_export`.
+#### Game data
+
+```txt
+Game/Blueprints/Gamedata/BinTable/GodParameter/Table/GodParameterDataTable.uexp
+```
+
+(GodParameter means Miracle)
+
+#### Game image data
 
 ```txt
 Game/Design/UI/CharaIcon/Textures/*
 Game/Design/UI/Icon/Element/Textures/icon_element_01.tga
 Game/Design/UI/LoadingCharaIcon/*
 ```
+
+#### App data directory
+
+For Linux, it's usually:
+
+`$HOME/.local/share/kadishutu`
+
+For Windows, it's:
+
+`$HOME/AppData/Local/kadishutu`
+
+And for macOS, it's:
+
+`$HOME/Library/Application Support/kadishutu`
+
+The app can also be made portable by setting the `PORTABLE_APP` environment
+variable. Then data is stored in/loaded from:
+
+`./_appdata/data`
+
+(more info in [paths.py](src/kadishutu/paths.py))
+
+## Usage
+
+### GUI
+
+You can open the GUI by running `kadishutu gui $OPTIONALLY_A_SAVE_FILE` in a
+terminal or by double-clicking the executable.
 
 ### In a terminal
 
@@ -80,6 +115,10 @@ stats = game.player.stats
 stats.max_with_sbis()
 stats.current.hp = 999
 stats.current.mp = 999
+
+# Yes. This surprisingly works.
+stats.current.strength = 0xffff
+
 game.player.healable.hp = 999
 game.player.healable.mp = 999
 game.macca = 9999999
@@ -102,13 +141,15 @@ with all DLCs more specifically). It might work with the PC version.
     (it's mainly for importing a save file from a copy with DLCs)
   - Play Time
   - Macca, Glory
+  - Miracle (and unlocking them)
   - Summoned demons and player placement
   - For the player and demons
-    - Affinities, Potentials, Stats, Skills, Exp, Lvl (only for demons)
-  - Only for demons:
-    - Demon ID, Innate Skill
-  - (some) Items (I need the item table for this game)
+    - Affinities, Potentials, Stats, Skills, Exp, Lvl, Innate Skill
+  - Demons (i.e. Demon IDs)
+  - Items
   - Essences (kinda) (it's experimental)
+  - Position
+  - Alignment
 - Manual editing after decryption
 
 ## What doesn't?
@@ -119,10 +160,14 @@ with all DLCs more specifically). It might work with the PC version.
 
 ## What's planned?
 
+- Editing more data
+  - Demon compendium
+  - Quests
+  - Full demon support
 - Better CLI
-- GUI
 - Allowing the user to add files that modify the demon/skill database, in
   corelation with mods
+- Rewrite the core in Rust (once the format is better understood)
 
 ## Documentation
 
