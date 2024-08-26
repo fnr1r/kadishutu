@@ -24,13 +24,13 @@ if __name__ == "__main__":
 # EDIT FROM HERE
 
 
-from kadishutu.file_handling import DecryptedSave
-from kadishutu.game import SaveEditor
+from kadishutu.core.game_save import GameSaveEditor
+from kadishutu.core.shared.file_handling import DecryptedSave
 from typing import List
 
 
 def main(path: Path, file: DecryptedSave, _: List[str]):
-    game = SaveEditor(file)
+    game = GameSaveEditor(file)
     print(f"Healing player {game.player.names.first_name}")
     stats = game.player.stats.current
     game.player.healable.hp = stats.hp
