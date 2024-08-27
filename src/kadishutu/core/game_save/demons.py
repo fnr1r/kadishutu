@@ -1,12 +1,13 @@
 from enum import Enum, auto
-from kadishutu.data.affinity import Affinity
 from kadishutu.data.demons import DEMON_ID_MAP, Demon
 
 from ..shared.file_handling import (
     BaseDynamicEditor, BaseStaticEditor, BaseStructAsFieldEditor, U16Editor,
     U32Editor, U64Editor, U8Editor, structproperty,
 )
+from .affinities import AFFINITY_NAMES, AffinityEditor
 from .skills import SkillEditor, SkillManager
+from .stats import STATS_NAMES, HealableEditor, StatBlockEditor
 
 
 DEMON_TABLE_OFFSET = 0xb60
@@ -15,83 +16,7 @@ DEMON_TABLE_SIZE = 30
 STAT_TABLE_SIZE = 16
 
 
-META_STATS = ("<HHHHHHHH", "HP MP ST VI MA AG LU NULL")
 META_POTENTIALS = ("<hhhhhhhhhhhh", "PHYSICAL FIRE ICE ELECTRIC FORCE LIGHT DARK ALMIGHTY AILMENT SUPPORT HEALING _unknown")
-
-
-STATS_NAMES = ["HP", "MP", "Strength", "Vitality", "Magic", "Agility", "Luck"]
-AFFINITY_NAMES = [
-    "Physical", "Fire", "Ice", "Electric", "Force", "Light", "Dark",
-    "Poison", "Confusion", "Charm", "Sleep", "Seal", "Mirage"
-]
-
-
-class SubStatsEditor(BaseDynamicEditor, BaseStructAsFieldEditor):
-    struct = "<H"
-
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        assert not self.struct_obj.unpack_from(self.data, self.field_as_absolute_offset(7))[0], \
-            "Supposed NULL is not a null????"
-
-    @structproperty(int, struct)
-    def hp(self):
-        return self.field_as_absolute_offset(0)
-
-    @structproperty(int, struct)
-    def mp(self):
-        return self.field_as_absolute_offset(1)
-
-    @structproperty(int, struct)
-    def strength(self):
-        return self.field_as_absolute_offset(2)
-
-    @structproperty(int, struct)
-    def vitality(self):
-        return self.field_as_absolute_offset(3)
-
-    @structproperty(int, struct)
-    def magic(self):
-        return self.field_as_absolute_offset(4)
-
-    @structproperty(int, struct)
-    def agility(self):
-        return self.field_as_absolute_offset(5)
-
-    @structproperty(int, struct)
-    def luck(self):
-        return self.field_as_absolute_offset(6)
-
-
-class StatsEditor(BaseDynamicEditor, BaseStructAsFieldEditor):
-    struct = "<HHHHHHHH"
-
-    @property
-    def base(self) -> SubStatsEditor:
-        return self.field_dispatch(SubStatsEditor, 0)
-    @property
-    def changes(self) -> SubStatsEditor:
-        return self.field_dispatch(SubStatsEditor, 1)
-    @property
-    def current(self) -> SubStatsEditor:
-        return self.field_dispatch(SubStatsEditor, 2)
-    def max_with_sbis(self):
-        target = 999
-        changes = self.changes
-        current = self.current
-        for stat in ["strength", "vitality", "magic", "agility", "luck"]:
-            inc = target - current.__getattribute__(stat)
-            print(f"Using {inc} {stat} boosting items.")
-            changes.__setattr__(stat, inc)
-            current.__setattr__(stat, target)
-
-    def recalculate(self):
-        # TODO: Take skills into account
-        for stat in STATS_NAMES:
-            stat = stat.lower()
-            base = self.base.__getattribute__(stat)
-            changes = self.changes.__getattribute__(stat)
-            self.current.__setattr__(stat, base + changes)
 
 
 #class FriendshipEditor(BaseStructEditor):
@@ -104,96 +29,12 @@ class StatsEditor(BaseDynamicEditor, BaseStructAsFieldEditor):
 #        self.pack(id)
 
 
-class HealableEditor(BaseDynamicEditor, BaseStructAsFieldEditor):
-    struct = "<H"
-
-    @structproperty(int, struct)
-    def hp(self) -> int:
-        return self.field_as_absolute_offset(0)
-    @structproperty(int, struct)
-    def mp(self) -> int:
-        return self.field_as_absolute_offset(1)
-
-
 #class DemonIdEditor(SingularIntEditor):
 #    fmt = "<H"
 #
 #    @property
 #    def name_table(self) -> Dict[int, str]:
 #        return DEMONS
-
-
-def affinityprop(fmt):
-    return structproperty(
-        Affinity, fmt,
-        lambda u: Affinity(u),
-        lambda t: t.value,
-    ) 
-
-
-class AffinityEditor(BaseDynamicEditor, BaseStructAsFieldEditor):
-    struct = "<H"
-
-    @affinityprop(struct)
-    def physical_copy(self) -> int:
-        return self.field_as_absolute_offset(0)
-    @affinityprop(struct)
-    def fire_copy(self) -> int:
-        return self.field_as_absolute_offset(1)
-    @affinityprop(struct)
-    def ice_copy(self) -> int:
-        return self.field_as_absolute_offset(2)
-    @affinityprop(struct)
-    def electric_copy(self) -> int:
-        return self.field_as_absolute_offset(3)
-    @affinityprop(struct)
-    def force_copy(self) -> int:
-        return self.field_as_absolute_offset(4)
-    @affinityprop(struct)
-    def light_copy(self) -> int:
-        return self.field_as_absolute_offset(5)
-    @affinityprop(struct)
-    def dark_copy(self) -> int:
-        return self.field_as_absolute_offset(6)
-    @affinityprop(struct)
-    def poison(self) -> int:
-        return self.field_as_absolute_offset(8)
-    @affinityprop(struct)
-    def confusion(self) -> int:
-        return self.field_as_absolute_offset(10)
-    @affinityprop(struct)
-    def charm(self) -> int:
-        return self.field_as_absolute_offset(11)
-    @affinityprop(struct)
-    def sleep(self) -> int:
-        return self.field_as_absolute_offset(12)
-    @affinityprop(struct)
-    def seal(self) -> int:
-        return self.field_as_absolute_offset(13)
-    @affinityprop(struct)
-    def mirage(self) -> int:
-        return self.field_as_absolute_offset(20)
-    @affinityprop(struct)
-    def physical(self) -> int:
-        return self.field_as_absolute_offset(28)
-    @affinityprop(struct)
-    def fire(self) -> int:
-        return self.field_as_absolute_offset(29)
-    @affinityprop(struct)
-    def ice(self) -> int:
-        return self.field_as_absolute_offset(30)
-    @affinityprop(struct)
-    def electric(self) -> int:
-        return self.field_as_absolute_offset(31)
-    @affinityprop(struct)
-    def force(self) -> int:
-        return self.field_as_absolute_offset(32)
-    @affinityprop(struct)
-    def light(self) -> int:
-        return self.field_as_absolute_offset(33)
-    @affinityprop(struct)
-    def dark(self) -> int:
-        return self.field_as_absolute_offset(34)
 
 
 class PType(Enum):
@@ -256,7 +97,7 @@ class DemonEditor(BaseDynamicEditor):
     def meta(self) -> Demon:
         return DEMON_ID_MAP[self.demon_id]
 
-    stats = StatsEditor.rdisp(0)
+    stats = StatBlockEditor.rdisp(0)
     friendship = U32Editor(0x44)
     @structproperty(int, "<H")
     def dh_talks(self):

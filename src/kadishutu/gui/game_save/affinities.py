@@ -1,4 +1,4 @@
-from kadishutu.core.game_save.demons import AFFINITY_NAMES, AffinityEditor
+from kadishutu.core.game_save.affinities import AFFINITY_NAMES, AffinityEditor
 from kadishutu.data.affinity import AFFINITY_MAP, Affinity
 from kadishutu.data.element_icons import Element
 from typing import Dict

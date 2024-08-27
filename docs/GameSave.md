@@ -107,7 +107,7 @@ KEY = bytes([0x30, 0x31, 0x32, 0x33, 0x34, 0x35, 0x36, 0x37,
 - 0x7dc0 - 0x7de0 - Demon haunt data
 - 0x80a2 - 0x80d2 (?) - Layline unlock data
 - 0x1375e - ??????? - [Tracking](#tracking-info)
-- 0x18282 - 0x2db42 - [Demon Compendium](#demon-compendium)
+- 0x18272 - 0x2db42 - [Demon Compendium](#demon-compendium)
 - 0x5a760 - 0x5b0a0 - Quest data????
 - 0x69a82 - 0x69a?? - [NEW](#new-flag-info)
 - 0x69a90 - ??????? - Settings????
@@ -690,12 +690,17 @@ Array indexed by the demon ID.
 
 Each entry has a size of 0xe0 consists of:
 
-- 0x0 - 0x10 - [Stat block](#stat-value-set)
+- 0x00 - 0x10 - Stat block (original stats)
+- 0x10 - 0x20 - [Stat block](#stat-value-set)
   (registers stat changes)  
   (16 bytes)
 - 0x30 - 0x50 - Skill block
   (registers only skill IDs)  
   (32 bytes?)
+- 0x54 - 0x55 - Level
+- 0x58 - ???? - Affinities
+- 0x90 - ???? - Potentials
+- 0xc2 - ???? - Innate skill
 
 Assuming Eisheth (ID 394) is the last registerable demon, the table ends at
 0xdb42.

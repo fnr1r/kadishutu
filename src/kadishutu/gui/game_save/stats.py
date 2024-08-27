@@ -1,5 +1,5 @@
-from kadishutu.core.game_save.demons import (
-    STATS_NAMES, HealableEditor, StatsEditor,
+from kadishutu.core.game_save.stats import (
+    STATS_NAMES, HealableEditor, StatBlockEditor,
 )
 from typing import Dict
 from PySide6.QtWidgets import QGridLayout, QLabel, QPushButton, QWidget
@@ -13,7 +13,7 @@ class StatEditorScreen(QWidget, GameScreenMixin, AppliableWidget):
 
     def __init__(
         self,
-        stats: StatsEditor,
+        stats: StatBlockEditor,
         healable: HealableEditor,
         *args,
         **kwargs

@@ -3,10 +3,10 @@ from struct import unpack_from
 from ..shared.file_handling import (
     BaseDynamicEditor, BaseStaticEditor, BaseStructEditor, U8Editor,
 )
-from .demons import (
-    AffinityEditor, HealableEditor, PotentialEditor, StatsEditor,
-)
+from .affinities import AffinityEditor
+from .demons import PotentialEditor
 from .skills import SkillEditor, SkillManager
+from .stats import HealableEditor, StatBlockEditor
 
 
 ENCODING = "UTF-16LE"
@@ -89,7 +89,7 @@ class PlayerEditor(BaseStaticEditor):
     offset = 0
 
     names = NameManager.disp()
-    stats = StatsEditor.disp(0x988)
+    stats = StatBlockEditor.disp(0x988)
     healable = HealableEditor.disp(0x9bc)
     level = U8Editor(0x9c8)
     skills = SkillManager.disp(0xa38)

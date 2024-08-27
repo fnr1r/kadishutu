@@ -5,6 +5,7 @@ from ..shared.file_handling import (
     UnrealTimeEditor,
 )
 from .alignment import AlignmentManager
+from .compendium import CompendiumManager
 from .dlc import DlcEditor
 from .demons import DemonManager
 from .essences import EssenceManager
@@ -39,4 +40,5 @@ class GameSaveEditor(BaseMasterEditor):
     essences = EssenceManager.disp()
     position = PositionEditor.disp()
     miracle_unlocks = MiracleUnlockManager.disp()
+    compendium = CompendiumManager.disp()
     alignment = AlignmentManager.disp()
