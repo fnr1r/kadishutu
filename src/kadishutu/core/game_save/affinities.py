@@ -1,88 +1,61 @@
 from kadishutu.data.affinity import Affinity
 
 from ..shared.file_handling import (
-    BaseDynamicEditor, BaseStructAsFieldEditor, structproperty,
+    BaseDynamicEditor, BaseStructAsFieldEditor, U16Editor,
 )
 
 
-AFFINITY_NAMES = [
+ELEMENTAL_AFFINITY_NAMES = [
     "Physical", "Fire", "Ice", "Electric", "Force", "Light", "Dark",
-    "Poison", "Confusion", "Charm", "Sleep", "Seal", "Mirage"
+]
+
+AILMENT_AFFINITY_NAMES = [
+    "Poison", "Confusion", "Charm", "Sleep", "Seal", "Mirage",
 ]
 
 
-def affinityprop(fmt):
-    return structproperty(
-        Affinity, fmt,
-        lambda u: Affinity(u),
-        lambda t: t.value,
-    )
+class AffinityEditor(U16Editor):
+    def read(self) -> Affinity:
+        return Affinity(super().read())
+    
+    def write(self, v: Affinity):
+        super().write(v.value)
+
+    def __get__(self, instance, _) -> Affinity:
+        return super().__get__(instance, _)
+
+    def __set__(self, instance, v: Affinity):
+        super().__set__(instance, v)
 
 
-class AffinityEditor(BaseDynamicEditor, BaseStructAsFieldEditor):
+class ElementalAffinityEditor(BaseDynamicEditor, BaseStructAsFieldEditor):
+    struct = AffinityEditor.fmt
+
+    physical = AffinityEditor(0)
+    fire = AffinityEditor(2)
+    ice = AffinityEditor(4)
+    electric = AffinityEditor(8)
+    force = AffinityEditor(10)
+    light = AffinityEditor(12)
+    dark = AffinityEditor(14)
+
+
+class AilmentAffinityEditor(BaseDynamicEditor, BaseStructAsFieldEditor):
+    struct = AffinityEditor.fmt
+
+    poison = AffinityEditor(0)
+    confusion = AffinityEditor(4)
+    charm = AffinityEditor(6)
+    sleep = AffinityEditor(8)
+    seal = AffinityEditor(10)
+    mirage = AffinityEditor(24)
+
+
+class AffinityManager(BaseDynamicEditor):
     """
     NOTE: The copies of affinities seem to be the original ones.
     """
 
-    struct = "<H"
-
-    @affinityprop(struct)
-    def original_physical(self) -> int:
-        return self.field_as_absolute_offset(0)
-    @affinityprop(struct)
-    def original_fire(self) -> int:
-        return self.field_as_absolute_offset(1)
-    @affinityprop(struct)
-    def original_ice(self) -> int:
-        return self.field_as_absolute_offset(2)
-    @affinityprop(struct)
-    def original_electric(self) -> int:
-        return self.field_as_absolute_offset(3)
-    @affinityprop(struct)
-    def original_force(self) -> int:
-        return self.field_as_absolute_offset(4)
-    @affinityprop(struct)
-    def original_light(self) -> int:
-        return self.field_as_absolute_offset(5)
-    @affinityprop(struct)
-    def original_dark(self) -> int:
-        return self.field_as_absolute_offset(6)
-    @affinityprop(struct)
-    def poison(self) -> int:
-        return self.field_as_absolute_offset(8)
-    @affinityprop(struct)
-    def confusion(self) -> int:
-        return self.field_as_absolute_offset(10)
-    @affinityprop(struct)
-    def charm(self) -> int:
-        return self.field_as_absolute_offset(11)
-    @affinityprop(struct)
-    def sleep(self) -> int:
-        return self.field_as_absolute_offset(12)
-    @affinityprop(struct)
-    def seal(self) -> int:
-        return self.field_as_absolute_offset(13)
-    @affinityprop(struct)
-    def mirage(self) -> int:
-        return self.field_as_absolute_offset(20)
-    @affinityprop(struct)
-    def physical(self) -> int:
-        return self.field_as_absolute_offset(28)
-    @affinityprop(struct)
-    def fire(self) -> int:
-        return self.field_as_absolute_offset(29)
-    @affinityprop(struct)
-    def ice(self) -> int:
-        return self.field_as_absolute_offset(30)
-    @affinityprop(struct)
-    def electric(self) -> int:
-        return self.field_as_absolute_offset(31)
-    @affinityprop(struct)
-    def force(self) -> int:
-        return self.field_as_absolute_offset(32)
-    @affinityprop(struct)
-    def light(self) -> int:
-        return self.field_as_absolute_offset(33)
-    @affinityprop(struct)
-    def dark(self) -> int:
-        return self.field_as_absolute_offset(34)
+    original_elemental = ElementalAffinityEditor.rdisp(0)
+    ailment = AilmentAffinityEditor.rdisp(0x10)
+    current_elemental = ElementalAffinityEditor.rdisp(0x38)

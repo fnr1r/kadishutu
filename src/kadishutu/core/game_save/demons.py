@@ -5,7 +5,9 @@ from ..shared.file_handling import (
     BaseDynamicEditor, BaseStaticEditor, BaseStructAsFieldEditor, U16Editor,
     U32Editor, U64Editor, U8Editor, structproperty,
 )
-from .affinities import AFFINITY_NAMES, AffinityEditor
+from .affinities import (
+    AILMENT_AFFINITY_NAMES, ELEMENTAL_AFFINITY_NAMES, AffinityManager,
+)
 from .skills import SkillEditor, SkillManager
 from .stats import STATS_NAMES, HealableEditor, StatBlockEditor
 
@@ -108,7 +110,7 @@ class DemonEditor(BaseDynamicEditor):
     level = U8Editor(0x70)
     demon_id = U16Editor(0x72)
     skills = SkillManager.rdisp(0x78)
-    affinities = AffinityEditor.rdisp(0xd8)
+    affinities = AffinityManager.rdisp(0xd8)
     potentials = PotentialEditor.rdisp(0x180)
     innate_skill = SkillEditor.rdisp(0x194)
 
@@ -179,9 +181,18 @@ class DemonManager(BaseStaticEditor):
             demon.skills.slot(i).id = skill.id
         demon.innate_skill.id = meta.innate_skill.id
         affinities = demon.affinities
-        for i in AFFINITY_NAMES:
+        orig_elem = affinities.original_elemental
+        cur_elem = affinities.current_elemental
+        for i in ELEMENTAL_AFFINITY_NAMES:
             i = i.lower()
-            affinities.__setattr__(i, meta.affinities.__getattribute__(i))
+            aff = meta.affinities.__getattribute__(i)
+            orig_elem.__setattr__(i, aff)
+            cur_elem.__setattr__(i, aff)
+        cur_ailm = affinities.ailment
+        for i in AILMENT_AFFINITY_NAMES:
+            i = i.lower()
+            aff = meta.affinities.__getattribute__(i)
+            cur_ailm.__setattr__(i, aff)
         potentials = demon.potentials
         for i in PType:
             potentials.set(i, meta.potentials.__getattribute__(i.name.lower()))

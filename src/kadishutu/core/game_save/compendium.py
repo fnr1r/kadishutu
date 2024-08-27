@@ -1,4 +1,4 @@
-from kadishutu.core.game_save.demons import AffinityEditor, PotentialEditor
+from kadishutu.core.game_save.demons import AffinityManager, PotentialEditor
 from kadishutu.data.demons import DEMON_ID_MAP, DEMON_NAME_MAP, Demon
 from kadishutu.data.skills import SKILL_ID_MAP, Skill
 from typing import Optional, Tuple, Union
@@ -61,7 +61,7 @@ class RegisteredDemonEditor(BaseDynamicEditor):
     stat_changes = StatsEditor.rdisp(0x10)
     skills = CompSkillManager.rdisp(0x40)
     level = U8Editor(0x54)
-    affinities = AffinityEditor.rdisp(0x58)
+    affinities = AffinityManager.rdisp(0x58)
     potentials = PotentialEditor.rdisp(0x90)
     innate_skill = CompSkillEditor.rdisp(0xc2)
 

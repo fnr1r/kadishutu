@@ -3,7 +3,7 @@ from struct import unpack_from
 from ..shared.file_handling import (
     BaseDynamicEditor, BaseStaticEditor, BaseStructEditor, U8Editor,
 )
-from .affinities import AffinityEditor
+from .affinities import AffinityManager
 from .demons import PotentialEditor
 from .skills import SkillEditor, SkillManager
 from .stats import HealableEditor, StatBlockEditor
@@ -93,6 +93,6 @@ class PlayerEditor(BaseStaticEditor):
     healable = HealableEditor.disp(0x9bc)
     level = U8Editor(0x9c8)
     skills = SkillManager.disp(0xa38)
-    affinities = AffinityEditor.disp(0xa98)
+    affinities = AffinityManager.disp(0xa98)
     potentials = PotentialEditor.disp(0xb38)
     innate_skill = SkillEditor.disp(0xb4c)
