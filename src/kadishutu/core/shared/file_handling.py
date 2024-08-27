@@ -323,6 +323,25 @@ class Dispatcher(EditorGetter, Generic[T]):
         self.write(v)
 
 
+class BytesEditor(EditorGetter):
+    size: int
+
+    def __init__(self, offset: int, size: int):
+        super().__init__(offset)
+        self.size = size
+
+    @property
+    def end_offset(self) -> int:
+        return self.offset + self.size
+
+    def read(self) -> bytearray:
+        return self.data[self.offset:self.end_offset]
+
+    def write(self, value: bytearray):
+        assert len(value) == self.size
+        self.data[self.offset:self.end_offset] = value
+
+
 class BitEditor(EditorGetter):
     bit: int
 

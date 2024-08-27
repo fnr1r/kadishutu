@@ -96,7 +96,7 @@ KEY = bytes([0x30, 0x31, 0x32, 0x33, 0x34, 0x35, 0x36, 0x37,
   (an unsigned int / u32 (4 bytes))
 - 0x5682 - 0x5686 - [Map ID 2](#map-ids)  
   (an unsigned int / u32 (4 bytes))
-- 0x568e - 0x56a2 - [Coordinates](#coordinate-info)  
+- 0x568e - 0x569a - [Coordinates](#coordinate-info)  
   (3 floats / f32 (12 bytes))
 - 0x56a6 - 0x56ae - [Rotation](#coordinate-info)  
   (2 floats / f32 (8 bytes))
