@@ -35,7 +35,7 @@ class CompSkillEditor(BaseDynamicEditor):
 
 
 class CompSkillManager(BaseDynamicEditor, BaseStructAsFieldEditor):
-    struct = "<I"
+    struct = "<H"
 
     def slot(self, no: int) -> CompSkillEditor:
         return self.field_dispatch(CompSkillEditor, no)
