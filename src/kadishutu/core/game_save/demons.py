@@ -11,6 +11,7 @@ from .skills import SkillEditor, SkillManager
 
 DEMON_TABLE_OFFSET = 0xb60
 DEMON_ENTRY_SIZE = 424
+DEMON_TABLE_SIZE = 30
 STAT_TABLE_SIZE = 16
 
 

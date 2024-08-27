@@ -1,8 +1,8 @@
 from dataclasses import dataclass
 from enum import Enum, auto
 from kadishutu.data.laylines import Layline
-from struct import Struct, pack_into, unpack_from
-from typing import List, Optional, Tuple
+from struct import Struct
+from typing import Tuple
 
 from ..shared.file_handling import (
     BaseMasterEditor, BaseStaticEditor, EnumEditor, TimeDeltaEditor, U16Editor,
@@ -16,50 +16,7 @@ from .items import ItemManager
 from .miracles import MiracleManager
 from .miracle_unlocks import MiracleUnlockManager
 from .player import PlayerEditor
-
-
-SUMMONED_DEMONS_FMT = "<BBB"
-SUMMONED_DEMONS_OFFSET = 0x3d2e
-
-
-TEAM_TUPLE = Tuple[Optional[int], Optional[int], Optional[int]]
-
-
-class TeamEditor(BaseStaticEditor):
-    NO_DEMON = 0xff
-    @property
-    def summoned_demons(self) -> TEAM_TUPLE:
-        demons = list(unpack_from(SUMMONED_DEMONS_FMT, self.data, SUMMONED_DEMONS_OFFSET))
-        for i in range(len(demons)):
-            if demons[i] == self.NO_DEMON:
-                demons[i] = None
-        return tuple(demons)
-    @summoned_demons.setter
-    def summoned_demons(self, demons: TEAM_TUPLE):
-        assert isinstance(self.master, GameSaveEditor)
-        demon_mgr = self.master.demons
-        old_demon_list = list(self.summoned_demons)
-        for i in old_demon_list:
-            if i is None:
-                continue
-            demon = demon_mgr.in_slot(i)
-            demon.is_summoned = 0
-
-        demon_list: List[int] = []
-        #demon_icons: List[Tuple[int, int]] = []
-        for i in demons:
-            if i is None:
-                demon_list.append(self.NO_DEMON)
-                #demon_icons.append((self.NO_DEMON, 0))
-                continue
-            demon = demon_mgr.in_slot(i)
-            demon.is_summoned = 6
-            demon_list.append(demon.slot)
-            #demon_icons.append((i.demon_id, i.level))
-        pack_into(SUMMONED_DEMONS_FMT, self.data, SUMMONED_DEMONS_OFFSET, *demon_list)
-        #demon_icons.insert(self.player_placement, (1, 99))
-
-    player_placement = U8Editor(0x3d45)
+from .team import TeamEditor
 
 
 @dataclass
