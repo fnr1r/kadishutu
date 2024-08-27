@@ -256,20 +256,20 @@ class DemonEditor(BaseDynamicEditor):
     def meta(self) -> Demon:
         return DEMON_ID_MAP[self.demon_id]
 
-    stats = StatsEditor.disp(0)
+    stats = StatsEditor.rdisp(0)
     friendship = U32Editor(0x44)
     @structproperty(int, "<H")
     def dh_talks(self):
         return self.relative_as_absolute_offset(74)
     is_summoned = U32Editor(0x60)
-    healable = HealableEditor.disp(0x64)
+    healable = HealableEditor.rdisp(0x64)
     exp = U64Editor(0x68)
     level = U8Editor(0x70)
     demon_id = U16Editor(0x72)
-    skills = SkillManager.disp(0x78)
-    affinities = AffinityEditor.disp(0xd8)
-    potentials = PotentialEditor.disp(0x180)
-    innate_skill = SkillEditor.disp(0x194)
+    skills = SkillManager.rdisp(0x78)
+    affinities = AffinityEditor.rdisp(0xd8)
+    potentials = PotentialEditor.rdisp(0x180)
+    innate_skill = SkillEditor.rdisp(0x194)
 
     @property
     def name(self) -> str:

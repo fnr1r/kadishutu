@@ -138,7 +138,7 @@ class BaseEditor(AbstractEditor, ABC):
 
     @classmethod
     def disp(cls, *args, **kwargs):
-        return Dispatcher(cls, *args, **kwargs)
+        return AbsoulteDispatcher(cls, *args, **kwargs)
 
 
 TBaseDynamicEditor = TypeVar("TBaseDynamicEditor", bound="BaseDynamicEditor")
@@ -182,6 +182,14 @@ class BaseStaticEditor(BaseOffsetEditor, ABC):
 @dataclass
 class BaseDynamicEditor(BaseOffsetEditor, ABC):
     offset: int
+
+    @classmethod
+    def rdisp(cls, *args, **kwargs):
+        return RelativeDispatcher(cls, *args, **kwargs)
+
+    @classmethod
+    def fdisp(cls, *args, **kwargs):
+        return RelativeDispatcher(cls, *args, **kwargs)
 
 
 class BaseStructEditor(BaseOffsetEditor, ABC):
@@ -300,7 +308,7 @@ class EditorGetter(Generic[T, E], ABC):
 T = TypeVar("T", bound=BaseEditor)
 
 
-class Dispatcher(EditorGetter, Generic[T]):
+class AbsoulteDispatcher(EditorGetter, Generic[T]):
     def __init__(self, ed_cls: Type[T], *args, **kwargs):
         self.ed_cls = ed_cls
         self.args = args
@@ -321,6 +329,67 @@ class Dispatcher(EditorGetter, Generic[T]):
 
     def __set__(self, _, v):
         self.write(v)
+
+
+T = TypeVar("T", bound=BaseDynamicEditor)
+
+
+class RelativeDispatcher(AbsoulteDispatcher, Generic[T]):
+    ed_cls: Type[T]
+
+    def __init__(
+        self,
+        ed_cls: Type[T],
+        relative_offset: int,
+        *args,
+        **kwargs
+    ):
+        super().__init__(ed_cls, *args, **kwargs)
+        self.relative_offset = relative_offset
+    
+    @property
+    def editor(self) -> BaseOffsetEditor:
+        return super().editor
+
+    def read(self):
+        return self.editor.relative_dispatch(
+            self.ed_cls,
+            self.relative_offset,
+            *self.args,
+            **self.kwargs,
+        )
+
+    def __get__(self, instance, _) -> T:
+        return super().__get__(instance, _)
+
+
+class FieldDispatcher(AbsoulteDispatcher, Generic[T]):
+    ed_cls: Type[T]
+
+    def __init__(
+        self,
+        ed_cls: Type[T],
+        field: int,
+        *args,
+        **kwargs
+    ):
+        super().__init__(ed_cls, *args, **kwargs)
+        self.field = field
+    
+    @property
+    def editor(self) -> BaseStructAsFieldEditor:
+        return super().editor
+
+    def read(self):
+        return self.editor.field_dispatch(
+            self.ed_cls,
+            self.field,
+            *self.args,
+            **self.kwargs
+        )
+
+    def __get__(self, instance, _) -> T:
+        return super().__get__(instance, _)
 
 
 class BytesEditor(EditorGetter):
