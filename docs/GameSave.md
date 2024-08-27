@@ -69,7 +69,7 @@ KEY = bytes([0x30, 0x31, 0x32, 0x33, 0x34, 0x35, 0x36, 0x37,
 - 0xb50 - 0xb52 - Player [innate skill](#innate-skill-id)  
   (an unsigned short / u16 (2 bytes))
 - 0xb60 - 0x3d10 - [Demon table](#demon-info)
-- 0x3d10 - 0x3d13 - Party menu demon order  
+- 0x3d10 - 0x3d2e - Party menu demon order  
   (with indices of the demon table; from first to last)  
   (30 unsigned chars / u8s (30 bytes))
 - 0x3d2e - 0x3d31 - Summoned Demons (TODO)  
