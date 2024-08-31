@@ -5,7 +5,10 @@ from enum import Enum
 import os
 from pathlib import Path
 import re
-from typing import Any, Callable, Dict, List, Optional, Protocol, Tuple, Type, TypeVar
+from typing import (
+    Any, Callable, Dict, List, Optional, Protocol, Sequence, Tuple, Type,
+    TypeVar,
+)
 from typing_extensions import Self
 
 
@@ -153,14 +156,18 @@ class IHaveAName(ABC):
 
 
 class RandType(Protocol):
-    id: int
-    name: str
+    @property
+    def id(self) -> int: ...
+    @property
+    def name(self) -> str: ...
+    @name.setter
+    def name(self, v: str): ...
 
 
 T = TypeVar("T", bound=RandType)
 
 
-def make_maps(objs: List[T]) -> Tuple[Dict[int, T], Dict[str, T]]:
+def make_maps(objs: Sequence[T]) -> Tuple[Dict[int, T], Dict[str, T]]:
     id_to_name_map: Dict[int, Any] = {}
     name_to_id_map: Dict[str, Any] = {}
     for obj in objs:

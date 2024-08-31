@@ -14,6 +14,7 @@ from .miracles import MiracleManager
 from .miracle_unlocks import MiracleUnlockManager
 from .player import PlayerEditor
 from .position import PositionEditor
+from .quests import QuestManager
 from .team import TeamEditor
 
 
@@ -41,4 +42,5 @@ class GameSaveEditor(BaseMasterEditor):
     position = PositionEditor.disp()
     miracle_unlocks = MiracleUnlockManager.disp()
     compendium = CompendiumManager.disp()
+    quests = QuestManager.disp()
     alignment = AlignmentManager.disp()

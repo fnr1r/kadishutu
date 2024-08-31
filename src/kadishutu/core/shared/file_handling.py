@@ -475,6 +475,14 @@ class U8Editor(IntEditor):
     fmt = "<B"
 
 
+class BoolEditor(U8Editor):
+    def read(self) -> bool:
+        return bool(super().read())
+    
+    def write(self, v: bool):
+        super().write(int(v))
+
+
 class U16Editor(IntEditor):
     fmt = "<H"
 
