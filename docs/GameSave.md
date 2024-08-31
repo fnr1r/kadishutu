@@ -108,7 +108,7 @@ KEY = bytes([0x30, 0x31, 0x32, 0x33, 0x34, 0x35, 0x36, 0x37,
 - 0x80a2 - 0x80d2 (?) - Layline unlock data
 - 0x1375e - ??????? - [Tracking](#tracking-info)
 - 0x18272 - 0x2db42 - [Demon Compendium](#demon-compendium)
-- 0x5a760 - 0x5b0a0 - Quest data????
+- 0x59d52 - 0x5b412 - [Quest table](#quest-info)
 - 0x69a82 - 0x69a?? - [NEW](#new-flag-info)
 - 0x69a90 - ??????? - Settings????
 - 0x69a91 - ??????? - Mitama Settings????  
@@ -694,16 +694,29 @@ Each entry has a size of 0xe0 consists of:
 - 0x10 - 0x20 - [Stat block](#stat-value-set)
   (registers stat changes)  
   (16 bytes)
+- 0x20 - 0x22 - ???
 - 0x30 - 0x50 - Skill block
   (registers only skill IDs)  
   (32 bytes?)
+- 0x50 - 0x54 - Exp???
 - 0x54 - 0x55 - Level
 - 0x58 - ???? - Affinities
 - 0x90 - ???? - Potentials
+- 0xc1 - 0xc2 - ???
 - 0xc2 - ???? - Innate skill
 
 Assuming Eisheth (ID 394) is the last registerable demon, the table ends at
 0xdb42.
+
+## Quest info
+
+(also internally known as missions)
+
+The end is assumed to be at 0x5b412 due to the last id in the quest data table.
+
+`Game/Blueprints/Gamedata/BinTable/Mission/MissionTable.uexp`
+
+`0x59d52 + 26 * (223 + 1)`
 
 ## NEW flag info
 
