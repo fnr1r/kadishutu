@@ -1,7 +1,7 @@
-from enum import Enum, auto
+from enum import Enum, IntFlag, auto
 
 from ..shared.file_handling import (
-    BaseMasterEditor, EnumEditor, TimeDeltaEditor, U16Editor, U32Editor,
+    BaseMasterEditor, EnumEditor, TimeDeltaEditor, U16Editor, U32Editor, U8Editor,
     UnrealTimeEditor,
 )
 from .alignment import AlignmentManager
@@ -25,11 +25,28 @@ class Difficulty(Enum):
     Hard = auto()
 
 
+class Endings(IntFlag):
+    CreationNeutral = auto()
+    CreationLaw = auto()
+    CreationChaos = auto()
+    CreationSecret = auto()
+    VengeanceLaw = auto()
+    VengeanceChaos = auto()
+
+
+for i in Endings:
+    print(i.value)
+
+
 class GameSaveEditor(BaseMasterEditor):
+    # Pre-loaded section
     time_of_saving = UnrealTimeEditor(0x4f4)
     difficulty = EnumEditor(0x4fc, Difficulty)
+    cycles_copy = U8Editor(0x502)
+    endings_copy = EnumEditor(0x503, Endings)
     dlc = DlcEditor.disp()
     play_time = TimeDeltaEditor(0x5d0)
+    # End of pre-loaded section
     player = PlayerEditor.disp()
     demons = DemonManager.disp()
     team = TeamEditor.disp()
@@ -44,3 +61,5 @@ class GameSaveEditor(BaseMasterEditor):
     compendium = CompendiumManager.disp()
     quests = QuestManager.disp()
     alignment = AlignmentManager.disp()
+    cycles = U8Editor(0x6a08a)
+    endings = EnumEditor(0x6a08b, Endings)
