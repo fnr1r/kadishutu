@@ -1,6 +1,6 @@
 from enum import Enum, auto
 
-from ..shared.file_handling import (
+from ..shared.editors import (
     BaseDynamicEditor, BaseStructAsFieldEditor, I16Editor,
 )
 

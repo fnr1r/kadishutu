@@ -1,10 +1,7 @@
 from struct import pack_into, unpack_from
 from typing import List, Optional, Tuple
 
-from ..shared.file_handling import (
-    BaseStaticEditor, StructEditor,
-    U8Editor,
-)
+from ..shared.editors import BaseStaticEditor, StructEditor, U8Editor
 from .demons import DEMON_TABLE_SIZE
 
 

@@ -1,6 +1,6 @@
 from struct import unpack_from
 
-from ..shared.file_handling import (
+from ..shared.editors import (
     BaseDynamicEditor, BaseStaticEditor, BaseStructEditor, U8Editor,
 )
 from .affinities import AffinityManager

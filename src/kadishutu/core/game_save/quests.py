@@ -5,7 +5,7 @@ from kadishutu.data.quests import (
 )
 from typing import Optional
 
-from ..shared.file_handling import (
+from ..shared.editors import (
     BaseDynamicEditor, BaseStaticEditor, BaseStructEditor, BoolEditor,
 )
 

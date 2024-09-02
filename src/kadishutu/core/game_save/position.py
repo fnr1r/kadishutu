@@ -4,7 +4,7 @@ from struct import calcsize
 from typing import Tuple
 from typing_extensions import Self
 
-from ..shared.file_handling import (
+from ..shared.editors import (
     BaseStaticEditor, BytesEditor, StructEditor, U32Editor, U8Editor,
 )
 

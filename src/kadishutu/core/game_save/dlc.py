@@ -5,9 +5,7 @@ import operator
 from typing import Dict, List
 from typing_extensions import Self
 
-from ..shared.file_handling import (
-    BaseStaticEditor, BaseStructAsSingularValueEditor,
-)
+from ..shared.editors import BaseStaticEditor, BaseStructAsSingularValueEditor
 
 
 DLCS = {

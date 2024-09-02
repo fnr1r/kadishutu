@@ -1,6 +1,6 @@
 from kadishutu.data.demons import DEMON_ID_MAP, Demon
 
-from ..shared.file_handling import (
+from ..shared.editors import (
     BaseDynamicEditor, BaseStaticEditor, U16Editor, U32Editor, U64Editor,
     U8Editor,
 )

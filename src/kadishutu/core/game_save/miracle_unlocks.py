@@ -3,7 +3,7 @@ from kadishutu.data.miracle_unlocks import (
 )
 from typing import Optional
 
-from ..shared.file_handling import (
+from ..shared.editors import (
     BaseDynamicEditor, BaseStaticEditor, BaseStructAsSingularValueEditor,
     BitEditor,
 )

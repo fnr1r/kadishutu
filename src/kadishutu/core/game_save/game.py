@@ -1,8 +1,8 @@
 from enum import Enum, IntFlag, auto
 
-from ..shared.file_handling import (
-    BaseMasterEditor, EnumEditor, TimeDeltaEditor, U16Editor, U32Editor, U8Editor,
-    UnrealTimeEditor,
+from ..shared.editors import (
+    BaseMasterEditor, EnumEditor, TimeDeltaEditor, U16Editor, U32Editor,
+    U8Editor, UnrealTimeEditor,
 )
 from .alignment import AlignmentManager
 from .compendium import CompendiumManager

@@ -4,7 +4,9 @@ from kadishutu.data.miracles import (
 )
 from typing import Optional
 
-from ..shared.file_handling import BaseDynamicEditor, BaseStaticEditor, BaseStructAsSingularValueEditor
+from ..shared.editors import (
+    BaseDynamicEditor, BaseStaticEditor, BaseStructAsSingularValueEditor,
+)
 
 
 class MiracleState(IntFlag):

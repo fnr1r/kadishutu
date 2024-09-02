@@ -4,8 +4,9 @@ from kadishutu.data.demons import DEMON_ID_MAP, DEMON_NAME_MAP, Demon
 from kadishutu.data.skills import SKILL_ID_MAP, Skill
 from typing import Optional, Tuple, Union
 
-from ..shared.file_handling import (
-    BaseDynamicEditor, BaseStaticEditor, BaseStructAsFieldEditor, BytesEditor, U16Editor, U8Editor,
+from ..shared.editors import (
+    BaseDynamicEditor, BaseStaticEditor, BaseStructAsFieldEditor, U16Editor,
+    U8Editor,
 )
 from .stats import StatsEditor
 

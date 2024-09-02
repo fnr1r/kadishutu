@@ -1,4 +1,4 @@
-from ..shared.file_handling import (
+from ..shared.editors import (
     BaseDynamicEditor, BaseStructAsFieldEditor, U16Editor,
 )
 

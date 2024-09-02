@@ -3,9 +3,8 @@ from kadishutu.data.items import (
 )
 from typing import Dict, Optional
 
-from ..shared.file_handling import (
-    BaseDynamicEditor, BaseStaticEditor,
-    BaseStructAsSingularValueEditor,
+from ..shared.editors import (
+    BaseDynamicEditor, BaseStaticEditor, BaseStructAsSingularValueEditor,
 )
 
 
