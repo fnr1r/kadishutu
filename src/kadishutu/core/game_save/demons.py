@@ -7,6 +7,7 @@ from ..shared.editors import (
 from .affinities import (
     AILMENT_AFFINITY_NAMES, ELEMENTAL_AFFINITY_NAMES, AffinityManager,
 )
+from .demonlike import DemonLikeEditor
 from .potentials import PotentialType, PotentialEditor
 from .skills import SkillEditor, SkillManager
 from .stats import STATS_NAMES, HealableEditor, StatBlockEditor
@@ -17,25 +18,7 @@ DEMON_ENTRY_SIZE = 424
 DEMON_TABLE_SIZE = 30
 
 
-#class FriendshipEditor(BaseStructEditor):
-#    fmt = "<L"
-#
-#    def get(self) -> int:
-#        return self.unpack()[0]
-#
-#    def set(self, id: int):
-#        self.pack(id)
-
-
-#class DemonIdEditor(SingularIntEditor):
-#    fmt = "<H"
-#
-#    @property
-#    def name_table(self) -> Dict[int, str]:
-#        return DEMONS
-
-
-class DemonEditor(BaseDynamicEditor):
+class DemonEditor(BaseDynamicEditor, DemonLikeEditor):
     @property
     def meta(self) -> Demon:
         return DEMON_ID_MAP[self.demon_id]

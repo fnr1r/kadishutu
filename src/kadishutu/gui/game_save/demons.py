@@ -10,11 +10,8 @@ from ..shared import (
     U16_MAX, AppliableWidget, ModifiedMixin, hboxed,
 )
 from ..iconloader import ICON_LOADER, DisabledError, print_icon_loading_error
-from .affinities import AffinityEditorScreen
-from .potentials import PotentialEditorScreen
+from .demonlike import DemonLikeEditorScreen
 from .shared import GameScreenMixin
-from .skills import SkillEditorScreen
-from .stats import StatEditorScreen
 
 
 class DemonIdnWidget(QWidget, ModifiedMixin):
@@ -64,51 +61,22 @@ class DemonIdnWidget(QWidget, ModifiedMixin):
         self.graphic_refresh()
 
 
-class DemonEditorScreen(QWidget, GameScreenMixin, AppliableWidget):
-    def __init__(self, demon: DemonEditor, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self.demon = demon
+class DemonEditorScreen(DemonLikeEditorScreen, AppliableWidget):
+    demon: DemonEditor
 
-        self.parent_layout = QHBoxLayout(self)
-        self.layout().setContentsMargins(0, 0, 0, 0)
-        self.side_panel_widget = QWidget(self)
-        self.l = QVBoxLayout(self.side_panel_widget)
-        self.parent_layout.addWidget(self.side_panel_widget)
+    def __init__(self, demon: DemonEditor, *args, **kwargs):
+        super().__init__(demon, *args, **kwargs)
+        self.l = QHBoxLayout(self)
+        self.l.addLayout(self.dl_layout)
 
         self.demon_idn_widget = DemonIdnWidget(
             demon,
             self.graphic_refresh,
-            self.side_panel_widget
         )
-
-        self.side_panel_widgets: List[QWidget] = [
-            self.demon_idn_widget
-        ]
-
-        for name, fun in [
-            ("Stats", lambda: StatEditorScreen(
-                self.demon.stats, self.demon.healable
-            )),
-            ("Skills", lambda: SkillEditorScreen(
-                self.demon.skills, self.demon.innate_skill
-            )),
-            ("Affinities", lambda: AffinityEditorScreen(
-                self.demon.affinities
-            )),
-            ("Potentials", lambda: PotentialEditorScreen(
-                self.demon.potentials
-            ))
-        ]:
-            button = QPushButton(name)
-            button.clicked.connect(self.spawner(fun))
-            self.side_panel_widgets.append(button)
-
-        for button in self.side_panel_widgets:
-            self.l.addWidget(button)
-        self.l.addStretch()
+        self.dl_layout.insertWidget(0, self.demon_idn_widget)
 
         self.demon_graphic = QLabel()
-        self.parent_layout.addWidget(self.demon_graphic)
+        self.l.addWidget(self.demon_graphic)
 
     def graphic_refresh(self):
         try:

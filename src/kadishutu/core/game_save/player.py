@@ -4,6 +4,7 @@ from ..shared.editors import (
     BaseDynamicEditor, BaseStaticEditor, BaseStructEditor, U8Editor,
 )
 from .affinities import AffinityManager
+from .demonlike import DemonLikeEditor
 from .potentials import PotentialEditor
 from .skills import SkillEditor, SkillManager
 from .stats import HealableEditor, StatBlockEditor
@@ -85,7 +86,7 @@ class NameManager(BaseStaticEditor):
         return self.dispatch(NameEdit, 0xa10, length)
 
 
-class PlayerEditor(BaseStaticEditor):
+class PlayerEditor(BaseStaticEditor, DemonLikeEditor):
     offset = 0
 
     names = NameManager.disp()

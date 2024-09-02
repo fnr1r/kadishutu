@@ -121,15 +121,20 @@ class SaveType(Enum):
 
 
 class ScreenMixin:
+    _mixin_init = False
+
     def __init__(
         self,
         *args,
         **kwargs
     ):
         super().__init__(*args, **kwargs)
+        if self._mixin_init:
+            return
         self.mixin()
 
     def mixin(self):
+        self._mixin_init = True
         from .mainwindow import MAIN_WINDOW
         self.stack_add = MAIN_WINDOW.stack_add
         self.stack_remove = MAIN_WINDOW.stack_remove
