@@ -1,13 +1,13 @@
-from enum import Enum, auto
 from kadishutu.data.demons import DEMON_ID_MAP, Demon
 
 from ..shared.file_handling import (
-    BaseDynamicEditor, BaseStaticEditor, BaseStructAsFieldEditor, U16Editor,
-    U32Editor, U64Editor, U8Editor, structproperty,
+    BaseDynamicEditor, BaseStaticEditor, U16Editor, U32Editor, U64Editor,
+    U8Editor, structproperty,
 )
 from .affinities import (
     AILMENT_AFFINITY_NAMES, ELEMENTAL_AFFINITY_NAMES, AffinityManager,
 )
+from .potentials import PotentialType, PotentialEditor
 from .skills import SkillEditor, SkillManager
 from .stats import STATS_NAMES, HealableEditor, StatBlockEditor
 
@@ -15,10 +15,6 @@ from .stats import STATS_NAMES, HealableEditor, StatBlockEditor
 DEMON_TABLE_OFFSET = 0xb60
 DEMON_ENTRY_SIZE = 424
 DEMON_TABLE_SIZE = 30
-STAT_TABLE_SIZE = 16
-
-
-META_POTENTIALS = ("<hhhhhhhhhhhh", "PHYSICAL FIRE ICE ELECTRIC FORCE LIGHT DARK ALMIGHTY AILMENT SUPPORT HEALING _unknown")
 
 
 #class FriendshipEditor(BaseStructEditor):
@@ -37,61 +33,6 @@ META_POTENTIALS = ("<hhhhhhhhhhhh", "PHYSICAL FIRE ICE ELECTRIC FORCE LIGHT DARK
 #    @property
 #    def name_table(self) -> Dict[int, str]:
 #        return DEMONS
-
-
-class PType(Enum):
-    Physical = 0
-    Fire = auto()
-    Ice = auto()
-    Electric = auto()
-    Force = auto()
-    Light = auto()
-    Dark = auto()
-    Almighty = auto()
-    Ailment = auto()
-    Support = auto()
-    Recovery = auto()
-    #_UNKNOWN = auto()
-
-
-def gsproperty(p: PType):
-    return property(
-        lambda x: x.get(p),
-        lambda x, y: x.set(p, y)
-    )
-
-
-class PotentialEditor(BaseDynamicEditor, BaseStructAsFieldEditor):
-    struct = "<h"
-
-    def get_absolute_offset(self, t: PType) -> int:
-        return self.offset + self.struct_obj.size * t.value
-
-    def get(self, t: PType) -> int:
-        return self.struct_obj.unpack_from(
-            self.data,
-            self.get_absolute_offset(t)
-        )[0]
-
-    def set(self, t: PType, potential: int):
-        self.struct_obj.pack_into(
-            self.data,
-            self.get_absolute_offset(t),
-            potential
-        )
-
-    physical = gsproperty(PType.Physical)
-    fire = gsproperty(PType.Fire)
-    ice = gsproperty(PType.Ice)
-    electric = gsproperty(PType.Electric)
-    force = gsproperty(PType.Force)
-    light = gsproperty(PType.Light)
-    dark = gsproperty(PType.Dark)
-    almighty = gsproperty(PType.Almighty)
-    ailment = gsproperty(PType.Ailment)
-    support = gsproperty(PType.Support)
-    recovery = gsproperty(PType.Recovery)
-    #_unknown = gsproperty(PType._UNKNOWN)
 
 
 class DemonEditor(BaseDynamicEditor):
@@ -194,8 +135,11 @@ class DemonManager(BaseStaticEditor):
             aff = meta.affinities.__getattribute__(i)
             cur_ailm.__setattr__(i, aff)
         potentials = demon.potentials
-        for i in PType:
-            potentials.set(i, meta.potentials.__getattribute__(i.name.lower()))
+        for i in PotentialType:
+            potentials.write(
+                i,
+                meta.potentials.__getattribute__(i.name.lower())
+            )
         return demon
 
     #def new_from_compendium(self, meta) -> DemonEditor:

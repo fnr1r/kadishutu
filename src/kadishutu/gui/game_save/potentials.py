@@ -1,4 +1,4 @@
-from kadishutu.core.game_save.demons import PType, PotentialEditor
+from kadishutu.core.game_save.potentials import PotentialType, PotentialEditor
 from kadishutu.data.element_icons import Element
 from typing import Dict
 from PySide6.QtWidgets import QGridLayout, QLabel, QSpinBox, QWidget
@@ -23,11 +23,11 @@ class PotentialEditorScreen(QWidget, GameScreenMixin, AppliableWidget):
     def __init__(self, potentials: PotentialEditor, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.potentials = potentials
-        self.potential_map: Dict[PType, QPotentialBox] = {}
+        self.potential_map: Dict[PotentialType, QPotentialBox] = {}
 
         self.l = QGridLayout(self)
 
-        for i, ptype in enumerate(PType):
+        for i, ptype in enumerate(PotentialType):
             label = QLabel(ptype.name)
             self.l.addWidget(label, i, 1)
             potential_box = QPotentialBox()
@@ -50,11 +50,11 @@ class PotentialEditorScreen(QWidget, GameScreenMixin, AppliableWidget):
 
     def stack_refresh(self):
         for ptype, potential_box in self.potential_map.items():
-            potential = self.potentials.get(ptype)
+            potential = self.potentials.read(ptype)
             potential_box.setValue(potential)
 
     def on_apply_changes(self):
         for ptype, potential_box in self.potential_map.items():
             potential_box.update_if_modified(
-                lambda x: self.potentials.set(ptype, x)
+                lambda x: self.potentials.write(ptype, x)
             )

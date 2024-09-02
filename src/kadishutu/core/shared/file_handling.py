@@ -487,6 +487,10 @@ class U16Editor(IntEditor):
     fmt = "<H"
 
 
+class I16Editor(IntEditor):
+    fmt = "<h"
+
+
 class U32Editor(IntEditor):
     fmt = "<I"
 

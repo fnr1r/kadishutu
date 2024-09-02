@@ -4,7 +4,7 @@ from ..shared.file_handling import (
     BaseDynamicEditor, BaseStaticEditor, BaseStructEditor, U8Editor,
 )
 from .affinities import AffinityManager
-from .demons import PotentialEditor
+from .potentials import PotentialEditor
 from .skills import SkillEditor, SkillManager
 from .stats import HealableEditor, StatBlockEditor
 

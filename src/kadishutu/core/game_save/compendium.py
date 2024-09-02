@@ -1,4 +1,5 @@
-from kadishutu.core.game_save.demons import AffinityManager, PotentialEditor
+from kadishutu.core.game_save.affinities import AffinityManager
+from kadishutu.core.game_save.potentials import PotentialEditor
 from kadishutu.data.demons import DEMON_ID_MAP, DEMON_NAME_MAP, Demon
 from kadishutu.data.skills import SKILL_ID_MAP, Skill
 from typing import Optional, Tuple, Union
