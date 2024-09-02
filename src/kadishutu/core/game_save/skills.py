@@ -2,7 +2,7 @@ from kadishutu.data.skills import SKILL_ID_MAP, Skill
 from typing import Optional, Tuple, Union
 
 from ..shared.file_handling import (
-    BaseDynamicEditor, BaseStructAsFieldEditor, structproperty,
+    BaseDynamicEditor, BaseStructAsFieldEditor, U32Editor,
 )
 
 
@@ -16,13 +16,8 @@ class SkillEditor(BaseDynamicEditor, BaseStructAsFieldEditor):
             self._meta = SKILL_ID_MAP[self.id]
         return self._meta
 
-    @structproperty(int, struct)
-    def _unknown(self):
-        return self.field_as_absolute_offset(0)
-
-    @structproperty(int, struct)
-    def id(self):
-        return self.field_as_absolute_offset(1)
+    _unknown = U32Editor(0)
+    id = U32Editor(4)
 
     @property
     def name(self) -> str:

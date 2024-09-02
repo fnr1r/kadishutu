@@ -529,32 +529,3 @@ class UnrealTimeEditor(U64Editor):
     
     def write(self, v: datetime):
         super().write(python_to_unreal_datetime(v))
-
-
-T = TypeVar("T")
-U = TypeVar("U")
-
-
-def structproperty(
-    _: Type[T],
-    fmt: Union[str, bytes],
-    getter_transformer: Optional[Callable[[U], T]] = None,
-    setter_transformer: Optional[Callable[[T], U]] = None,
-):
-    """
-    NOTE: The typing is kinda messed up. I can't really fix this.
-    """
-    def decorator(func: Callable[..., int]):
-        def getter(self) -> T:
-            offset = func(self)
-            res = unpack_from(fmt, self.data, offset)[0]
-            if getter_transformer:
-                res = getter_transformer(res)
-            return res
-        def setter(self, value: T):
-            offset = func(self)
-            if setter_transformer:
-                value = setter_transformer(value)  # type: ignore
-            pack_into(fmt, self.data, offset, value)
-        return property(getter, setter)
-    return decorator

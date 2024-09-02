@@ -1,5 +1,5 @@
 from ..shared.file_handling import (
-    BaseDynamicEditor, BaseStructAsFieldEditor, structproperty,
+    BaseDynamicEditor, BaseStructAsFieldEditor, U16Editor,
 )
 
 
@@ -14,33 +14,13 @@ class StatsEditor(BaseDynamicEditor, BaseStructAsFieldEditor):
         assert not self.struct_obj.unpack_from(self.data, self.field_as_absolute_offset(7))[0], \
             "Supposed NULL is not a null????"
 
-    @structproperty(int, struct)
-    def hp(self):
-        return self.field_as_absolute_offset(0)
-
-    @structproperty(int, struct)
-    def mp(self):
-        return self.field_as_absolute_offset(1)
-
-    @structproperty(int, struct)
-    def strength(self):
-        return self.field_as_absolute_offset(2)
-
-    @structproperty(int, struct)
-    def vitality(self):
-        return self.field_as_absolute_offset(3)
-
-    @structproperty(int, struct)
-    def magic(self):
-        return self.field_as_absolute_offset(4)
-
-    @structproperty(int, struct)
-    def agility(self):
-        return self.field_as_absolute_offset(5)
-
-    @structproperty(int, struct)
-    def luck(self):
-        return self.field_as_absolute_offset(6)
+    hp = U16Editor(0)
+    mp = U16Editor(0x2)
+    strength = U16Editor(0x4)
+    vitality = U16Editor(0x6)
+    magic = U16Editor(0x8)
+    agility = U16Editor(0xa)
+    luck = U16Editor(0xc)
 
 
 class StatBlockEditor(BaseDynamicEditor, BaseStructAsFieldEditor):
@@ -74,12 +54,8 @@ class StatBlockEditor(BaseDynamicEditor, BaseStructAsFieldEditor):
             self.current.__setattr__(stat, base + changes)
 
 
-class HealableEditor(BaseDynamicEditor, BaseStructAsFieldEditor):
+class HealableEditor(BaseDynamicEditor):
     struct = "<H"
 
-    @structproperty(int, struct)
-    def hp(self) -> int:
-        return self.field_as_absolute_offset(0)
-    @structproperty(int, struct)
-    def mp(self) -> int:
-        return self.field_as_absolute_offset(1)
+    hp = U16Editor(0)
+    mp = U16Editor(2)

@@ -2,7 +2,7 @@ from kadishutu.data.demons import DEMON_ID_MAP, Demon
 
 from ..shared.file_handling import (
     BaseDynamicEditor, BaseStaticEditor, U16Editor, U32Editor, U64Editor,
-    U8Editor, structproperty,
+    U8Editor,
 )
 from .affinities import (
     AILMENT_AFFINITY_NAMES, ELEMENTAL_AFFINITY_NAMES, AffinityManager,
@@ -42,9 +42,7 @@ class DemonEditor(BaseDynamicEditor):
 
     stats = StatBlockEditor.rdisp(0)
     friendship = U32Editor(0x44)
-    @structproperty(int, "<H")
-    def dh_talks(self):
-        return self.relative_as_absolute_offset(74)
+    dh_talks = U16Editor(0x4a)
     is_summoned = U32Editor(0x60)
     healable = HealableEditor.rdisp(0x64)
     exp = U64Editor(0x68)
