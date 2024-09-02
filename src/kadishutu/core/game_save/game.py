@@ -34,10 +34,6 @@ class Endings(IntFlag):
     VengeanceChaos = auto()
 
 
-for i in Endings:
-    print(i.value)
-
-
 class GameSaveEditor(BaseMasterEditor):
     # Pre-loaded section
     time_of_saving = UnrealTimeEditor(0x4f4)
