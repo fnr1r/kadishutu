@@ -103,8 +103,7 @@ Available subcommands:
 ### As a library
 
 ```python
-from kadishutu.core.game_save import GameSaveEditor
-from kadishutu.core.shared.file_handling import DecryptedSave
+from kadishutu import DecryptedSave, GameSaveEditor
 from pathlib import Path
 
 path = Path(...)

@@ -24,8 +24,7 @@ if __name__ == "__main__":
 # EDIT FROM HERE
 
 
-from kadishutu.core.game_save import GameSaveEditor
-from kadishutu.core.shared.file_handling import DecryptedSave
+from kadishutu import DecryptedSave, GameSaveEditor
 from typing import List
 
 
