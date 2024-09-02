@@ -1,12 +1,8 @@
-from PySide6.QtWidgets import QPushButton, QVBoxLayout, QWidget
+from PySide6.QtWidgets import QPushButton
 
 from .demonlike import DemonLikeEditorScreen
-from .affinities import AffinityEditorScreen
 from .names import NameEditorScreen
-from .potentials import PotentialEditorScreen
 from .shared import GameScreenMixin
-from .skills import SkillEditorScreen
-from .stats import StatEditorScreen
 
 
 class PlayerEditorScreen(DemonLikeEditorScreen):
