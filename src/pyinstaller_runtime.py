@@ -1,4 +1,4 @@
-import kadishutu.gui_prompt_install
+import kadishutu.gui.prompt_install
 
 
 def handle_no_qt() -> int:
@@ -10,4 +10,4 @@ def handle_no_qt() -> int:
     return 1
 
 
-kadishutu.gui_prompt_install.handle_no_qt = handle_no_qt
+kadishutu.gui.prompt_install.handle_no_qt = handle_no_qt
