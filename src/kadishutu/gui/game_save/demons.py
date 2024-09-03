@@ -1,8 +1,8 @@
-from kadishutu.core.game_save.demons import DemonEditor
+from kadishutu.core.game_save.demons import DEMON_TABLE_SIZE, DemonEditor
 from kadishutu.data.demons import DEMON_ID_MAP, DEMON_NAME_MAP
-from typing import List
+from typing import TYPE_CHECKING, Callable, List, Optional, Tuple
 from PySide6.QtWidgets import (
-    QComboBox, QGridLayout, QHBoxLayout, QLabel, QPushButton, QSpinBox,
+    QComboBox, QGridLayout, QHBoxLayout, QMenu, QLabel, QPushButton, QSpinBox,
     QVBoxLayout, QWidget,
 )
 
@@ -12,6 +12,9 @@ from ..shared import (
 from ..iconloader import ICON_LOADER, DisabledError, print_icon_loading_error
 from .demonlike import DemonLikeEditorScreen
 from .shared import GameScreenMixin
+
+if TYPE_CHECKING:
+    from _typeshed import SupportsRichComparison
 
 
 class DemonIdnWidget(QWidget, ModifiedMixin):
@@ -100,43 +103,93 @@ class DemonEditorScreen(DemonLikeEditorScreen, AppliableWidget):
         self.demon_idn_widget.setattr_if_modified(self.demon, "demon_id")
 
 
-class DemonSelectorScreen(QWidget, GameScreenMixin):
+CIDS = Callable[[int, DemonEditor], "SupportsRichComparison"]
+
+
+class DemonSelectorScreen(QWidget, GameScreenMixin, AppliableWidget):
+    _new_demon_order: Optional[List[int]] = None
+    NO_DEMON = 0xff
+
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.demons = self.save.demons
+        self.team = team = self.save.team
         self.widgets: List[QPushButton] = []
 
         self.l = QGridLayout(self)
-        for demon_number in range(24):
+        for i, demon_number in enumerate(team.demon_order):
             sel = QPushButton(self)
             sel.clicked.connect(self.demon_editor(demon_number))
-            COLUMNS = 4
-            (row, column) = divmod(demon_number, COLUMNS)
-            self.l.addWidget(sel, row, column)
+            self.l.addWidget(sel, *divmod(i, 4))
             self.widgets.append(sel)
 
+        self.sort_menu = sort_menu = QMenu("Sort", self)
+        sort_types_list: List[Tuple[str, Optional[CIDS]]] = [
+            ("by slot", lambda x, _: x),
+            ("by demon ID", lambda _, x: x.demon_id),
+            ("separator", None),
+            ("by level", lambda _, x: -x.level),
+            ("by max hp", lambda _, x: -x.stats.current.hp),
+            ("by max mp", lambda _, x: -x.stats.current.mp),
+            ("by name (alphabetically)", lambda _, x: x.meta.name),
+        ]
+        for name, fun in sort_types_list:
+            if fun is None:
+                sort_menu.addSeparator()
+                continue
+            def a(fun: CIDS):
+                return lambda: self.sort_with_fun(fun)
+            sort_menu.addAction(name).triggered.connect(a(fun))
+        self.sort_button = QPushButton("Sort")
+        self.sort_button.setMenu(self.sort_menu)
+        self.l.addWidget(self.sort_button, 8, 0)
+
+    @property
+    def demon_order(self) -> List[int]:
+        if self._new_demon_order:
+            return self._new_demon_order
+        return self.team.demon_order
+
+    def sort_with_fun(self, fun: CIDS):
+        demons = self.demons
+        demon_order = self.demon_order
+        while demon_order[-1] == self.NO_DEMON:
+            demon_order.pop()
+        demon_order.sort(key=lambda x: fun(x, demons.in_slot(x)))
+        for _ in range(len(demon_order), DEMON_TABLE_SIZE):
+            demon_order.append(self.NO_DEMON)
+        self._new_demon_order = demon_order
+        self.stack_refresh()
+
     def demon_button_refresh(self, demon_number: int, button: QPushButton):
-        demon = self.demons.in_slot(demon_number)
-        if demon.demon_id == 0xffff:
-            demon_txt = "None"
+        if demon_number == self.NO_DEMON:
             button.setEnabled(False)
-        else:
-            try:
-                demon_txt = demon.name
-            except KeyError:
-                demon_txt = f"Unknown ({demon.demon_id})"
-            try:
-                icon = ICON_LOADER.mini_character_icon(demon.meta.id)
-            except Exception as e:
-                print_icon_loading_error(e, "Failed to load demon icon:")
-            else:
-                button.setIcon(icon.icon)
-                button.setIconSize(icon.size_div(2))
+            button.setText("Empty")
+            button.setIcon(ICON_LOADER.no_icon)
+            return
+        button.setEnabled(True)
+        demon = self.demons.in_slot(demon_number)
+        try:
+            demon_txt = demon.name
+        except KeyError:
+            demon_txt = f"Unknown ({demon.demon_id})"
         button.setText(f"Demon {demon_number}: {demon_txt}")
+        try:
+            icon = ICON_LOADER.mini_character_icon(demon.meta.id)
+        except Exception as e:
+            print_icon_loading_error(e, "Failed to load demon icon")
+        else:
+            button.setIcon(icon.icon)
+            button.setIconSize(icon.size_div(2))
 
     def stack_refresh(self):
-        for demon_number, button in enumerate(self.widgets):
+        for demon_number, button in zip(self.demon_order, self.widgets):
             self.demon_button_refresh(demon_number, button)
+
+    def on_apply_changes(self):
+        if self._new_demon_order is not None:
+            self.team.demon_order = self._new_demon_order
+            self._new_demon_order = None
 
     def demon_editor(self, demon_number: int):
         demon = self.demons.in_slot(demon_number)

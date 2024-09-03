@@ -9,6 +9,7 @@ from PySide6.QtCore import QSize
 from PySide6.QtGui import QIcon, QPixmap
 
 from kadishutu.data.element_icons import Element
+from kadishutu.tools.eprint import printexcept
 
 
 UMODEL_EXPORT_PATH = APPDIRS.data_path / "game_data_export"
@@ -171,6 +172,10 @@ class IconLoader:
         self.loading_char_icon_map[id] = pak = ImagePak.from_image(img)
         return pak
 
+    @property
+    def no_icon(self) -> QIcon:
+        return QIcon()
+
 
 ICON_LOADER = IconLoader()
 
@@ -181,5 +186,4 @@ def print_icon_loading_error(
 ):
     if isinstance(e, DisabledError):
         return
-    else:
-        print(msg + ":", e)
+    printexcept(msg, e)

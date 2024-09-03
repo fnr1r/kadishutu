@@ -21,6 +21,12 @@ SUMMONED_DEMONS_FMT = array_of_fmt("B", 3)
 class DemonOrderEditor(StructEditor):
     fmt = array_of_fmt("B", DEMON_TABLE_SIZE)
 
+    def __get__(self, instance, _) -> List[int]:
+        return super().__get__(instance, _)
+
+    def __set__(self, instance, value: List[int]):
+        return super().__set__(instance, value)
+
     def read(self) -> List[int]:
         return list(super().read())
     
@@ -29,6 +35,7 @@ class DemonOrderEditor(StructEditor):
 
 
 class TeamEditor(BaseStaticEditor):
+    offset = 0
     NO_DEMON = 0xff
     demon_order = DemonOrderEditor(0x3d10)
 
