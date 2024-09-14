@@ -3,9 +3,10 @@ from dataclasses_json import DataClassJsonMixin
 from pathlib import Path
 from typing import List, Self
 
-from .csvutils import TABLES_PATH, make_maps
 from .miracles import MIRACLE_NAME_MAP, Miracle
 from .tools.dataclasses_json import hex_int_config
+from .tools.mapping import make_maps
+from .tools.path import TABLES_PATH
 
 
 MIRACLE_UNLOCKS_DATA_PATH = TABLES_PATH / "miracle_unlocks.json"

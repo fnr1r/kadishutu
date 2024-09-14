@@ -8,8 +8,10 @@ from dataclasses_json import DataClassJsonMixin
 from pathlib import Path
 from typing import List, Optional, Self, Union
 
-from .csvutils import TABLES_PATH, is_unused, make_maps
 from .tools.dataclasses_json import hex_int_config
+from .tools.mapping import make_maps
+from .tools.path import TABLES_PATH
+from .tools.unused import is_unused
 
 
 UMODEL_SAVED_PATH = APPDIRS.data_path / "game_data_saved"

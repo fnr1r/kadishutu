@@ -7,8 +7,8 @@ from struct import calcsize
 from typing import List, Union
 from typing_extensions import Self
 
-from .csvutils import make_maps
 from .miracles import UMODEL_SAVED_PATH, Destructable
+from .tools.mapping import make_maps
 
 
 QUEST_TABLE_OFFSET = 0x59d52
@@ -103,11 +103,11 @@ class Quest:
             cls(*i)
             for i in list(zip(QUEST_DATA, QUEST_STRINGS))
         ]
-    
+
     @property
     def id(self) -> int:
         return self.data.id
-    
+
     @property
     def name(self) -> str:
         # TODO: Format the name
@@ -116,7 +116,7 @@ class Quest:
     @name.setter
     def name(self, v: str):
         self.strings.name = v
-    
+
     @property
     def offset(self) -> int:
         return QUEST_TABLE_OFFSET + QUEST_ENTRY_SIZE * self.id

@@ -4,8 +4,11 @@ from typing import List, Optional
 from dataclasses_json import DataClassJsonMixin
 from typing_extensions import Self
 
-from .csvutils import TABLES_PATH, FromCsv, is_unused, make_maps
 from .element_icons import Element
+from .tools.csv import FromCsv
+from .tools.mapping import make_maps
+from .tools.path import TABLES_PATH
+from .tools.unused import is_unused
 
 
 ITEM_NAMES_TABLE_PATH = TABLES_PATH / "SMT5V NKM Base Table_Navi Devil Data - Item Names.csv"
@@ -149,4 +152,3 @@ def items_except_for(*args: range) -> List[Item]:
 
 
 (ITEM_ID_MAP, ITEM_NAME_MAP) = make_maps(ITEMS)
-

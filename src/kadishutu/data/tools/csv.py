@@ -1,19 +1,12 @@
-from abc import ABC
 import csv
 from dataclasses import dataclass
 from enum import Enum
-import os
 from pathlib import Path
 import re
 from typing import (
-    Any, Callable, Dict, List, Optional, Protocol, Sequence, Tuple, Type,
-    TypeVar,
+    Any, Callable, Dict, List, Optional, Tuple, Type, TypeVar,
 )
 from typing_extensions import Self
-
-
-FILE_PATH = Path(os.path.realpath(__file__)).parent
-TABLES_PATH = FILE_PATH / "tables"
 
 
 def csvread_headerless(path: Path, skip_lines: int = 0) -> List[List[str]]:
@@ -49,7 +42,11 @@ class FromCsv:
         ...
 
     @classmethod
-    def from_csv_headerless(cls, path: Path, skip_lines: int = 0) -> List[Self]:
+    def from_csv_headerless(
+        cls,
+        path: Path,
+        skip_lines: int = 0
+    ) -> List[Self]:
         csv_data = csvread_headerless(path, skip_lines)
         res = []
         conversion_info = cls.converter_data()
@@ -142,40 +139,3 @@ T = TypeVar("T", bound=Enum)
 def extract_from_str(cls: Type[T], text: str) -> T:
     (num, _) = extractor(text)
     return cls(num)
-
-
-def is_unused(name: str) -> bool:
-    return name.startswith("NOT USED:")
-
-
-class IHaveAName(ABC):
-    name: str
-
-    def is_unused(self) -> bool:
-        return is_unused(self.name)
-
-
-class RandType(Protocol):
-    @property
-    def id(self) -> int: ...
-    @property
-    def name(self) -> str: ...
-    @name.setter
-    def name(self, v: str): ...
-
-
-T = TypeVar("T", bound=RandType)
-
-
-def make_maps(objs: Sequence[T]) -> Tuple[Dict[int, T], Dict[str, T]]:
-    id_to_name_map: Dict[int, Any] = {}
-    name_to_id_map: Dict[str, Any] = {}
-    for obj in objs:
-        id_to_name_map[obj.id] = obj
-        if obj.name in name_to_id_map.keys():
-            new_name = f"{obj.name} ({obj.id})"
-            name_to_id_map[new_name] = obj
-            obj.name = new_name
-        else:
-            name_to_id_map[obj.name] = obj
-    return (id_to_name_map, name_to_id_map)

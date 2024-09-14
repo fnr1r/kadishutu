@@ -2,8 +2,11 @@ from dataclasses import dataclass
 from enum import Enum
 from typing import Any, Dict, List
 
-from .csvutils import TABLES_PATH, FromCsv, extract_from_str, is_unused, make_maps
 from .element_icons import Element
+from .tools.csv import FromCsv, extract_from_str
+from .tools.mapping import make_maps
+from .tools.path import TABLES_PATH
+from .tools.unused import is_unused
 
 
 ACTION_SKILLS_PATH = TABLES_PATH / "SMT5V Skill Data Tables - ActionSkills.csv"

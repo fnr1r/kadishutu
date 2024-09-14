@@ -1,11 +1,11 @@
 from dataclasses import dataclass, field
-from dataclasses_json import DataClassJsonMixin, config
+from dataclasses_json import DataClassJsonMixin
 from pathlib import Path
 from typing import Dict, List, Optional, Tuple
 from typing_extensions import Self
 
-from .csvutils import TABLES_PATH
 from .tools.dataclasses_json import bytes_config, hex_int_config
+from .tools.path import TABLES_PATH
 
 
 LAYLINE_DATA_PATH = TABLES_PATH / "laylines.json"

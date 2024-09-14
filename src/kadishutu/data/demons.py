@@ -6,7 +6,10 @@ from .affinity import Affinity
 from .demon_race import DemonRace
 from .old_demon_data import DEMONS_OLD
 from .skills import SKILL_ID_MAP, Skill
-from .csvutils import TABLES_PATH, FromCsv, extract_from_str, is_unused, make_maps, reverse_extractor
+from .tools.csv import FromCsv, extract_from_str, reverse_extractor
+from .tools.mapping import make_maps
+from .tools.path import TABLES_PATH
+from .tools.unused import is_unused
 
 
 DEMON_DATA_PATH = TABLES_PATH / "SMT5V NKM Base Table_Navi Devil Data - Players.csv"
