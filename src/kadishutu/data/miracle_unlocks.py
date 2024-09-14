@@ -1,10 +1,11 @@
 from dataclasses import dataclass, field
-from dataclasses_json import DataClassJsonMixin, config
+from dataclasses_json import DataClassJsonMixin
 from pathlib import Path
 from typing import List, Self
 
 from .csvutils import TABLES_PATH, make_maps
 from .miracles import MIRACLE_NAME_MAP, Miracle
+from .tools.dataclasses_json import hex_int_config
 
 
 MIRACLE_UNLOCKS_DATA_PATH = TABLES_PATH / "miracle_unlocks.json"
@@ -13,10 +14,7 @@ MIRACLE_UNLOCKS_DATA_PATH = TABLES_PATH / "miracle_unlocks.json"
 @dataclass
 class MiracleUnlock(DataClassJsonMixin):
     id: int = field(
-        metadata=config(
-            decoder=lambda u: int(u, 16),
-            encoder=lambda t: f"0x{t:x}"
-        )
+        metadata=hex_int_config(4)
     )
     name: str
     miracles: List[str]

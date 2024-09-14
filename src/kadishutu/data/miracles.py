@@ -4,11 +4,12 @@ from kadishutu.paths import APPDIRS
 from kadishutu.tools.eprint import printexcept
 from kadishutu.tools.tbbreader import Tbcr
 from struct import Struct
-from dataclasses_json import DataClassJsonMixin, config
+from dataclasses_json import DataClassJsonMixin
 from pathlib import Path
 from typing import List, Optional, Self, Union
 
 from .csvutils import TABLES_PATH, is_unused, make_maps
+from .tools.dataclasses_json import hex_int_config
 
 
 UMODEL_SAVED_PATH = APPDIRS.data_path / "game_data_saved"
@@ -65,10 +66,7 @@ except Exception as e:
 @dataclass
 class MiracleText(DataClassJsonMixin):
     id: int = field(
-        metadata=config(
-            decoder=lambda u: int(u, 16),
-            encoder=lambda t: f"0x{t:x}"
-        )
+        metadata=hex_int_config(2)
     )
     name: str
     desc: Optional[str] = None

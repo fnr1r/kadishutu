@@ -5,26 +5,10 @@ from typing import Dict, List, Optional, Tuple
 from typing_extensions import Self
 
 from .csvutils import TABLES_PATH
+from .tools.dataclasses_json import bytes_config, hex_int_config
 
 
 LAYLINE_DATA_PATH = TABLES_PATH / "laylines.json"
-
-
-def hexadec_int_config(padding: int):
-    def map_decoder(u: str) -> int:
-        return int(u, 16)
-    def map_encoder(t: int) -> str:
-        #return f"0x{t:08x}"
-        return "0x" + (hex(t)[2:]).rjust(padding, "0")
-    return config(decoder=map_decoder, encoder=map_encoder)
-
-
-def bytes_config(size: int):
-    strlen = size * 2
-    return config(
-        decoder=lambda u: bytes.fromhex(u),
-        encoder=lambda t: t.hex().rjust(strlen, "0")
-    )
 
 
 LAYLINE_UNLOCK_OFFSET = 0x80a2
@@ -33,7 +17,7 @@ LAYLINE_UNLOCK_OFFSET = 0x80a2
 @dataclass
 class LaylineUnlock(DataClassJsonMixin):
     offset: int = field(
-        metadata=hexadec_int_config(5)
+        metadata=hex_int_config(5)
     )
     bit: int
 
@@ -41,17 +25,14 @@ class LaylineUnlock(DataClassJsonMixin):
 @dataclass
 class Layline(DataClassJsonMixin):
     id: int = field(
-        metadata=config(
-            decoder=lambda u: int(u, 16),
-            encoder=lambda t: f"0x{t:x}"
-        )
+        metadata=hex_int_config(0)
     )
     name: str
     map_upper: int = field(
-        metadata=hexadec_int_config(8)
+        metadata=hex_int_config(8)
     )
     map_lower: int = field(
-        metadata=hexadec_int_config(8)
+        metadata=hex_int_config(8)
     )
     coordinates: bytes = field(
         metadata=bytes_config(12)

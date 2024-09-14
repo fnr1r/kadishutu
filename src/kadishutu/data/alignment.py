@@ -5,6 +5,7 @@ from typing import Dict, List, Optional
 from typing_extensions import Self
 
 from .csvutils import TABLES_PATH
+from .tools.dataclasses_json import hex_int_config
 
 
 ALIGNMENT_DATA_PATH = TABLES_PATH / "alignment_data.json"
@@ -22,9 +23,7 @@ class AlignmentBit(DataClassJsonMixin):
 @dataclass
 class AlignmentByte(DataClassJsonMixin):
     offset: int = field(
-        metadata=config(
-            decoder=lambda u: int(u, 16)
-        )
+        metadata=hex_int_config(5),
     )
     bits: List[AlignmentBit]
 
