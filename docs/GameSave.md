@@ -635,16 +635,50 @@ where the item is an essence.
 
 Here are possible values for each field:
 
-- 0 - Not owned  
+- 0 - Not owned, ever  
   (default)
 - 2 - New  
   (after getting an essence from a box)
 - 4 - ???? (possible)  
-  (achieved when giving an essence without changing this value)
+  (amount = 1; load + save)
+- 5 (from 1)
+  (amount = 1; meta = 1; load + save)
 - 6 - Owned  
-  (after highliting it in the menu)
-- 16 - Used  
+  (after highligting it in the menu)
+- 7 (from 3) - Owned
+  (amount = 1; meta = 3; load + highlight + save)
+- 16 - Absent  
   (after fusion)
+- 20 (from 16)
+  (meta = 16; load + save)
+- 22 - Absent
+  (amount = 1; meta = 2; load + fuse (req highlight) + save)
+
+This is (most likely) a bitflag.
+
+- bit 0 - does nothing, not removed if set
+- bit 1 - set after getting new essence, never removed
+- bit 2 - set after highlighting an essence
+  OR if amount == 1 and bits 0 and 1 are not set
+- bit 4 - absent
+- bits 3, 5, 6, 7 - if any of those are set,
+  bit 2 is not set after adding essence
+
+### Essence?
+
+It's an unsigned char / u8 (1 byte).
+
+```txt
+0b00000000
+  01234567
+```
+
+- 0x02 - bit 1 - New
+  (is new if bit 2 and bit 4 are not set)
+- 0x04 - bit 2 - Owned
+  (is owned if bit 4 is not set)
+- 0x10 - bit 4 - Absent
+- any other bit - Nothing (not removed)
 
 ## Location info
 

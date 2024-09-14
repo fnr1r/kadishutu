@@ -1,57 +1,77 @@
-from enum import Enum
-from kadishutu.data.items import ESSENCES_RANGE, ITEM_TABLE_OFFSET
+from enum import IntFlag, auto
+from kadishutu.core.shared.editors import BoolEditor, EnumEditor
+from kadishutu.data.items import ESSENCES_RANGE, ITEM_TABLE_OFFSET, Item
 
 from .items import ItemEditor, ItemManager
 
 
-class EssenceMetadata(Enum):
-    NotOwned = 0b00000000
-    New = 0b00000010
-    Owned2 = 0b00000100
-    Owned = 0b00000110
-    # An essence can't be new and used
-    Used = 0b00010000
-    Used2 = 0b00010110
+class EssenceMetadata(IntFlag):
+    Bit0 = auto()
+    New = auto()
+    Owned = auto()
+    Bit3 = auto()
+    Absent = auto()
+    Bit5 = auto()
+    Bit6 = auto()
+    Bit7 = auto()
 
+    @classmethod
+    def all(cls):
+        return cls(0xff)
 
-def essence_metadata_map() -> dict[str, EssenceMetadata]:
-    res = {}
-    for i in EssenceMetadata:
-        res[i.name] = i
-    return res
-
-
-ESSENCE_META_MAP = essence_metadata_map()
+    @classmethod
+    def new_blockbits(cls):
+        return [EssenceMetadata.Owned, EssenceMetadata.Absent]
 
 
 class EssenceEditor(ItemEditor):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+    owned = BoolEditor(0)
+    metadata = EnumEditor(0x380, EssenceMetadata)
 
-    @property
-    def metadata_offset(self) -> int:
-        return self.offset + 0x380
+    def is_absent(self) -> bool:
+        return False
 
-    owned = property(lambda x: bool(x.get_amount()), lambda x, y: x.set_amount(int(y)))
+    def is_owned(self) -> bool:
+        return False
 
-    @property
-    def metadata(self):
-        return self.data[self.metadata_offset]
-    @metadata.setter
-    def metadata(self, value: int):
-        self.data[self.metadata_offset] = value
+    def add_bits(self, bits: EssenceMetadata):
+        self.metadata |= bits
 
-    #def give(self):
-    #    if not self.owned:
-    #        self.owned = True
-    #        self.metadata = EssenceMetadata.New
-    #    else:
-    #        self.metadata = EssenceMetadata.Owned
+    def remove_bits(self, bits: EssenceMetadata):
+        self.metadata &= ~bits
+
+    def is_new(self) -> bool:
+        for i in EssenceMetadata.new_blockbits():
+            if self.metadata & i:
+                return False
+        return bool(self.metadata & EssenceMetadata.New)
+
+    def give(self, new: bool = False):
+        self.add_bits(EssenceMetadata.New)
+        if new:
+            self.remove_bits(EssenceMetadata.Owned)
+        else:
+            self.add_bits(EssenceMetadata.Owned)
+        self.remove_bits(EssenceMetadata.Absent)
+
+    def take(self):
+        self.add_bits(EssenceMetadata.New)
+        self.add_bits(EssenceMetadata.Owned)
+        self.add_bits(EssenceMetadata.Absent)
 
 
 class EssenceManager(ItemManager):
-    SUBEDITOR = EssenceEditor
+    @staticmethod
+    def _return(r: ItemEditor) -> EssenceEditor:
+        assert isinstance(r, EssenceEditor)
+        return r
 
     def at_offset(self, offset: int, *args, **kwargs):
         assert offset - ITEM_TABLE_OFFSET in ESSENCES_RANGE
-        return super().at_offset(offset, *args, **kwargs)
+        return self._return(super().at_offset(offset, *args, **kwargs))
+
+    def from_meta(self, item: Item) -> EssenceEditor:
+        return self._return(super().from_meta(item))
+
+    def from_name(self, name: str) -> EssenceEditor:
+        return self._return(super().from_name(name))

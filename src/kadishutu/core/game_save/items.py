@@ -44,10 +44,9 @@ class ItemEditor(BaseDynamicEditor, BaseStructAsSingularValueEditor):
 
 class ItemManager(BaseStaticEditor):
     offset = 0x4c72
-    SUBEDITOR = ItemEditor
 
     def at_offset(self, offset: int, *args, **kwargs):
-        return self.dispatch(self.SUBEDITOR, offset, *args, **kwargs)
+        return self.dispatch(ItemEditor, offset, *args, **kwargs)
 
     def from_meta(self, item: Item):
         return self.at_offset(item.offset, meta=item)
