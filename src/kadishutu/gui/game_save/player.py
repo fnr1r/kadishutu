@@ -12,7 +12,7 @@ class PlayerEditorScreen(DemonLikeEditorScreen):
         self.setLayout(self.dl_layout)
 
         for i, name, fun in [
-            (0, "Names", lambda: NameEditorScreen(
+            (1, "Names", lambda: NameEditorScreen(
                 self.save.player.names
             )),
         ]:
