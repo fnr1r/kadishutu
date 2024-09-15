@@ -68,7 +68,7 @@ class EssenceManager(ItemManager):
 
     def at_offset(self, offset: int, *args, **kwargs):
         assert offset - ITEM_TABLE_OFFSET in ESSENCES_RANGE
-        return self._return(super().at_offset(offset, *args, **kwargs))
+        return self.dispatch(EssenceEditor, offset, *args, **kwargs)
 
     def from_meta(self, item: Item) -> EssenceEditor:
         return self._return(super().from_meta(item))
