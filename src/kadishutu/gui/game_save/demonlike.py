@@ -2,7 +2,7 @@ from kadishutu.core.game_save.demonlike import DemonLikeEditor
 from typing import List
 from PySide6.QtWidgets import QLabel, QPushButton, QVBoxLayout, QWidget
 
-from ..shared import QU8, AppliableWidget, hboxed
+from ..shared import QU32, QU8, AppliableWidget, hboxed
 from .affinities import AffinityEditorScreen
 from .potentials import PotentialEditorScreen
 from .shared import GameScreenMixin
@@ -37,7 +37,7 @@ class DemonLikeEditorScreen(QWidget, GameScreenMixin, AppliableWidget):
         ))
 
         exp_label = QLabel("Exp")
-        self.exp_box = QU8()
+        self.exp_box = QU32()
         self.dl_layout.addLayout(hboxed(
             exp_label,
             self.exp_box
