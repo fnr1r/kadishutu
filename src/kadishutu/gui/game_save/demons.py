@@ -86,7 +86,7 @@ class DemonEditorScreen(DemonLikeEditorScreen, AppliableWidget):
             id = self.demon_idn_widget.demon.id
             icon = ICON_LOADER.loading_character_icon(id)
         except Exception as e:
-            print_icon_loading_error(e, "Failed to demon grapic:")
+            print_icon_loading_error(e, "Failed to demon graphic")
             if isinstance(e, FileNotFoundError) or isinstance(e, DisabledError):
                 self.demon_graphic.hide()
         else:
