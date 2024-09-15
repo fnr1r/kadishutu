@@ -11,11 +11,11 @@ class PlayerEditorScreen(DemonLikeEditorScreen):
         super().__init__(self.save.player, *args, **kwargs)
         self.setLayout(self.dl_layout)
 
-        for i, name, fun in [
-            (1, "Names", lambda: NameEditorScreen(
+        for i, (name, fun) in enumerate([
+            ("Names", lambda: NameEditorScreen(
                 self.save.player.names
             )),
-        ]:
+        ], start=self.last_box):
             button = QPushButton(name)
             button.clicked.connect(self.spawner(fun))
             self.dl_layout.insertWidget(i, button)

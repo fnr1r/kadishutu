@@ -97,9 +97,11 @@ class DemonEditorScreen(DemonLikeEditorScreen, AppliableWidget):
             self.demon_graphic.show()
 
     def stack_refresh(self):
+        super().stack_refresh()
         self.graphic_refresh()
 
     def on_apply_changes(self):
+        super().on_apply_changes()
         self.demon_idn_widget.setattr_if_modified(self.demon, "demon_id")
 
 

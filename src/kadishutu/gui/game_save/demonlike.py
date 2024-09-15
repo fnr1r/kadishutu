@@ -36,6 +36,15 @@ class DemonLikeEditorScreen(QWidget, GameScreenMixin, AppliableWidget):
             self.level_box
         ))
 
+        exp_label = QLabel("Exp")
+        self.exp_box = QU8()
+        self.dl_layout.addLayout(hboxed(
+            exp_label,
+            self.exp_box
+        ))
+
+        self.last_box = 2
+
         for name, fun in [
             ("Stats", lambda: StatEditorScreen(
                 self.demon.stats, self.demon.healable
@@ -60,6 +69,8 @@ class DemonLikeEditorScreen(QWidget, GameScreenMixin, AppliableWidget):
 
     def stack_refresh(self):
         self.level_box.setValue(self.demon.level)
+        self.exp_box.setValue(self.demon.exp)
 
     def on_apply_changes(self):
         self.level_box.setattr_if_modified(self.demon, "level")
+        self.exp_box.setattr_if_modified(self.demon, "exp")
