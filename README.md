@@ -168,6 +168,19 @@ with all DLCs more specifically). It might work with the PC version.
   corelation with mods
 - Rewrite the core in Rust (once the format is better understood)
 
+## FAQ
+
+### Changes made to resistances are reverted
+
+This is expected (at least for demons) since those values are only copies.
+
+### Changes made to skill potentials are reverted
+
+If the skill potential of a demon is below 1, the skill potential can't be
+increased (neither in-game with sutras, nor by editing).
+
+As for the player, it might be recalculated based on bought miracles.
+
 ## Documentation
 
 The documentation for the save files is in the docs folder:
