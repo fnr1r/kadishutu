@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "kadishutu"
-version = "0.1.6"
+version = "0.1.7"
 description = "A save editor for Shin Megami Tensei V: Vengeance."
 authors = ["fnrir"]
 license = "MIT"
