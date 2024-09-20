@@ -9,6 +9,7 @@ from ..shared import (
     QU32, AppliableWidget, SaveScreenMixin, hboxed,
 )
 from .alignment import AlignmentEditorScreen
+from .cross_cycle import CrossCycleEditorScreen
 from .demons import DemonSelectorScreen
 from .dlc import DlcEditorScreen
 from .essences import EssenceEditorScreen
@@ -49,6 +50,7 @@ class GameSaveEditorScreen(SaveScreenMixin, QWidget, AppliableWidget):
             ("Layline Crossing", TeleporterScreen),
             ("Alignment", AlignmentEditorScreen),
             ("Settings", SettingsEditorScreen),
+            ("Meta", CrossCycleEditorScreen),
         ]:
             widget = QPushButton(name)
             widget.clicked.connect(self.spawner(cls))

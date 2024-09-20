@@ -48,9 +48,10 @@ class ModifiedMixin:
             updater(self.get_value())
             self.set_modified(False)
 
-    def setattr_if_modified(self, obj: object, attr: str):
+    def setattr_if_modified(self, obj: object, *attrs: str):
         if self.get_modified():
-            obj.__setattr__(attr, self.get_value())
+            for attr in attrs:
+                obj.__setattr__(attr, self.get_value())
             self.set_modified(False)
 
 
