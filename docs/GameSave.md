@@ -21,6 +21,7 @@ KEY = bytes([0x30, 0x31, 0x32, 0x33, 0x34, 0x35, 0x36, 0x37,
   (20 bytes)
 - 0x28 - 0x2c - [Difficulty-related?](#difficulty-values)
   (an unsigned int / u32 (4 bytes))
+- 0x40 - 0x4cf - [UE4 Data](#unrealengine4-data)
 - 0x4d8 - 0x4e8 - [Save name](#name-info)
 - 0x4f0 - 0x4f4 - [???](#time-of-saving-info)  
   (4 bytes)
@@ -132,7 +133,7 @@ a("stats_mystery_stuff", 0x9b8, "<l"),
 a("player_stats2", 0x9c0, "II", "LV EXP"),
 -->
 
-## Note about save screen data
+### Note about save screen data
 
 Save screen data is loaded once when starting the game, which (reasonably)
 assumes the files won't be modified while it's running.
@@ -151,6 +152,23 @@ This includes (but is not limited to):
 This is also why the workaround from
 [issue #1](https://github.com/fnr1r/kadishutu/issues/1#issuecomment-2255997834)
 worked.
+
+### UnrealEngine4 Data
+
+Sources:
+
+```txt
+https://github.com/trumank/uesave-rs
+https://github.com/oberien/gvas-rs
+https://github.com/localcc/gvas
+https://github.com/AstroTechies/unrealmodding
+```
+
+UE sources (requires login + Epic Games account):
+
+```txt
+https://github.com/EpicGames/UnrealEngine/blob/40eea367040d50aadd9f030ed5909fc890c159c2/Engine/Source/Runtime/Engine/Private/GameplayStatics.cpp#L84
+```
 
 ### Cycles value
 

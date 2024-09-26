@@ -4,6 +4,7 @@ from ..shared.editors import (
     BaseMasterEditor, EnumEditor, TimeDeltaEditor, U16Editor, U32Editor,
     U8Editor, UnrealTimeEditor,
 )
+from ..shared.unreal_editors import UnrealInternalEditor
 from .alignment import AlignmentManager
 from .compendium import CompendiumManager
 from .dlc import DlcEditor
@@ -35,6 +36,7 @@ class Endings(IntFlag):
 
 
 class GameSaveEditor(BaseMasterEditor):
+    unreal_engine_internals = UnrealInternalEditor.disp()
     # Pre-loaded section
     time_of_saving = UnrealTimeEditor(0x4f4)
     difficulty = EnumEditor(0x4fc, Difficulty)
