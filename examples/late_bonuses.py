@@ -24,8 +24,16 @@ if __name__ == "__main__":
 # EDIT FROM HERE
 
 
-import inquirer
 from kadishutu import DecryptedSave, GameSaveEditor
+from kadishutu.tools.eprint import eprint
+try:
+    import inquirer
+except ImportError:
+    eprint("inquirer is not installed.")
+    eprint("NOTE: inquirer (readchar more specifically) is broken under \
+pyinstaller")
+    import sys
+    sys.exit(1)
 from typing import Any, Dict, List, Tuple
 
 

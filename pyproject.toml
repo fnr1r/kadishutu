@@ -43,6 +43,7 @@ source = "src/kadishutu/__main__.py"
 [tool.poetry-pyinstaller-plugin.package]
 "README.md" = "."
 "docs" = "."
+"examples" = "."
 
 [tool.poetry-pyinstaller-plugin.include]
 "src/kadishutu/data/tables" = "kadishutu/data/tables"
