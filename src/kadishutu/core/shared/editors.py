@@ -7,8 +7,9 @@ from kadishutu.tools.fdatetime import (
 )
 from struct import Struct
 from typing import (
-    Any, ClassVar, Generic, Optional, Tuple, Type, TypeVar, Union,
+    Any, ClassVar, Generic, Optional, Tuple, Type, TypeVar, Union, overload,
 )
+from typing_extensions import Self
 
 from .file_handling import DecryptedSave
 
@@ -221,7 +222,13 @@ class EditorGetter(Generic[T, TAbstractEditor], ABC):
     def write(self, value: T):
         raise NotImplementedError
 
-    def __get__(self, instance, _) -> T:
+    @overload
+    def __get__(self, instance: object, _) -> T: ...
+    @overload
+    def __get__(self, instance: None, _) -> Self: ...
+    def __get__(self, instance, _):
+        if instance is None:
+            return self
         assert instance is not None
         assert isinstance(instance, AbstractEditor)
         self._editor = instance # type: ignore

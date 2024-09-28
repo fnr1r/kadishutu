@@ -33,6 +33,7 @@ class GameSaveEditorScreen(SaveScreenMixin, QWidget, AppliableWidget):
     ):
         super().__init__(*args, **kwargs)
         self.save = GameSaveEditor(self.raw_save)
+        print(self.save.unreal_engine_internals.custom_version_format)
 
         self.l = QVBoxLayout(self)
         self.macca = QU32()
