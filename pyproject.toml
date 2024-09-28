@@ -28,6 +28,9 @@ mypy = "^1.11.1"
 pylint = "^3.2.6"
 flake8 = "^7.1.0"
 
+[tool.poetry.group.example-late_bonuses.dependencies]
+inquirer = "^3.4.0"
+
 [tool.poetry-pyinstaller-plugin]
 post-build = "src/post-build:post_build"
 

@@ -73,5 +73,8 @@ class EssenceManager(ItemManager):
     def from_meta(self, item: Item) -> EssenceEditor:
         return self._return(super().from_meta(item))
 
+    def from_id(self, id: int) -> EssenceEditor:
+        return self._return(super().from_id(id))
+
     def from_name(self, name: str) -> EssenceEditor:
         return self._return(super().from_name(name))

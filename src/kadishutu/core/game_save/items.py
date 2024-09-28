@@ -51,5 +51,8 @@ class ItemManager(BaseStaticEditor):
     def from_meta(self, item: Item):
         return self.at_offset(item.offset, meta=item)
 
+    def from_id(self, id: int):
+        return self.from_meta(ITEM_ID_MAP[id])
+
     def from_name(self, name: str):
         return self.from_meta(ITEM_NAME_MAP[name])
