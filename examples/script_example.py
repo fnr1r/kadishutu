@@ -34,4 +34,5 @@ def main(path: Path, file: DecryptedSave, _: List[str]):
     stats = game.player.stats.current
     game.player.healable.hp = stats.hp
     game.player.healable.mp = stats.mp
+    file.hash_update()
     file.encrypt().save(path)
