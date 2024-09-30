@@ -57,6 +57,11 @@ KEY = bytes([0x30, 0x31, 0x32, 0x33, 0x34, 0x35, 0x36, 0x37,
   (an unsigned long long / u64 (8 bytes))
 - 0x9c8 - 0x9ca - Player [level](#level-info)  
   (an unsigned short / u16 (2 bytes))
+- 0x9ca - 0x9cc - Player assigned stat points  
+  (points available when using New Testament Tablet?)
+  (these are NOT accounted for in changes)
+  (when using NTT player stats are recalculated from 0, then changes are added
+  then you get a choice of which stat you want to assign points to)
 - 0x9d0 - 0x9e0 - [First name](#name-info)
 - 0x9e8 - 0x9f8 - [Last name](#name-info)
 - 0x9fc - 0xa0c - [First name again](#name-info)
