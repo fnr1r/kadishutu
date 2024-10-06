@@ -57,11 +57,8 @@ KEY = bytes([0x30, 0x31, 0x32, 0x33, 0x34, 0x35, 0x36, 0x37,
   (an unsigned long long / u64 (8 bytes))
 - 0x9c8 - 0x9ca - Player [level](#level-info)  
   (an unsigned short / u16 (2 bytes))
-- 0x9ca - 0x9cc - Player assigned stat points  
-  (points available when using New Testament Tablet?)
-  (these are NOT accounted for in changes)
-  (when using NTT player stats are recalculated from 0, then changes are added
-  then you get a choice of which stat you want to assign points to)
+- 0x9ca - 0x9cc - Player [stat points](#player-stat-points)  
+  (an unsigned short / u16 (2 bytes))
 - 0x9d0 - 0x9e0 - [First name](#name-info)
 - 0x9e8 - 0x9f8 - [Last name](#name-info)
 - 0x9fc - 0xa0c - [First name again](#name-info)
@@ -348,9 +345,14 @@ It's 16 bytes in total.
 
 Stat blocks contain:
 
-- Initial stats (stats that the demon should have at the current level)
-- Stat changes (this includes changes from using Balms/Incenses, talking at the demon haunt (except for Aogami/Tsukuyomi))
-- Current stats (stats that are actually used for calculations/displaying)
+- Initial stats
+  - (for demons) stats that the demon should have at the current level
+  - (for protag) same as above + [stat points](#player-stat-points)
+- Stat changes
+  - changes from using Balms/Incenses
+  - (for demons) talking at the demon haunt
+- Current stats
+  - used for calculations/displaying
 
 NOTE: For demons, if the current stats are different from the sum of initial
 stats and changes, then at some point the game will reset them. This does not
@@ -366,6 +368,28 @@ There are also healable stat blocks which (afaik) contain only:
 - Current MP
 
 Both of these can exceed the maximum from the current stat block.
+
+### Player stat points
+
+It's an unsigned short / u16 (2 bytes).
+
+This stores the amount of points assignable by the player.  
+
+When leveling up this gets increased by 1 and after talking with
+Aogami/Tsukuyomi it increases by 3.
+
+(NTT = New Testament Tablet)
+
+When using NTT the game recalculates base stat block based on the game files
+(i.e. they're not random) and then lets you assign these points.
+
+Points from using a balm/editing the changes block are not removed.
+
+WARNING: After changning this value, make sure that you use a
+New Testament Tablet.
+
+WARNING: It is not known what happens if you level up after this value is
+changed and before using NTT.
 
 ## Level info
 

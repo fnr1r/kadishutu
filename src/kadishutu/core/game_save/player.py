@@ -1,7 +1,7 @@
 from struct import unpack_from
 
 from ..shared.editors import (
-    BaseDynamicEditor, BaseStaticEditor, BaseStructEditor, U64Editor, U8Editor,
+    BaseDynamicEditor, BaseStaticEditor, BaseStructEditor, U16Editor, U64Editor, U8Editor,
 )
 from .affinities import AffinityManager
 from .demonlike import DemonLikeEditor
@@ -91,6 +91,7 @@ class PlayerEditor(BaseStaticEditor, DemonLikeEditor):
 
     names = NameManager.disp()
     stats = StatBlockEditor.disp(0x988)
+    stat_points = U16Editor(0x9ca)
     healable = HealableEditor.disp(0x9bc)
     exp = U64Editor(0x9c0)
     level = U8Editor(0x9c8)

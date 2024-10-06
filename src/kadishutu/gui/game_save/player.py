@@ -1,11 +1,13 @@
-from PySide6.QtWidgets import QPushButton
+from kadishutu.core.game_save.player import PlayerEditor
+from PySide6.QtWidgets import QLabel, QPushButton
 
+from ..shared import QU16, AppliableWidget, hboxed
 from .demonlike import DemonLikeEditorScreen
 from .names import NameEditorScreen
 from .shared import GameScreenMixin
 
 
-class PlayerEditorScreen(DemonLikeEditorScreen):
+class PlayerEditorScreen(DemonLikeEditorScreen, AppliableWidget):
     def __init__(self, *args, **kwargs):
         GameScreenMixin.mixin(self)
         super().__init__(self.save.player, *args, **kwargs)
@@ -19,3 +21,23 @@ class PlayerEditorScreen(DemonLikeEditorScreen):
             button = QPushButton(name)
             button.clicked.connect(self.spawner(fun))
             self.dl_layout.insertWidget(i, button)
+
+        self.stat_points_box = QU16()
+        self.dl_layout.addLayout(hboxed(
+            QLabel("Stat points"),
+            self.stat_points_box,
+        ))
+
+    @property
+    def player(self) -> PlayerEditor:
+        player = self.demon
+        assert isinstance(player, PlayerEditor)
+        return player
+
+    def stack_refresh(self):
+        super().stack_refresh()
+        self.stat_points_box.setValue(self.player.stat_points)
+
+    def on_apply_changes(self):
+        super().on_apply_changes()
+        self.stat_points_box.setattr_if_modified(self.player, "stat_points")
