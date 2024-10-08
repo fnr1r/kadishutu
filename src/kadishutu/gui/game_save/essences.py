@@ -1,4 +1,4 @@
-from kadishutu.core.game_save.essences import EssenceEditor
+from kadishutu.core.game_save.essences import EssenceEditor, EssenceMetadata
 from kadishutu.data.element_icons import Element
 from kadishutu.data.items import ESSENCES_RANGE, items_from
 from typing import List, Tuple
@@ -46,8 +46,11 @@ class EssenceEditorScreen(QScrollArea, GameScreenMixin, AppliableWidget):
         for essence, _, owned_box, meta_box in self.essences:
             owned_box.setChecked(essence.owned)
             meta_box.setValue(essence.metadata)
+            meta_box.set_modified(False)
 
     def on_apply_changes(self):
         for essence, _, owned_box, meta_box in self.essences:
             owned_box.setattr_if_modified(essence, "owned")
-            meta_box.setattr_if_modified(essence, "metadata")
+            def ess_set(essence_val: int):
+                essence.metadata = EssenceMetadata(essence_val)
+            meta_box.update_if_modified(ess_set)
