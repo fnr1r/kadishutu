@@ -1,6 +1,6 @@
 from dataclasses import dataclass
 from enum import Enum
-from typing import Any, Dict, List
+from typing import Any, Dict, List, Optional
 
 from .element_icons import Element
 from .tools.csv import FromCsv, extract_from_str
@@ -91,7 +91,7 @@ class AutoSkill(FromCsv):
     id: int
 
     @classmethod
-    def converter_data(cls) -> Dict[str, Dict[str, Any]] | None:
+    def converter_data(cls) -> Optional[Dict[str, Dict[str, Any]]]:
         return {
             "name": {
                 "field_name": "Name",

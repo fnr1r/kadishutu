@@ -1,7 +1,8 @@
 from dataclasses import dataclass, field
 from dataclasses_json import DataClassJsonMixin
 from pathlib import Path
-from typing import List, Self
+from typing import List
+from typing_extensions import Self
 
 from .miracles import MIRACLE_NAME_MAP, Miracle
 from .tools.dataclasses_json import hex_int_config
