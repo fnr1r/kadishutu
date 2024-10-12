@@ -82,7 +82,7 @@ class ActionSkill(FromCsv):
         }
 
 
-ACTION_SKILLS = ActionSkill.from_csv(ACTION_SKILLS_PATH, 3)
+ACTION_SKILLS = ActionSkill.from_csv(ACTION_SKILLS_PATH, 3, "UTF-8")
 
 
 @dataclass

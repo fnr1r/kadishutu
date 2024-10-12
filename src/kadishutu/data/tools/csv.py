@@ -9,8 +9,12 @@ from typing import (
 from typing_extensions import Self
 
 
-def csvread_headerless(path: Path, skip_lines: int = 0) -> List[List[str]]:
-    with open(path, "rt") as file:
+def csvread_headerless(
+    path: Path,
+    skip_lines: int = 0,
+    encoding: Optional[str] = None,
+) -> List[List[str]]:
+    with open(path, "rt", encoding=encoding) as file:
         while skip_lines > 0:
             if file.read(1) == "\n":
                 skip_lines -= 1
@@ -20,8 +24,12 @@ def csvread_headerless(path: Path, skip_lines: int = 0) -> List[List[str]]:
         ]
 
 
-def csvread(path: Path, skip_lines: int = 0) -> List[Dict[str, str]]:
-    with open(path, "rt") as file:
+def csvread(
+    path: Path,
+    skip_lines: int = 0,
+    encoding: Optional[str] = None,
+) -> List[Dict[str, str]]:
+    with open(path, "rt", encoding=encoding) as file:
         while skip_lines > 0:
             if file.read(1) == "\n":
                 skip_lines -= 1
@@ -45,7 +53,8 @@ class FromCsv:
     def from_csv_headerless(
         cls,
         path: Path,
-        skip_lines: int = 0
+        skip_lines: int = 0,
+        encoding: Optional[str] = None,
     ) -> List[Self]:
         csv_data = csvread_headerless(path, skip_lines)
         res = []
@@ -73,7 +82,12 @@ class FromCsv:
         ]
 
     @classmethod
-    def from_csv(cls, path: Path, skip_lines: int = 0) -> List[Self]:
+    def from_csv(
+        cls,
+        path: Path,
+        skip_lines: int = 0,
+        encoding: Optional[str] = None,
+    ) -> List[Self]:
         csv_data = csvread(path, skip_lines)
         res = []
         conversion_info = cls.converter_data()

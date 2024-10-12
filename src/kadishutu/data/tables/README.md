@@ -11,3 +11,8 @@
 `SMT5V NKM Base Table_Navi Devil Data - Players.csv`
 
 - Added `Pot` prefix to potential values to avoid conflicts
+
+`SMT5V Skill Data Tables - ActionSkills.csv`
+
+- Replaced `∞` with `inf` as per
+  [pewbayeaj on GameBanana](https://gamebanana.com/posts/12025667)
