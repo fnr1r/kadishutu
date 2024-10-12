@@ -26,6 +26,9 @@ pipx upgrade kadishutu
 but because they're built with pyinstaller, they might get flagged by your
 antivirus.
 
+(fun fact, this project also works on Windows 7 (the best version) with VxKex
+and Python 3.9)
+
 ### Additional setup
 
 Some data is not bundled with the editor. While not strictly necesary, adding
