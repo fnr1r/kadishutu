@@ -825,6 +825,24 @@ Data about alignment values is in a different doc (for now).
 
 [Here's a copy.](cheatroom_blog_post_translation.md)
 
+### [TODO] Map block
+
+0xab82 (maybe) - Da'at: Shinjuku revealed map terrain block
+0xa???
+
+The above is a massive 2D array. I don't even know where it starts, but filling
+it with 0xff just works and reveals the terrain.
+
+Width: 16 bytes (128 bits)
+Height: (probably 1:1/square)
+
+0x11??? - 0x13??? - Map icon block???
+
+Map menu unlock:
+
+- 0x69f0f - 0x10 - Da'at: Shinjuku
+- 0x69f0f - 0x20 - Dorm Room
+
 ## Notes
 
 There must be a bit which changes the name from Netherworld to Da'at.
