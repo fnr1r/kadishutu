@@ -193,7 +193,7 @@
         "bits": [
             {
                 "bit": 6,
-                "alignment": "?",
+                "alignment": "law",
                 "place": "Da'at - Shinagawa",
                 "side_quest": null,
                 "text": [
@@ -203,7 +203,7 @@
             },
             {
                 "bit": 7,
-                "alignment": "?",
+                "alignment": "chaos",
                 "place": "Da'at - Shinagawa",
                 "side_quest": null,
                 "text": [

@@ -219,3 +219,13 @@ you a choice between:
 - [ LAW ] I won't let you.
 
 Your algnment affects Maria's form for as expected.
+
+## 2024-10-13 - 3rd cycle
+
+I got to the last boss of Shinagawa with my alignment still being neutral
+(swaying cursor on map).
+
+I picked the 1st option and the icon started turning clockwhise aka law.
+
+I reset and picked the 2nd option and it tilted me towards chaos (icon spinning
+counterclockwhise).
