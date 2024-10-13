@@ -5,6 +5,8 @@ from PySide6.QtWidgets import (
     QLabel, QPushButton, QVBoxLayout, QWidget,
 )
 
+from kadishutu.plugin.loader import PLUGIN_MANAGER
+
 from ..shared import (
     QU32, AppliableWidget, SaveScreenMixin, hboxed,
 )
@@ -16,6 +18,7 @@ from .essences import EssenceEditorScreen
 from .items import ItemEditorScreen
 from .miracles import MiracleEditorScreen
 from .player import PlayerEditorScreen
+from .plugin import GameSavePluginScreen
 from .settings import SettingsEditorScreen
 from .teleport import TeleporterScreen
 
@@ -55,6 +58,13 @@ class GameSaveEditorScreen(SaveScreenMixin, QWidget, AppliableWidget):
             widget = QPushButton(name)
             widget.clicked.connect(self.spawner(cls))
             self.l.addWidget(widget)
+    
+        self.plugins_button = QPushButton("Plugins")
+        self.plugins_button.clicked.connect(self.spawner(GameSavePluginScreen))
+        self.l.addWidget(self.plugins_button)
+
+        if not PLUGIN_MANAGER.which_have_stage("gui_game_component"):
+            self.plugins_button.setEnabled(False)
 
         self.l.addStretch()
 

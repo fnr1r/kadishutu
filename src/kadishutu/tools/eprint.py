@@ -1,3 +1,4 @@
+import traceback
 import sys
 
 
@@ -15,7 +16,7 @@ def eprintf(txt: str, *args, **kwargs):
 
 def printexcept(msg: str, e: Exception, *args: object, **kwargs: object):
     eprint(
-        msg.format(*args, **kwargs) + ":",
-        e.__repr__(),
-        sep="\n",
+        msg.format(*args, **kwargs) + ": (traceback below)\n",
+        "".join(traceback.format_exception(e)),
+        sep="",
     )

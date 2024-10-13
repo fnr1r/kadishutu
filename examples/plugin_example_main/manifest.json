@@ -1,0 +1,7 @@
+{
+    "$schema": "https://github.com/fnr1r/kadishutu/raw/refs/heads/main/src/kadishutu/plugin/manifest.schema.json",
+    "name": "plugin_example_main",
+    "author": "fnrir",
+    "version": "0.1.0",
+    "stage": "main"
+}

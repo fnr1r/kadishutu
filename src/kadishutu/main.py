@@ -7,6 +7,7 @@ from .cli import (
     cmd_decrypt, cmd_encrypt, cmd_inspect, cmd_run_script, cmd_update_hash
 )
 from .editor_cli import argparse_edit
+from .plugin.loader import PLUGIN_MANAGER
 
 
 def cmd_gui(args):
@@ -81,4 +82,6 @@ def main():
 
     args = parser.parse_args()
 
+    PLUGIN_MANAGER.reload()
+    PLUGIN_MANAGER.exec("main")
     args.func(args)

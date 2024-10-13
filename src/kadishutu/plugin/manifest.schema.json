@@ -1,0 +1,29 @@
+{
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "$id": "https://example.com/product.schema.json",
+    "title": "Product",
+    "description": "A product in the catalog",
+    "type": "object",
+    "properties": {
+        "name": {
+            "type": "string"
+        },
+        "author": {
+            "type": "string"
+        },
+        "version": {
+            "type": "string"
+        },
+        "stage": {
+            "type": "string",
+            "enum": [
+                "main",
+                "gui",
+                "gui_game_component"
+            ]
+        },
+        "load_order": {
+            "type": "number"
+        }
+    }
+}
