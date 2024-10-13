@@ -39,6 +39,9 @@ The files can be dumped/saved/exported with
 
 (don't use the Linux version, it's outdated)
 
+[Fmodel](https://fmodel.app/) should also work, but it's kinda hit or miss for
+me.
+
 #### Game data
 
 ```txt
@@ -133,7 +136,7 @@ savefile.encrypt().save(path)
 ## What works?
 
 NOTE: This is tested with the Switch version of the game (`010069C01AB82000`
-with all DLCs more specifically). It might work with the PC version.
+with all DLCs more specifically), but it also works with the PC version.
 
 - Encryption/Decryption
 - Viewing and editing of the following values
@@ -142,47 +145,40 @@ with all DLCs more specifically). It might work with the PC version.
   - Used DLCs (this will not give you DLC-exclusive content)  
     (it's mainly for importing a save file from a copy with DLCs)
   - Play Time
-  - Macca, Glory
   - Miracle (and unlocking them)
   - Summoned demons and player placement
   - For the player and demons
     - Affinities, Potentials, Stats, Skills, Exp, Lvl, Innate Skill
+  - Player stat points
   - Demons (i.e. Demon IDs)
+  - Team composition (summoned demons and their order)
+  - Macca, Glory
+  - Miracles (+unlocking most of them)
   - Items
-  - Essences (kinda) (it's experimental)
+  - Essences (kinda)
   - Position
+  - Early compendium and quest support
   - Alignment
-- Manual editing after decryption
+  - Number of cycles and endings
+- Summoning new Demons kinda works, but it's not recommended, because the demon
+  block is not fully understood
+- SysSave is documented, but not implemented
 
 ## What doesn't?
 
 - The cli is utter garbage
 - This needs a solid rework
-- Changing affinities is a bit weird
 
 ## What's planned?
 
 - Editing more data
-  - Demon compendium
-  - Quests
+  - Properly implementing compendium and quest support  
+    (Tao and Yoko might be in a separate block)
   - Full demon support
 - Better CLI
 - Allowing the user to add files that modify the demon/skill database, in
   corelation with mods
 - Rewrite the core in Rust (once the format is better understood)
-
-## FAQ
-
-### Changes made to resistances are reverted
-
-This is expected (at least for demons) since those values are only copies.
-
-### Changes made to skill potentials are reverted
-
-If the skill potential of a demon is below 1, the skill potential can't be
-increased (neither in-game with sutras, nor by editing).
-
-As for the player, it might be recalculated based on bought miracles.
 
 ## Documentation
 
@@ -190,6 +186,8 @@ The documentation for the save files is in the docs folder:
 
 [GameSave.md](docs/GameSave.md)
 [SysSave.md](docs/SysSave.md)
+
+And [here's](docs/Troubleshooting.md) the troubleshooting info.
 
 ## Credits
 
