@@ -23,10 +23,11 @@ class PlayerEditorScreen(DemonLikeEditorScreen, AppliableWidget):
             self.dl_layout.insertWidget(i, button)
 
         self.stat_points_box = QU16()
-        self.dl_layout.addLayout(hboxed(
+        self.dl_layout.insertLayout(self.last_box, hboxed(
             QLabel("Stat points"),
             self.stat_points_box,
         ))
+        self.last_box += 1
 
     @property
     def player(self) -> PlayerEditor:
