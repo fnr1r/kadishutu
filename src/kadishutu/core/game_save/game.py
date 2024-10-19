@@ -1,7 +1,7 @@
 from enum import Enum, IntFlag, auto
 
 from ..shared.editors import (
-    BaseMasterEditor, EnumEditor, TimeDeltaEditor, U16Editor, U32Editor,
+    BaseMasterEditor, BoolEditor, EnumEditor, TimeDeltaEditor, U16Editor, U32Editor,
     U8Editor, UnrealTimeEditor,
 )
 from ..shared.unreal_editors import UnrealInternalEditor
@@ -42,6 +42,7 @@ class GameSaveEditor(BaseMasterEditor):
     difficulty = EnumEditor(0x4fc, Difficulty)
     cycles_copy = U8Editor(0x502)
     endings_copy = EnumEditor(0x503, Endings)
+    clear_flag = BoolEditor(0x528)
     dlc = DlcEditor.disp()
     play_time = TimeDeltaEditor(0x5d0)
     # End of pre-loaded section

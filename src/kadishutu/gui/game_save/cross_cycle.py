@@ -15,6 +15,12 @@ class CrossCycleEditorScreen(QWidget, GameScreenMixin, AppliableWidget):
         self.l = QGridLayout(self)
         i = 0
 
+        label = QLabel("Clear")
+        self.l.addWidget(label, i, 0)
+        self.clear_box = MCheckBox()
+        self.l.addWidget(self.clear_box, i, 1)
+        i += 1
+
         label = QLabel("Cycles")
         self.l.addWidget(label, i, 0)
         self.cycles_box = QU8()
@@ -35,11 +41,14 @@ class CrossCycleEditorScreen(QWidget, GameScreenMixin, AppliableWidget):
             self.ending_map[end] = end_box
 
     def stack_refresh(self):
+        self.clear_box.setChecked(self.save.clear_flag)
+        self.clear_box.set_modified(False)
         self.cycles_box.setValue(self.save.cycles)
         for k, v in self.ending_map.items():
             v.setChecked(self.save.endings & k)
 
     def on_apply_changes(self):
+        self.clear_box.setattr_if_modified(self.save, "clear_flag")
         self.cycles_box.setattr_if_modified(self.save, "cycles", "cycles_copy")
         def update_cb(v: Endings) -> Callable[[bool], None]:
             def wrapped(box: bool):
