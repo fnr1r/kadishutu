@@ -66,6 +66,7 @@ ROT_OFFSET = 0x56a6
 class PositionEditor(BaseStaticEditor):
     offset = 0
 
+    title_save_location = U32Editor(0x524)
     current_map_upper = U32Editor(0x567e)
     current_map_lower = U32Editor(0x5682)
     raw_coordinates = BytesEditor(CORD_OFFSET, calcsize(FloatSetEditor.fmt))

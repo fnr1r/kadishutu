@@ -1,6 +1,7 @@
 from argparse import Namespace
 from kadishutu.core.shared.file_handling import DecryptedSave
 from kadishutu.core.game_save import GameSaveEditor
+from kadishutu.data.save_locs import SAVE_LOCS
 from kadishutu.plugin.loader import PLUGIN_MANAGER
 from pathlib import Path
 import sys
@@ -67,7 +68,6 @@ class FileSelectorPreview(QWidget):
         self.name = QLabel(self)
         self.layout().addWidget(self.name)
         self.location = QLabel(self)
-        self.location.setText("Location: TODO")
         self.layout().addWidget(self.location)
         self.difficulty = QLabel(self)
         self.layout().addWidget(self.difficulty)
@@ -79,12 +79,18 @@ class FileSelectorPreview(QWidget):
 
     def empty(self):
         self.name.setText("Name: N/A")
+        self.location.setText("Location: N/A")
         self.difficulty.setText("Difficulty: N/A")
         self.play_time.setText("Play Time: N/A")
         self.date.setText("Date: N/A")
 
     def update(self, save: GameSaveEditor):
         self.name.setText("Name: " + save.player.names.save_name.get())
+        try:
+            save_loc = SAVE_LOCS[save.position.title_save_location]
+        except KeyError:
+            save_loc = "UNKNOWN"
+        self.location.setText("Location: " + save_loc)
         self.difficulty.setText("Difficulty: " + save.difficulty.name)
         self.play_time.setText("Play Time: " + str(save.play_time))
         self.date.setText("Date: " + str(save.time_of_saving))
