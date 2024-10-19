@@ -1,6 +1,6 @@
 [
     {
-        "id": "0xb",
+        "id": "0x0b",
         "name": "Da'at: Minato - Tamachi",
         "map_upper": "0x0000003d",
         "map_lower": "0x00000000",
@@ -12,7 +12,7 @@
         }
     },
     {
-        "id": "0xc",
+        "id": "0x0c",
         "name": "Da'at: Minato - Mita",
         "map_upper": "0x0000003d",
         "map_lower": "0x00000000",
@@ -24,7 +24,7 @@
         }
     },
     {
-        "id": "0xd",
+        "id": "0x0d",
         "name": "Da'at: Minato - Shiba",
         "map_upper": "0x0000003d",
         "map_lower": "0x00000000",
@@ -32,7 +32,7 @@
         "rotation": "f2c3ebbe5f3e633f"
     },
     {
-        "id": "0xe",
+        "id": "0x0e",
         "name": "Da'at: Minato - Hamamatsucho",
         "map_upper": "0x0000003d",
         "map_lower": "0x00000000",
@@ -40,7 +40,7 @@
         "rotation": "5aea7fbfe08bd23c"
     },
     {
-        "id": "0xf",
+        "id": "0x0f",
         "name": "Da'at: Minato - Tokyo Tower",
         "map_upper": "0x0000003d",
         "map_lower": "0x00000000",
@@ -456,12 +456,68 @@
         "rotation": "f004353ff604353f"
     },
     {
+        "id": "0x03",
+        "name": "Temple of Eternity - 1F Outside",
+        "map_upper": "0x00000023",
+        "map_lower": "0x00000001",
+        "coordinates": "0000fac500e8804620002042",
+        "rotation": "f20435bff404353f"
+    },
+    {
         "id": "0x34",
         "name": "Temple of Eternity - 1F Inside",
         "map_upper": "0x00000023",
         "map_lower": "0x00000001",
         "coordinates": "f8ff7944d43df1c5fdff5144",
         "rotation": "f004353ff604353f"
+    },
+    {
+        "id": "0x04",
+        "name": "Temple of Eternity - 2F Outside",
+        "map_upper": "0x00000023",
+        "map_lower": "0x00000002",
+        "coordinates": "04007a4500f0524600402044",
+        "rotation": "f20435bff404353f"
+    },
+    {
+        "id": "0x35",
+        "name": "Temple of Eternity - 2F Inside",
+        "map_upper": "0x00000023",
+        "map_lower": "0x00000002",
+        "coordinates": "0000fac479af07c61c008244",
+        "rotation": "f004353ff604353f"
+    },
+    {
+        "id": "0x05",
+        "name": "Temple of Eternity - 3F Outside",
+        "map_upper": "0x00000023",
+        "map_lower": "0x00000003",
+        "coordinates": "8b3934c6175300460080eb43",
+        "rotation": "000000000000803f"
+    },
+    {
+        "id": "0x36",
+        "name": "Temple of Eternity - 3F Inside",
+        "map_upper": "0x00000023",
+        "map_lower": "0x00000003",
+        "coordinates": "302de2c500c05ac6d8ff1f42",
+        "rotation": "ffff7fbf0000c034"
+    },
+    {
+        "id": "0x3a",
+        "name": "Temple of Eternity - 3F Hall",
+        "map_upper": "0x00000023",
+        "map_lower": "0x00000003",
+        "coordinates": "bea984c50000fa444e008244",
+        "rotation": "ffff7fbf0000c034"
+    },
+    {
+        "id": "0x06",
+        "name": "Temple of Eternity - Main Hall",
+        "map_upper": "0x00000023",
+        "map_lower": "0x00000004",
+        "coordinates": "00a683bf9362f04510002042",
+        "rotation": "000000000000803f"
     },
     {
         "id": "0x4e",
