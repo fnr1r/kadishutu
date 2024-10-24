@@ -7,6 +7,8 @@ from PySide6.QtWidgets import (
     QComboBox, QGridLayout, QHBoxLayout, QLabel, QSpinBox, QWidget,
 )
 
+from kadishutu.tools.eprint import printexcept
+
 from ..shared import QU32, SHIBOKEN_MAX, AppliableWidget, ModifiedMixin
 from ..iconloader import ICON_LOADER, print_icon_loading_error
 from .shared import GameScreenMixin
@@ -172,7 +174,16 @@ class SkillEditorScreen(QWidget, GameScreenMixin, AppliableWidget):
             skill_box, mystery_box = self.widgets[i]
             skill_box.refresh()
             skill = skill_box.skill
-            mystery_box.setValue(skill._unknown)
+            try:
+                mystery_box.setValue(skill._unknown)
+            except OverflowError as e:
+                printexcept(
+                    "Overflow while setting mystery_box {} to {}",
+                    e, i, skill._unknown,
+                )
+                mystery_box.setEnabled(False)
+            else:
+                mystery_box.setEnabled(True)
 
     def on_apply_changes(self):
         for i in range(9):
