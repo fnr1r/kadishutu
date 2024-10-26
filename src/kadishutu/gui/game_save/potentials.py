@@ -4,7 +4,7 @@ from typing import Dict
 from PySide6.QtWidgets import QGridLayout, QLabel, QSpinBox, QWidget
 
 from ..shared import AppliableWidget, ModifiedMixin
-from ..iconloader import ICON_LOADER, print_icon_loading_error
+from ..iconloader import ICON_LOADER, handle_image_loading_error
 from .shared import GameScreenMixin
 
 
@@ -33,14 +33,14 @@ class PotentialEditorScreen(QWidget, GameScreenMixin, AppliableWidget):
             potential_box = QPotentialBox()
             self.l.addWidget(potential_box, i, 2)
             self.potential_map[ptype] = potential_box
+            if ptype.name == "_UNKNOWN":
+                elname = Element.Misc
+            else:
+                elname = Element[ptype.name]
             try:
-                if ptype.name == "_UNKNOWN":
-                    elname = Element.Misc
-                else:
-                    elname = Element[ptype.name]
                 pak = ICON_LOADER.element_icon(elname)
             except Exception as e:
-                print_icon_loading_error(e, "Failed to load element icon:")
+                handle_image_loading_error(e, "element", elname)
             else:
                 pix = pak.pixmap.scaled(pak.size_div(2))
                 icon = QLabel()

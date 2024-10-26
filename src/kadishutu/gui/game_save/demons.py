@@ -9,7 +9,7 @@ from PySide6.QtWidgets import (
 from ..shared import (
     U16_MAX, AppliableWidget, ModifiedMixin, hboxed,
 )
-from ..iconloader import ICON_LOADER, DisabledError, print_icon_loading_error
+from ..iconloader import ICON_LOADER, DisabledError, handle_image_loading_error
 from .demonlike import DemonLikeEditorScreen
 from .shared import GameScreenMixin
 
@@ -86,7 +86,7 @@ class DemonEditorScreen(DemonLikeEditorScreen, AppliableWidget):
             id = self.demon_idn_widget.demon.id
             icon = ICON_LOADER.loading_character_icon(id)
         except Exception as e:
-            print_icon_loading_error(e, "Failed to demon graphic")
+            handle_image_loading_error(e, "demon grahpic", id)
             if isinstance(e, FileNotFoundError) or isinstance(e, DisabledError):
                 self.demon_graphic.hide()
         else:
@@ -179,7 +179,7 @@ class DemonSelectorScreen(QWidget, GameScreenMixin, AppliableWidget):
         try:
             icon = ICON_LOADER.mini_character_icon(demon.meta.id)
         except Exception as e:
-            print_icon_loading_error(e, "Failed to load demon icon")
+            handle_image_loading_error(e, "demon icon")
         else:
             button.setIcon(icon.icon)
             button.setIconSize(icon.size_div(2))

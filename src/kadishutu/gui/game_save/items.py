@@ -9,7 +9,7 @@ from PySide6.QtWidgets import (
 )
 
 from ..shared import QU8, AppliableWidget
-from ..iconloader import ICON_LOADER, print_icon_loading_error
+from ..iconloader import ICON_LOADER, handle_image_loading_error
 from .shared import GameScreenMixin
 
 
@@ -31,9 +31,10 @@ class ItemEditorWidget(QScrollArea, GameScreenMixin, AppliableWidget):
                 label.setToolTip(desc)
             self.l.addWidget(label, i, 1)
             try:
-                pak = ICON_LOADER.element_icon(item.meta.icon)
+                element = item.meta.icon
+                pak = ICON_LOADER.element_icon(element)
             except Exception as e:
-                print_icon_loading_error(e, "Failed to load element icon:")
+                handle_image_loading_error(e, "element", element)
             else:
                 pix = pak.pixmap.scaled(pak.size_div(2))
                 icon = QLabel()

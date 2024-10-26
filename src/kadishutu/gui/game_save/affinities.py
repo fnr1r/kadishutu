@@ -7,7 +7,7 @@ from typing import Dict
 from PySide6.QtWidgets import QGridLayout, QLabel, QWidget
 
 from ..shared import AppliableWidget, MComboBox
-from ..iconloader import ICON_LOADER, print_icon_loading_error
+from ..iconloader import ICON_LOADER, handle_image_loading_error
 from .shared import GameScreenMixin
 
 
@@ -29,10 +29,11 @@ class AffinityEditorScreen(QWidget, GameScreenMixin, AppliableWidget):
             affinity_box = MComboBox()
             affinity_box.addItems(cb_items)
             self.l.addWidget(affinity_box, i, 2)
+            element = Element[name]
             try:
-                pak = ICON_LOADER.element_icon(Element[name])
+                pak = ICON_LOADER.element_icon(element)
             except Exception as e:
-                print_icon_loading_error(e, "Failed to load element icon:")
+                handle_image_loading_error(e, "element icon", element)
             else:
                 pix = pak.pixmap.scaled(pak.size_div(2))
                 icon = QLabel()

@@ -12,7 +12,7 @@ from PySide6.QtWidgets import (
 )
 
 from ..shared import AppliableWidget, MCheckBox
-from ..iconloader import ICON_LOADER, print_icon_loading_error
+from ..iconloader import ICON_LOADER, handle_image_loading_error
 from .shared import GameScreenMixin
 
 
@@ -95,7 +95,7 @@ class MiracleEditorWidget(QScrollArea, GameScreenMixin):
             try:
                 pak = ICON_LOADER.element_icon(Element.PressTurn)
             except Exception as e:
-                print_icon_loading_error(e, "Failed to load element icon:")
+                handle_image_loading_error(e, "element", icon)
             else:
                 pix = pak.pixmap.scaled(pak.size_div(2))
                 icon = QLabel()

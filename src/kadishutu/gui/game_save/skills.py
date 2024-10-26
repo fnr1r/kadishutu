@@ -8,7 +8,7 @@ from PySide6.QtWidgets import (
 )
 
 from ..shared import QU32, SHIBOKEN_MAX, AppliableWidget, ModifiedMixin
-from ..iconloader import ICON_LOADER, print_icon_loading_error
+from ..iconloader import ICON_LOADER, handle_image_loading_error
 from .shared import GameScreenMixin
 
 
@@ -167,7 +167,7 @@ class SkillEditorScreen(QWidget, GameScreenMixin, AppliableWidget):
         try:
             pak = ICON_LOADER.element_icon(element)
         except Exception as e:
-            print_icon_loading_error(e, "Failed to load element icon:")
+            handle_image_loading_error(e, "element", element)
         else:
             pix = pak.pixmap.scaled(pak.size_div(2))
             icon.setFixedSize(pix.size())
