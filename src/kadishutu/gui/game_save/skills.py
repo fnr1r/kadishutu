@@ -14,6 +14,9 @@ from ..iconloader import ICON_LOADER, print_icon_loading_error
 from .shared import GameScreenMixin
 
 
+BAD_OR_UNKNOWN_SKILL = "???"
+
+
 class AbstractStrIntMap(QWidget, ModifiedMixin):
     def __init__(self, items: List[str], *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -75,7 +78,11 @@ class SkillBox(AbstractStrIntMap, ModifiedMixin):
         if self.skill.id == self.NO_VALUE_INT:
             self.str_box.setCurrentIndex(0)
             return
-        self.str_box.setCurrentText(self.skill.name)
+        try:
+            skill_name = self.skill.name
+        except KeyError:
+            skill_name = BAD_OR_UNKNOWN_SKILL
+        self.str_box.setCurrentText(skill_name)
 
     def apply_changes(self):
         if self.get_modified:
@@ -85,7 +92,10 @@ class SkillBox(AbstractStrIntMap, ModifiedMixin):
     def int_to_str(self, value: int) -> str:
         if value == self.NO_VALUE_INT:
             return self.NO_VALUE_STR
-        return SKILL_ID_MAP[value].name
+        try:
+            return SKILL_ID_MAP[value].name
+        except KeyError:
+            return BAD_OR_UNKNOWN_SKILL
 
     def str_to_int(self, value: str) -> int:
         if value == self.NO_VALUE_STR:
@@ -145,12 +155,17 @@ class SkillEditorScreen(QWidget, GameScreenMixin, AppliableWidget):
         else:
             mp_cost.show()
             icon.show()
-        skill_meta = SKILL_ID_MAP[skill_id]
-        element = skill_meta.icon
-        if element == Element.Passive:
-            mp_cost.setText("MP cost: N/A")
+        try:
+            skill_meta = SKILL_ID_MAP[skill_id]
+        except KeyError:
+            mp_cost.setText("MP cost: Unknown")
+            element = Element.Misc
         else:
-            mp_cost.setText("MP cost: " + str(skill_meta.mp_cost))
+            element = skill_meta.icon
+            if element == Element.Passive:
+                mp_cost.setText("MP cost: N/A")
+            else:
+                mp_cost.setText("MP cost: " + str(skill_meta.mp_cost))
         try:
             pak = ICON_LOADER.element_icon(element)
         except Exception as e:
