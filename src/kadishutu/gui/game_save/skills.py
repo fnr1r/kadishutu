@@ -1,13 +1,11 @@
 from abc import abstractmethod
-from kadishutu.core.game_save.skills import SkillEditor, SkillManager
+from kadishutu.core.game_save.skills import InnateSkillEditor, SkillEditor, SkillManager
 from kadishutu.data.element_icons import Element
 from kadishutu.data.skills import SKILL_ID_MAP, SKILL_NAME_MAP
 from typing import List, Tuple
 from PySide6.QtWidgets import (
     QComboBox, QGridLayout, QHBoxLayout, QLabel, QSpinBox, QWidget,
 )
-
-from kadishutu.tools.eprint import printexcept
 
 from ..shared import QU32, SHIBOKEN_MAX, AppliableWidget, ModifiedMixin
 from ..iconloader import ICON_LOADER, print_icon_loading_error
@@ -189,16 +187,10 @@ class SkillEditorScreen(QWidget, GameScreenMixin, AppliableWidget):
             skill_box, mystery_box = self.widgets[i]
             skill_box.refresh()
             skill = skill_box.skill
-            try:
-                mystery_box.setValue(skill._unknown)
-            except OverflowError as e:
-                printexcept(
-                    "Overflow while setting mystery_box {} to {}",
-                    e, i, skill._unknown,
-                )
-                mystery_box.setEnabled(False)
-            else:
-                mystery_box.setEnabled(True)
+            if isinstance(skill, InnateSkillEditor):
+                assert i == 0, "i != 0 is an innate skill"
+                continue
+            mystery_box.setValue(skill._unknown)
 
     def on_apply_changes(self):
         for i in range(9):

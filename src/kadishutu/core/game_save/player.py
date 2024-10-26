@@ -6,7 +6,7 @@ from ..shared.editors import (
 from .affinities import AffinityManager
 from .demonlike import DemonLikeEditor
 from .potentials import PotentialEditor
-from .skills import SkillEditor, SkillManager
+from .skills import InnateSkillEditor, SkillManager
 from .stats import HealableEditor, StatBlockEditor
 
 
@@ -98,4 +98,4 @@ class PlayerEditor(BaseStaticEditor, DemonLikeEditor):
     skills = SkillManager.disp(0xa38)
     affinities = AffinityManager.disp(0xa98)
     potentials = PotentialEditor.disp(0xb38)
-    innate_skill = SkillEditor.disp(0xb4c)
+    innate_skill = InnateSkillEditor.disp(0xb4c)

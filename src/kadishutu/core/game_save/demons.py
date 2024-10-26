@@ -9,7 +9,7 @@ from .affinities import (
 )
 from .demonlike import DemonLikeEditor
 from .potentials import PotentialType, PotentialEditor
-from .skills import SkillEditor, SkillManager
+from .skills import InnateSkillEditor, SkillManager
 from .stats import STATS_NAMES, HealableEditor, StatBlockEditor
 
 
@@ -34,7 +34,7 @@ class DemonEditor(BaseDynamicEditor, DemonLikeEditor):
     skills = SkillManager.rdisp(0x78)
     affinities = AffinityManager.rdisp(0xd8)
     potentials = PotentialEditor.rdisp(0x180)
-    innate_skill = SkillEditor.rdisp(0x194)
+    innate_skill = InnateSkillEditor.rdisp(0x198)
 
     @property
     def name(self) -> str:

@@ -34,3 +34,8 @@ class SkillManager(BaseDynamicEditor, BaseStructAsFieldEditor):
         if isinstance(indices, tuple):
             raise NotImplementedError
         return self.slot(indices)
+
+
+class InnateSkillEditor(SkillEditor):
+    _unknown = None
+    id = U32Editor(0)
