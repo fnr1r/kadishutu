@@ -21,6 +21,7 @@ SUBPARSERS: Dict[str, ArgumentParser] = {}
 def cmd_help(parser: ArgumentParser, args: Namespace):
     if not args.subcommand:
         parser.print_help()
+        return
     try:
         SUBPARSERS[args.subcommand].print_help()
     except KeyError:
