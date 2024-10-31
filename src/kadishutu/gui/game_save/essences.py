@@ -54,6 +54,8 @@ class EssenceEditorScreen(QScrollArea, GameScreenMixin, AppliableWidget):
     def on_apply_changes(self):
         for essence, _, owned_box, meta_box in self.essences:
             owned_box.setattr_if_modified(essence, "owned")
+
             def ess_set(essence_val: int):
                 essence.metadata = EssenceMetadata(essence_val)
+
             meta_box.update_if_modified(ess_set)

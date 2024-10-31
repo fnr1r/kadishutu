@@ -17,7 +17,7 @@ AILMENT_AFFINITY_NAMES = [
 class AffinityEditor(U16Editor):
     def read(self) -> Affinity:
         return Affinity(super().read())
-    
+
     def write(self, v: Affinity):
         super().write(v.value)
 

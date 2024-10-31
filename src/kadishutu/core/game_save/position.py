@@ -18,7 +18,7 @@ FLOAT_SET = Tuple[float, float, float]
 class Vector3:
     """
     More info on the coordinate system of Unreal Engine:
-    
+
     https://dev.epicgames.com/documentation/en-us/unreal-engine/coordinate-system-and-spaces-in-unreal-engine
     """
     x: float
@@ -38,7 +38,7 @@ class FloatSetEditor(StructEditor):
 
     def read(self) -> FLOAT_SET:
         return super().read()
-    
+
     def write(self, v: FLOAT_SET):
         super().write(v)
 
@@ -46,7 +46,7 @@ class FloatSetEditor(StructEditor):
 class Vector3Editor(FloatSetEditor):
     def read(self) -> Vector3:
         return Vector3.from_tuple(*super().read())
-    
+
     def write(self, v: Vector3):
         super().write(v.to_tuple())
 
@@ -56,7 +56,7 @@ class RotationEditor(StructEditor):
 
     def read(self) -> Tuple[float, float]:
         return super().read()
-    
+
     def write(self, v: Tuple[float, float]):
         super().write(v)
 

@@ -183,7 +183,12 @@ class DemonDataTab(FromCsv):
 
     @classmethod
     def filter_data(cls, item: Dict[str, str]) -> bool:
-        return not (is_unused(item["Name"]) or (item["Name"] == "Jack Frost" and item["ID"] != "58"))
+        return not (
+            is_unused(item["Name"])
+            or (
+                item["Name"] == "Jack Frost" and item["ID"] != "58"
+            )
+        )
 
     @classmethod
     def converter_data(cls):

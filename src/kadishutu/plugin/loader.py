@@ -18,11 +18,13 @@ class PluginManager(AbstractSingleton):
     def reload(self):
         if not PLUGINS_PATH.exists():
             return
+
         def loadp(path: Path):
             plugin = Plugin.try_load(path)
             if plugin is None:
                 eprintf("Failed to load plugin {}", path.name)
             return plugin
+
         self.plugins = [
             plugin
             for plugin in [

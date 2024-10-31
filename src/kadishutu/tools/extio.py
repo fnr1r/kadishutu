@@ -57,4 +57,5 @@ class ExtIO(BinaryIO, WrapperClass):
         return b''.join(iter(lambda: self.read(1), b'\0')).decode()
 
     def read_utf16_le_until_null(self) -> str:
-        return b''.join(iter(lambda: self.read(2), b'\0\0')).decode("UTF-16-LE")
+        return b''.join(iter(lambda: self.read(2), b'\0\0')) \
+            .decode("UTF-16-LE")

@@ -141,8 +141,10 @@ class DemonSelectorScreen(QWidget, GameScreenMixin, AppliableWidget):
             if fun is None:
                 sort_menu.addSeparator()
                 continue
+
             def a(fun: CIDS):
                 return lambda: self.sort_with_fun(fun)
+
             sort_menu.addAction(name).triggered.connect(a(fun))
         self.sort_button = QPushButton("Sort")
         self.sort_button.setMenu(self.sort_menu)

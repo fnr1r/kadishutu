@@ -36,7 +36,7 @@ class MiracleCheckboxes:
 
     @property
     def boxes(self):
-        return [self.bought_box,self.seen_box,self.enabled_box]
+        return [self.bought_box, self.seen_box, self.enabled_box]
 
     def boxes_refresh(self):
         seen = self.seen_box.isChecked()
@@ -95,7 +95,8 @@ class MiracleEditorWidget(QScrollArea, GameScreenMixin):
                 label.setToolTip(desc)
             self.l.addWidget(label, i, 1)
             try:
-                pak = ICON_LOADER.element_icon(Element.PressTurn)
+                icon = Element.PressTurn
+                pak = ICON_LOADER.element_icon(icon)
             except Exception as e:
                 handle_image_loading_error(e, "element", icon)
             else:

@@ -13,7 +13,7 @@ def group_objects(
         raise ValueError("group_size must be a positive integer")
     if not allow_partial and len(objects) % group_size != 0:
         raise ValueError("bad group size")
-    
+
     res = []
     for i in range(0, len(objects), group_size):
         group = tuple(objects[i:i+group_size])
@@ -23,5 +23,5 @@ def group_objects(
             if not allow_partial:
                 raise ValueError("bad group size")
         res.append(group)
-    
+
     return res

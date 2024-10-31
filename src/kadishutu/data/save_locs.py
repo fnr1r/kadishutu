@@ -12,4 +12,4 @@ with SAVE_LOCS_PATH.open("rt", encoding=ENCODING) as file:
         for k, v in json.load(file).items()
     }
 
-SAVE_LOCS_REV = { v: k for k, v in SAVE_LOCS.items() }
+SAVE_LOCS_REV = {v: k for k, v in SAVE_LOCS.items()}

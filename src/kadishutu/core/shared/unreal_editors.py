@@ -30,7 +30,7 @@ class FStringEditor(SingularStructEditor):
             length,
         )
         return txt
-    
+
     def write(self, v):
         raise NotImplementedError("This type of data should not be written")
 
@@ -59,9 +59,11 @@ class FEngineVersionEditor(StructEditor):
 class DynMixin(EditorGetter):
     def __init__(self):
         super().__init__(-1)
+
     @property
     def offset(self) -> int:
         raise NotImplementedError
+
     def _offset(self, attr: str) -> int:
         editor = self.editor
         assert isinstance(editor, UnrealInternalEditor)

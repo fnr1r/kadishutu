@@ -29,7 +29,7 @@ class DemonOrderEditor(StructEditor):
 
     def read(self) -> List[int]:
         return list(super().read())
-    
+
     def write(self, v: List[int]):
         super().write(tuple(v))
 

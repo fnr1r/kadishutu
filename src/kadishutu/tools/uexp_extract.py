@@ -34,7 +34,7 @@ class UExpOffsets:
     @property
     def length(self) -> int:
         return self.id + 32
-    
+
     @property
     def text(self) -> int:
         return self.length + 1 + 4

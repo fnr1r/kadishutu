@@ -59,7 +59,7 @@ class GameSaveEditorScreen(SaveScreenMixin, QWidget, AppliableWidget):
             widget = QPushButton(name)
             widget.clicked.connect(self.spawner(cls))
             self.l.addWidget(widget)
-    
+
         self.plugins_button = QPushButton("Plugins")
         self.plugins_button.clicked.connect(self.spawner(GameSavePluginScreen))
         self.l.addWidget(self.plugins_button)

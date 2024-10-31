@@ -199,12 +199,12 @@ class EditorGetter(Generic[T, TAbstractEditor], ABC):
 
     def __init__(self, offset: int):
         self.roffset = offset
-    
+
     @property
     def editor(self) -> TAbstractEditor:
         assert self._editor
         return self._editor
-    
+
     @property
     def offset(self) -> int:
         if isinstance(self.editor, BaseOffsetEditor):
@@ -233,7 +233,7 @@ class EditorGetter(Generic[T, TAbstractEditor], ABC):
             return self
         assert instance is not None
         assert isinstance(instance, AbstractEditor)
-        self._editor = instance # type: ignore
+        self._editor = instance  # type: ignore
         res = self.read()
         self._editor = None
         return res
@@ -241,7 +241,7 @@ class EditorGetter(Generic[T, TAbstractEditor], ABC):
     def __set__(self, instance, value: T):
         assert instance is not None
         assert isinstance(instance, AbstractEditor)
-        self._editor = instance # type: ignore
+        self._editor = instance  # type: ignore
         self.write(value)
         self._editor = None
 
@@ -287,7 +287,7 @@ class RelativeDispatcher(AbsoulteDispatcher, Generic[TBaseDynamicEditor]):
     ):
         super().__init__(ed_cls, *args, **kwargs)
         self.relative_offset = relative_offset
-    
+
     @property
     def editor(self) -> BaseOffsetEditor:
         return super().editor
@@ -316,7 +316,7 @@ class FieldDispatcher(AbsoulteDispatcher, Generic[TBaseDynamicEditor]):
     ):
         super().__init__(ed_cls, *args, **kwargs)
         self.field = field
-    
+
     @property
     def editor(self) -> BaseStructAsFieldEditor:
         return super().editor
@@ -391,7 +391,7 @@ class StructEditor(EditorGetter):
 
     def read(self) -> Tuple[Any, ...]:
         return self.struct_obj.unpack_from(self.data, self.offset)
-    
+
     def write(self, v: Tuple[Any, ...]):
         self.struct_obj.pack_into(self.data, self.offset, *v)
 
@@ -399,7 +399,7 @@ class StructEditor(EditorGetter):
 class SingularStructEditor(StructEditor):
     def read(self) -> Any:
         return super().read()[0]
-    
+
     def write(self, v: Any):
         super().write((v,))
 
@@ -407,7 +407,7 @@ class SingularStructEditor(StructEditor):
 class IntEditor(SingularStructEditor):
     def read(self) -> int:
         return super().read()
-    
+
     def write(self, v: int):
         super().write(v)
 
@@ -419,7 +419,7 @@ class U8Editor(IntEditor):
 class BoolEditor(U8Editor):
     def read(self) -> bool:
         return bool(super().read())
-    
+
     def write(self, v: bool):
         super().write(int(v))
 
@@ -451,7 +451,7 @@ class EnumEditor(SingularStructEditor, Generic[TEnum]):
 
     def read(self) -> TEnum:
         return self.enum(super().read())
-    
+
     def write(self, v: TEnum):
         super().write(v.value)
 
@@ -459,7 +459,7 @@ class EnumEditor(SingularStructEditor, Generic[TEnum]):
 class TimeDeltaEditor(U32Editor):
     def read(self) -> timedelta:
         return timedelta(seconds=super().read())
-    
+
     def write(self, v: timedelta):
         super().write(v.seconds)
 
@@ -467,6 +467,6 @@ class TimeDeltaEditor(U32Editor):
 class UnrealTimeEditor(U64Editor):
     def read(self) -> datetime:
         return unreal_to_python_datetime(super().read())
-    
+
     def write(self, v: datetime):
         super().write(python_to_unreal_datetime(v))
