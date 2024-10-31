@@ -5,11 +5,17 @@ description = "A save editor for Shin Megami Tensei V: Vengeance."
 authors = ["fnrir"]
 license = "MIT"
 readme = "README.md"
+build = "src/pre-build.py"
+include = [
+    "src/kadishutu/tools/depinstall/pyproject.toml"
+]
 
 [tool.poetry.dependencies]
 python = ">=3.9,<3.14"
 dataclasses-json = "^0.6.7"
 pycryptodome = "^3.20.0"
+semver = "^3.0.2"
+toml = "^0.10.2"
 typing-extensions = "^4.12.2"
 
 [tool.poetry.dependencies.xdg]
@@ -56,5 +62,5 @@ linux = ["xz", "7z"]
 windows = ["zip"]
 
 [build-system]
-requires = ["poetry-core"]
+requires = ["poetry-core", "toml"]
 build-backend = "poetry.core.masonry.api"
