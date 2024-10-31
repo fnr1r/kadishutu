@@ -44,7 +44,7 @@ class ExtIO(BinaryIO, WrapperClass):
             magic = magic.encode(encoding)
         assert isinstance(magic, bytes)
         data = self.read(len(magic))
-        assert data == magic, f"Invalid magic {data} instead of {magic}"
+        assert data == magic, f"Invalid magic {data!r} instead of {magic!r}"
 
     def read_u32_le(self) -> int:
         return int.from_bytes(self.read(4), byteorder="little")

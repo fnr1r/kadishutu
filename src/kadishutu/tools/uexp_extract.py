@@ -68,10 +68,10 @@ class UExpTranslationFile:
             if data[1] != 0:
                 encs.reverse()
             txt = ""
-            for i in encs:
+            for enc_fun in encs:
                 file.seek(offsets.text)
                 try:
-                    txt = i()
+                    txt = enc_fun()
                 except UnicodeDecodeError:
                     continue
                 else:

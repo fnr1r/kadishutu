@@ -58,8 +58,8 @@ def edit_macca(args: Namespace, game: GameSaveEditor):
 
 def cmd_edit(args: Namespace):
     path = args.file
-    with open(path, "rb") as file:
-        data = bytearray(file.read())
+    with open(path, "rb") as f:
+        data = bytearray(f.read())
     reencrypt = not is_save_decrypted(data)
     if reencrypt:
         file = EncryptedSave(data).decrypt()

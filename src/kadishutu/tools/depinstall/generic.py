@@ -27,7 +27,7 @@ def get_install_handler() -> InstallHandler:
             return handler()
         raise ValueError("Invalid install handler")
     selected = None
-    largest_likelyness = 0
+    largest_likelyness = 0.0
     for handler in INSTALL_HANDLERS:
         likelyness = handler.likelyness()
         if likelyness > largest_likelyness:
