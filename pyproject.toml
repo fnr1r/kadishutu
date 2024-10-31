@@ -27,7 +27,7 @@ kadishutu = "kadishutu:main"
 
 [tool.poetry.group.gui.dependencies]
 pillow = "^10.4.0"
-pyside6 = "^6.8.0.2"
+pyside6 = "^6.8.0"
 
 [tool.poetry.group.dev.dependencies]
 mypy = "^1.13.0"
