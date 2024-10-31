@@ -1,7 +1,8 @@
-from kadishutu.tools.singleton import AbstractSingleton
 from os import getenv
 from pathlib import Path
 import sys
+
+from kadishutu.tools.singleton import AbstractSingleton
 
 if sys.platform == "linux":
     from xdg import xdg_data_home

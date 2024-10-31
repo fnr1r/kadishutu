@@ -24,8 +24,9 @@ if __name__ == "__main__":
 # EDIT FROM HERE
 
 
-from kadishutu import DecryptedSave, GameSaveEditor
 from typing import List
+
+from kadishutu import DecryptedSave, GameSaveEditor
 
 
 def main(path: Path, file: DecryptedSave, _: List[str]):

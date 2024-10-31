@@ -1,6 +1,8 @@
-from kadishutu.core.game_save.dlc import DLCS, DlcBitflags
 from typing import Dict
+
 from PySide6.QtWidgets import QCheckBox, QGridLayout, QLabel, QWidget
+
+from kadishutu.core.game_save.dlc import DLCS, DlcBitflags
 
 from ..shared import AppliableWidget
 from .shared import GameScreenMixin

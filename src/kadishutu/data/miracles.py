@@ -1,13 +1,15 @@
 from dataclasses import dataclass, field
 from enum import Enum
+from struct import Struct
+from pathlib import Path
+from typing import List, Optional, Union
+
+from dataclasses_json import DataClassJsonMixin
+from typing_extensions import Self
+
 from kadishutu.paths import APPDIRS
 from kadishutu.tools.eprint import printexcept
 from kadishutu.tools.tbbreader import Tbcr
-from struct import Struct
-from dataclasses_json import DataClassJsonMixin
-from pathlib import Path
-from typing import List, Optional, Union
-from typing_extensions import Self
 
 from .tools.dataclasses_json import hex_int_config
 from .tools.mapping import make_maps

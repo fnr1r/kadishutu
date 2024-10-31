@@ -1,8 +1,10 @@
 from dataclasses import dataclass
-from kadishutu.data.laylines import Layline
 from struct import calcsize
 from typing import Tuple
+
 from typing_extensions import Self
+
+from kadishutu.data.laylines import Layline
 
 from ..shared.editors import (
     BaseStaticEditor, BytesEditor, StructEditor, U32Editor, U8Editor,

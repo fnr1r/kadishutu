@@ -1,6 +1,7 @@
 from dataclasses import dataclass
 from pathlib import Path
 from typing import List, Optional
+
 from dataclasses_json import DataClassJsonMixin
 from typing_extensions import Self
 

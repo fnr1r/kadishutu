@@ -1,9 +1,10 @@
 from enum import Enum, auto
 import os
 import sys
+from typing import Callable, NoReturn
+
 from kadishutu.tools.depinstall import get_install_handler
 from kadishutu.tools.depinstall.poetry import PoetryInstallHandler
-from typing import Callable, NoReturn
 
 
 class Result(Enum):

@@ -1,7 +1,8 @@
 from dataclasses import dataclass, field
-from dataclasses_json import DataClassJsonMixin
 from pathlib import Path
 from typing import Dict, List, Optional, Tuple
+
+from dataclasses_json import DataClassJsonMixin
 from typing_extensions import Self
 
 from .tools.dataclasses_json import bytes_config, hex_int_config

@@ -2,14 +2,16 @@ from abc import ABC, abstractmethod
 from dataclasses import dataclass
 from datetime import datetime, timedelta
 from enum import Enum
-from kadishutu.tools.fdatetime import (
-    python_to_unreal_datetime, unreal_to_python_datetime
-)
 from struct import Struct
 from typing import (
     Any, ClassVar, Generic, Optional, Tuple, Type, TypeVar, Union, overload,
 )
+
 from typing_extensions import Self
+
+from kadishutu.tools.fdatetime import (
+    python_to_unreal_datetime, unreal_to_python_datetime
+)
 
 from .file_handling import DecryptedSave
 

@@ -1,4 +1,5 @@
 from enum import IntFlag, auto
+
 from kadishutu.core.shared.editors import BoolEditor, EnumEditor
 from kadishutu.data.items import ESSENCES_RANGE, ITEM_TABLE_OFFSET, Item
 

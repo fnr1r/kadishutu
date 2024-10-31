@@ -1,6 +1,7 @@
 from dataclasses import dataclass
 from pathlib import Path
 from typing import BinaryIO, List
+
 from typing_extensions import Self
 
 from .extio import ExtIO

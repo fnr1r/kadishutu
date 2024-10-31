@@ -1,6 +1,7 @@
 from abc import ABC
 from dataclasses import dataclass
 from typing import BinaryIO, Generic, TypeVar, Union
+
 from typing_extensions import Self
 
 

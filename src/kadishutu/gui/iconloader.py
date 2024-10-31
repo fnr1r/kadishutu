@@ -1,14 +1,15 @@
 from dataclasses import dataclass
-from kadishutu.paths import APPDIRS
 from pathlib import Path
 from typing import Dict
+
 from typing_extensions import Self
-from PIL.Image import Image, open as open_image
-from PIL.ImageQt import ImageQt
 from PySide6.QtCore import QSize
 from PySide6.QtGui import QIcon, QPixmap
+from PIL.Image import Image, open as open_image
+from PIL.ImageQt import ImageQt
 
 from kadishutu.data.element_icons import Element
+from kadishutu.paths import APPDIRS
 from kadishutu.tools.eprint import eprint, printexcept
 
 

@@ -1,5 +1,6 @@
-from kadishutu.core.game_save.game import Difficulty
 from PySide6.QtWidgets import QLabel, QVBoxLayout, QWidget
+
+from kadishutu.core.game_save.game import Difficulty
 
 from ..shared import AppliableWidget, MComboBox, hboxed
 from .shared import GameScreenMixin

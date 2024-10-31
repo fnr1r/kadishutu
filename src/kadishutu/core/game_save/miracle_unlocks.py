@@ -1,7 +1,8 @@
+from typing import Optional
+
 from kadishutu.data.miracle_unlocks import (
     MIRACLE_UNLOCK_NAME_MAP, MiracleUnlock,
 )
-from typing import Optional
 
 from ..shared.editors import (
     BaseDynamicEditor, BaseStaticEditor, BaseStructAsSingularValueEditor,

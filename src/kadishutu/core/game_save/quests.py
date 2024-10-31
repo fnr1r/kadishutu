@@ -1,9 +1,10 @@
 from enum import Enum, auto
+from typing import Optional
+
 from kadishutu.data.quests import (
     QUEST_ENTRY_SIZE, QUEST_ID_MAP, QUEST_INFO_FIELDS, QUEST_TABLE_OFFSET,
     Quest,
 )
-from typing import Optional
 
 from ..shared.editors import (
     BaseDynamicEditor, BaseStaticEditor, BaseStructEditor, BoolEditor,

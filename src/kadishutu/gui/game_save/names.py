@@ -1,6 +1,8 @@
-from kadishutu.core.game_save.player import NameEdit, NameManager
 from typing import List, Tuple
+
 from PySide6.QtWidgets import QLabel, QLineEdit, QVBoxLayout, QWidget
+
+from kadishutu.core.game_save.player import NameEdit, NameManager
 
 from ..shared import AppliableWidget
 from .shared import GameScreenMixin

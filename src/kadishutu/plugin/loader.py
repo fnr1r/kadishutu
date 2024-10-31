@@ -1,9 +1,10 @@
 
+from pathlib import Path
+from typing import List
+
 from kadishutu.paths import APPDIRS
 from kadishutu.tools.eprint import eprintf
 from kadishutu.tools.singleton import AbstractSingleton
-from pathlib import Path
-from typing import List
 
 from .meta import Plugin
 

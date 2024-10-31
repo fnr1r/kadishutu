@@ -1,8 +1,9 @@
 from enum import IntFlag, auto
+from typing import Optional
+
 from kadishutu.data.miracles import (
     MIRACLE_ID_MAP, MIRACLE_NAME_MAP, MIRACLE_TABLE_OFFSET, Miracle,
 )
-from typing import Optional
 
 from ..shared.editors import (
     BaseDynamicEditor, BaseStaticEditor, BaseStructAsSingularValueEditor,

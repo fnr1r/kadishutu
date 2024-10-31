@@ -2,6 +2,7 @@ from abc import abstractmethod
 from enum import Enum, auto
 from pathlib import Path
 from typing import Any, Callable, TypeVar
+
 from PySide6.QtWidgets import (
     QBoxLayout, QCheckBox, QComboBox, QHBoxLayout, QSpinBox, QWidget,
 )

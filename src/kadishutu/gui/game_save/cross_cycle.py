@@ -1,6 +1,8 @@
-from kadishutu.core.game_save.game import Endings
 from typing import Callable, Dict
+
 from PySide6.QtWidgets import QLabel, QGridLayout, QWidget
+
+from kadishutu.core.game_save.game import Endings
 
 from ..shared import QU8, AppliableWidget, MCheckBox
 from .shared import GameScreenMixin

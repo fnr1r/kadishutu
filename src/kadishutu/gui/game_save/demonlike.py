@@ -1,6 +1,8 @@
-from kadishutu.core.game_save.demonlike import DemonLikeEditor
 from typing import List
+
 from PySide6.QtWidgets import QLabel, QPushButton, QVBoxLayout, QWidget
+
+from kadishutu.core.game_save.demonlike import DemonLikeEditor
 
 from ..shared import QU32, QU8, AppliableWidget, hboxed
 from .affinities import AffinityEditorScreen

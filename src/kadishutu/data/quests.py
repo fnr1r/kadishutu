@@ -1,11 +1,13 @@
 from dataclasses import dataclass, field
+from struct import calcsize
+from typing import List, Union
+
+from typing_extensions import Self
+
 from kadishutu.tools.groupobj import group_objects
 from kadishutu.tools.eprint import printexcept
 from kadishutu.tools.tbbreader import Tbcr
 from kadishutu.tools.uexp_extract import UExpTranslationFile
-from struct import calcsize
-from typing import List, Union
-from typing_extensions import Self
 
 from .miracles import UMODEL_SAVED_PATH, Destructable
 from .tools.mapping import make_maps

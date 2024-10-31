@@ -24,6 +24,8 @@ if __name__ == "__main__":
 # EDIT FROM HERE
 
 
+from typing import Any, Dict, List, Tuple
+
 from kadishutu import DecryptedSave, GameSaveEditor
 from kadishutu.tools.eprint import eprint
 try:
@@ -34,7 +36,6 @@ except ImportError:
 pyinstaller")
     import sys
     sys.exit(1)
-from typing import Any, Dict, List, Tuple
 
 
 ENDINGS = [

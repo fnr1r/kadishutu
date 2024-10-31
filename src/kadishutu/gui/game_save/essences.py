@@ -1,8 +1,10 @@
+from typing import List, Tuple
+
+from PySide6.QtWidgets import QGridLayout, QLabel, QScrollArea, QWidget
+
 from kadishutu.core.game_save.essences import EssenceEditor, EssenceMetadata
 from kadishutu.data.element_icons import Element
 from kadishutu.data.items import ESSENCES_RANGE, items_from
-from typing import List, Tuple
-from PySide6.QtWidgets import QGridLayout, QLabel, QScrollArea, QWidget
 
 from ..shared import QU16, AppliableWidget, MCheckBox
 from ..iconloader import ICON_LOADER, handle_image_loading_error

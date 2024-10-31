@@ -1,5 +1,6 @@
-from kadishutu.core.game_save.player import PlayerEditor
 from PySide6.QtWidgets import QLabel, QPushButton
+
+from kadishutu.core.game_save.player import PlayerEditor
 
 from ..shared import QU16, AppliableWidget, hboxed
 from .demonlike import DemonLikeEditorScreen

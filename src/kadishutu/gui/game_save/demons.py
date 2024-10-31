@@ -1,10 +1,12 @@
-from kadishutu.core.game_save.demons import DEMON_TABLE_SIZE, DemonEditor
-from kadishutu.data.demons import DEMON_ID_MAP, DEMON_NAME_MAP
 from typing import TYPE_CHECKING, Callable, List, Optional, Tuple
+
 from PySide6.QtWidgets import (
     QComboBox, QGridLayout, QHBoxLayout, QMenu, QLabel, QPushButton, QSpinBox,
     QVBoxLayout, QWidget,
 )
+
+from kadishutu.core.game_save.demons import DEMON_TABLE_SIZE, DemonEditor
+from kadishutu.data.demons import DEMON_ID_MAP, DEMON_NAME_MAP
 
 from ..shared import (
     U16_MAX, AppliableWidget, ModifiedMixin, hboxed,

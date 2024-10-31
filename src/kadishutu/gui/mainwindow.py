@@ -1,8 +1,4 @@
 from argparse import Namespace
-from kadishutu.core.shared.file_handling import DecryptedSave
-from kadishutu.core.game_save import GameSaveEditor
-from kadishutu.data.save_locs import SAVE_LOCS
-from kadishutu.plugin.loader import PLUGIN_MANAGER
 from pathlib import Path
 import sys
 from typing import List, Optional
@@ -16,6 +12,11 @@ from PySide6.QtWidgets import (
 
 # NOTE: I wish Python had a better tool for this
 # Like (for example) rustfmt
+
+from kadishutu.core.shared.file_handling import DecryptedSave
+from kadishutu.core.game_save import GameSaveEditor
+from kadishutu.data.save_locs import SAVE_LOCS
+from kadishutu.plugin.loader import PLUGIN_MANAGER
 
 from .shared import (
     AppliableWidget, OnStackRemovedHook, SaveScreenMixin, SaveType,

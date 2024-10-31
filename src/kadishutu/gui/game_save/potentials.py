@@ -1,7 +1,9 @@
+from typing import Dict
+
+from PySide6.QtWidgets import QGridLayout, QLabel, QSpinBox, QWidget
+
 from kadishutu.core.game_save.potentials import PotentialType, PotentialEditor
 from kadishutu.data.element_icons import Element
-from typing import Dict
-from PySide6.QtWidgets import QGridLayout, QLabel, QSpinBox, QWidget
 
 from ..shared import AppliableWidget, ModifiedMixin
 from ..iconloader import ICON_LOADER, handle_image_loading_error

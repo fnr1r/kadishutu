@@ -1,7 +1,8 @@
+from typing import Dict, Optional
+
 from kadishutu.data.items import (
     ITEM_ID_MAP, ITEM_NAME_MAP, ITEM_TABLE_OFFSET, Item,
 )
-from typing import Dict, Optional
 
 from ..shared.editors import (
     BaseDynamicEditor, BaseStaticEditor, BaseStructAsSingularValueEditor,

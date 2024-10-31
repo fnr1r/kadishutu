@@ -1,8 +1,10 @@
+from typing import Dict
+
+from PySide6.QtWidgets import QGridLayout, QLabel, QPushButton, QWidget
+
 from kadishutu.core.game_save.stats import (
     STATS_NAMES, HealableEditor, StatBlockEditor,
 )
-from typing import Dict
-from PySide6.QtWidgets import QGridLayout, QLabel, QPushButton, QWidget
 
 from ..shared import QU16, AppliableWidget
 from .shared import GameScreenMixin

@@ -1,5 +1,6 @@
-from kadishutu.plugin.loader import PLUGIN_MANAGER
 from PySide6.QtWidgets import QTabWidget
+
+from kadishutu.plugin.loader import PLUGIN_MANAGER
 
 from .shared import GameScreenMixin
 

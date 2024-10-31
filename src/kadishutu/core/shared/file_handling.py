@@ -1,6 +1,7 @@
 from dataclasses import dataclass
 from hashlib import sha1
 from pathlib import Path
+
 from typing_extensions import Self
 
 from .encryption import decrypt, encrypt

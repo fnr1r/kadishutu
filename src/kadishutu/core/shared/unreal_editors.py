@@ -1,4 +1,5 @@
 from typing import List
+
 from ..shared.editors import (
     BaseStaticEditor, EditorGetter, SingularStructEditor, StructEditor, U32Editor,
 )

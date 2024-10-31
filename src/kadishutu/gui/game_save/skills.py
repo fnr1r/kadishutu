@@ -1,11 +1,13 @@
 from abc import abstractmethod
-from kadishutu.core.game_save.skills import InnateSkillEditor, SkillEditor, SkillManager
-from kadishutu.data.element_icons import Element
-from kadishutu.data.skills import SKILL_ID_MAP, SKILL_NAME_MAP
 from typing import List, Tuple
+
 from PySide6.QtWidgets import (
     QComboBox, QGridLayout, QHBoxLayout, QLabel, QSpinBox, QWidget,
 )
+
+from kadishutu.core.game_save.skills import InnateSkillEditor, SkillEditor, SkillManager
+from kadishutu.data.element_icons import Element
+from kadishutu.data.skills import SKILL_ID_MAP, SKILL_NAME_MAP
 
 from ..shared import QU32, SHIBOKEN_MAX, AppliableWidget, ModifiedMixin
 from ..iconloader import ICON_LOADER, handle_image_loading_error

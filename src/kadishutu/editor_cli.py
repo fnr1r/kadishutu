@@ -7,7 +7,7 @@ from kadishutu.core.game_save import GameSaveEditor
 from kadishutu.core.game_save.dlc import DlcBitflags
 from kadishutu.core.game_save.game import DlcEditor
 from kadishutu.core.shared.file_handling import (
-    DecryptedSave, EncryptedSave, is_save_decrypted
+    DecryptedSave, EncryptedSave, is_save_decrypted,
 )
 
 

@@ -2,9 +2,11 @@ from dataclasses import dataclass
 from pathlib import Path
 import re
 from typing import BinaryIO, Dict, List
+
 from typing_extensions import Self
 
 from .extio import ExtIO
+
 
 UEXP_ENTRIES_OFFSET = 0x20
 UEXP_ENTRIES_FMT = "<H"

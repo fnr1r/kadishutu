@@ -3,6 +3,7 @@ from functools import reduce
 from math import log
 import operator
 from typing import Dict, List
+
 from typing_extensions import Self
 
 from ..shared.editors import BaseStaticEditor, BaseStructAsSingularValueEditor

@@ -1,6 +1,7 @@
 from dataclasses import dataclass
-from typing_extensions import Self
 from uuid import UUID
+
+from typing_extensions import Self
 
 
 UE_SAVEGAME_FILE_TYPE_TAG = b"SAVG"
