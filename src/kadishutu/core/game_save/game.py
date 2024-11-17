@@ -62,3 +62,31 @@ class GameSaveEditor(BaseMasterEditor):
     alignment = AlignmentManager.disp()
     cycles = U8Editor(0x6a08a)
     endings = EnumEditor(0x6a08b, Endings)
+
+    def erase_demon(self, slot: int, skip_if_free: bool = True):
+        from .demons import DEMON_ENTRY_SIZE
+
+        demon = self.demons.in_slot(slot)
+        if skip_if_free and demon.is_free:
+            return
+
+        team = self.team
+
+        # Desummon
+        summoned = list(team.summoned_demons)
+        for i in range(3):
+            if summoned[i] != slot:
+                continue
+            summoned[i] = None
+        self.team.summoned_demons = tuple(summoned) # type: ignore
+
+        # Remove from demon list
+        order = team.demon_order
+        for i in range(30):
+            if order[i] != slot:
+                continue
+            order[i] = 0xff
+        self.team.demon_order = order
+
+        # Erase data
+        demon.erase()

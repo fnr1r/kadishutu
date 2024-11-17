@@ -31,6 +31,10 @@ class AbstractEditor(ABC):
     ) -> TBaseEditor:
         raise NotImplementedError
 
+    def _fill(self, offset: int, size: int, value: int):
+        res = [value] * size
+        self.data[offset:offset + size] = res
+
 
 @dataclass
 class BaseMasterEditor(AbstractEditor, ABC):

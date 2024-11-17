@@ -16,6 +16,7 @@ from .stats import STATS_NAMES, HealableEditor, StatBlockEditor
 DEMON_TABLE_OFFSET = 0xb60
 DEMON_ENTRY_SIZE = 424
 DEMON_TABLE_SIZE = 30
+NO_DEMON = 0xffff
 
 
 class DemonEditor(BaseDynamicEditor, DemonLikeEditor):
@@ -42,7 +43,7 @@ class DemonEditor(BaseDynamicEditor, DemonLikeEditor):
 
     @property
     def is_free(self) -> bool:
-        return self.demon_id == 0xffff
+        return self.demon_id == NO_DEMON
 
     @property
     def slot(self) -> int:
@@ -54,6 +55,14 @@ class DemonEditor(BaseDynamicEditor, DemonLikeEditor):
     def raw(self) -> bytearray:
         end = self.offset + DEMON_ENTRY_SIZE
         return self.data[self.offset:end]
+
+    def erase(self, mystery_value: int = 1):
+        self._fill(self.offset, DEMON_ENTRY_SIZE, 0)
+        self.demon_id = NO_DEMON
+        self.data[self.offset + 0x75] = mystery_value
+        for i in range(28):
+            off = self.offset + 0x110 + i * 2
+            self.data[off] = 0x64
 
 
 class DemonManager(BaseStaticEditor):
