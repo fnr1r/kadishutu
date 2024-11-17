@@ -6,8 +6,8 @@ from kadishutu.data.demons import DEMON_ID_MAP, DEMON_NAME_MAP, Demon
 from kadishutu.data.skills import SKILL_ID_MAP, Skill
 
 from ..shared.editors import (
-    BaseDynamicEditor, BaseStaticEditor, BaseStructAsFieldEditor, U16Editor,
-    U8Editor,
+    BaseDynamicEditor, BaseStaticEditor, BaseStructAsFieldEditor, BoolEditor,
+    U16Editor, U8Editor,
 )
 from .stats import StatsEditor
 
@@ -64,6 +64,7 @@ class RegisteredDemonEditor(BaseDynamicEditor):
     stat_changes = StatsEditor.rdisp(0x10)
     skills = CompSkillManager.rdisp(0x40)
     level = U8Editor(0x54)
+    registered = BoolEditor(0x56)
     affinities = AffinityManager.rdisp(0x58)
     potentials = PotentialEditor.rdisp(0x90)
     innate_skill = CompSkillEditor.rdisp(0xc2)
@@ -75,9 +76,15 @@ class CompendiumManager(BaseStaticEditor):
     def at_offset(self, offset: int, *args, **kwargs) -> RegisteredDemonEditor:
         return self.dispatch(RegisteredDemonEditor, offset, *args, **kwargs)
 
-    def from_meta(self, demon: Demon) -> RegisteredDemonEditor:
+    def from_id(self, id: int, *args, **kwargs) -> RegisteredDemonEditor:
         return self.at_offset(
-            demon_id_to_compendium_offset(demon.id),
+            demon_id_to_compendium_offset(id),
+            *args, **kwargs,
+        )
+
+    def from_meta(self, demon: Demon) -> RegisteredDemonEditor:
+        return self.from_id(
+            demon.id,
             meta=demon
         )
 
